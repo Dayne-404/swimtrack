@@ -8,10 +8,8 @@ const WorksheetSchema = mongoose.Schema(
 			required: [true, 'Instructor name required'],
 		},
 		level: {
-			type: Number,
+			type: String,
 			required: [true, 'Level is required'],
-			min: [1, 'Level must be at least 1'],
-			max: [6, 'Level must be at most 6'],
 		},
 		session: {
 			type: String,

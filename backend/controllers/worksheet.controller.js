@@ -1,7 +1,8 @@
 const Worksheet = require('../models/Worksheet.model.js');
 
 const getWorksheets = async (req, res) => {
-	try {
+	console.log(req.query);
+    try {
 		const worksheets = await Worksheet.find({});
 		res.status(200).json(worksheets);
 	} catch (error) {

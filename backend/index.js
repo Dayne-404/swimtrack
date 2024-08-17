@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const worksheetRoute = require('./routes/worksheet.route.js');
 
 const uri =
@@ -7,8 +8,9 @@ const uri =
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
-app.use('/worksheets', worksheetRoute);
+app.use('/api/worksheets', worksheetRoute);
 
 app.get('/', (req, res) => {
 	res.send('Hello from Node API');

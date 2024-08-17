@@ -6,6 +6,10 @@ const router = express.Router();
 router.get('/', getWorksheets);
 router.get('/:id', getWorksheetById);
 
+// ? denotes a query string
+// ?filter= or //?sort=<value>&filter=<value>
+
+
 //Create 
 router.post('/', createWorksheet);
 
