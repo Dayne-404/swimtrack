@@ -25,6 +25,7 @@ const createWorksheet = async (req, res) => {
 		const worksheet = await Worksheet.create(req.body);
 		res.status(200).json(worksheet);
 	} catch (error) {
+		console.log(error);
 		res.status(500).json({ message: error.message });
 	}
 };

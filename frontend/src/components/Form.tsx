@@ -11,34 +11,64 @@ function Form() {
 	type day = (typeof DAY)[number];
 	type location = (typeof LOCATION)[number];
 
-	type FormProps = {
+	type WorksheetProps = {
 		instructor: string;
 		level: number;
 		session: session;
 		day: day;
 		time: string;
 		location: location;
+		students: StudentProps[];
 	};
 
-	const [formData, setFormData] = useState<FormProps>({
+	type StudentProps = {
+		name: string;
+		passed: boolean;
+	};
+
+	const [formData, setFormData] = useState<WorksheetProps>({
 		instructor: '',
 		level: 0,
 		session: '',
 		day: '',
 		time: '',
 		location: '',
+		students: [],
 	});
 
 	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+		index?: number
 	) => {
-		const { name, value } = e.target;
+		const { name, value, type } = e.target;
+
+		if (index !== undefined && name.startsWith('student_')) {
+			// Handle student input changes
+			const students = [...formData.students];
+			students[index] = {
+				...students[index],
+				[name.split('_')[1]]:
+					type === 'checkbox'
+						? (e.target as HTMLInputElement).checked
+						: value,
+			};
+			setFormData({ ...formData, students });
+		} else {
+			// Handle other input changes
+			setFormData({
+				...formData,
+				[name]:
+					name === 'level'
+						? Number(value)
+						: (value as WorksheetProps[keyof WorksheetProps]),
+			});
+		}
+	};
+
+	const addStudent = () => {
 		setFormData({
 			...formData,
-			[name]:
-				name === 'level'
-					? Number(value)
-					: (value as FormProps[keyof FormProps]),
+			students: [...formData.students, { name: '', passed: false }],
 		});
 	};
 
@@ -135,6 +165,30 @@ function Form() {
 					</option>
 				))}
 			</select>
+			<h3>Students</h3>
+			{formData.students.map((student, index) => (
+				<div key={index}>
+					<label htmlFor={`student_name_${index}`}>Name</label>
+					<input
+						id={`student_name_${index}`}
+						name="student_name"
+						type="text"
+						value={student.name}
+						onChange={(e) => handleChange(e, index)}
+					/>
+					<label htmlFor={`student_passed_${index}`}>Passed</label>
+					<input
+						id={`student_passed_${index}`}
+						name="student_passed"
+						type="checkbox"
+						checked={student.passed}
+						onChange={(e) => handleChange(e, index)}
+					/>
+				</div>
+			))}
+			<button type="button" onClick={addStudent}>
+				Add Student
+			</button>
 			<input type="submit" value="Submit"></input>
 		</form>
 	);

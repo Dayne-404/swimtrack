@@ -18,7 +18,7 @@ const WorksheetSchema = mongoose.Schema(
 		},
 		day: {
 			type: String,
-			enum: ['Mon', 'Tue', 'Wed', 'Thur', 'Fri'],
+			enum: ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun'],
 			required: [true, 'Day is required'],
 		},
 		time: {
