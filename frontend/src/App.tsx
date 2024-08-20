@@ -1,36 +1,55 @@
-import { createTheme, colors, ThemeProvider, Box } from "@mui/material";
-import Navbar from "./components/Navbar";
-import SideNav from "./components/SideNav";
+import {
+	createTheme,
+	colors,
+	ThemeProvider,
+	Box,
+	useMediaQuery,
+} from '@mui/material';
 import './styles/fonts.css';
+import Navigation from './components/Navigation';
 
 const theme = createTheme({
-  palette: {
-    primary: {
-      main: colors.lightBlue[700],
-    }
-  },
-  typography: {
-    fontFamily: 'Lexend, Arial, sans-serif',
-  },
+	palette: {
+		primary: {
+			main: colors.lightBlue[700],
+		},
+	},
+	typography: {
+		fontFamily: 'Lexend, Arial, sans-serif',
+	},
 });
 
 function App() {
+	const isMediumOrBelow = useMediaQuery(theme.breakpoints.down('md'));
+
+	const smallSideNavWidth = 200;
+	const largeSideNavWidth = 260;
+
+	const navbarHeight = 70;
+
 	return (
 		<ThemeProvider theme={theme}>
-      <Box sx={{ display: 'flex' }}>
-        <Navbar />
-        <SideNav />
-        <Box component='main'
-          sx={{
-            p: '8rem 4rem',
-            width: '100%',
-            height: '100vh',
-            backgroundColor: 'secondary.main',
-            boxSizing: 'border-box',
-            // Account for the width of the SideNav
-          }}
-        />
-      </Box>
+			<Navigation
+				isMediumOrBelow={isMediumOrBelow}
+				navbarHeight={navbarHeight}
+				smallSideNavWidth={smallSideNavWidth}
+				largeSideNavWidth={largeSideNavWidth}
+			/>
+			<Box
+				component="main"
+				width="100%"
+				height="100vh"
+				boxSizing="border-box"
+				p={
+					isMediumOrBelow
+						? navbarHeight + 16 + 'px 16px 16px 16px'
+						: navbarHeight +
+						  16 +
+						  'px 16px 16px ' +
+						  (largeSideNavWidth + 16) +
+						  'px'
+				}
+			></Box>
 		</ThemeProvider>
 	);
 }
