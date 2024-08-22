@@ -7,6 +7,7 @@ import {
 } from '@mui/material';
 import './styles/fonts.css';
 import Navigation from './components/Navigation';
+import Dashboard from './views/Dashboard';
 
 const theme = createTheme({
 	palette: {
@@ -44,12 +45,14 @@ function App() {
 					isMediumOrBelow
 						? navbarHeight + 16 + 'px 16px 16px 16px'
 						: navbarHeight +
-						  16 +
-						  'px 16px 16px ' +
-						  (largeSideNavWidth + 16) +
+						  24 +
+						  'px 24px 24px ' +
+						  (largeSideNavWidth + 24) +
 						  'px'
 				}
-			></Box>
+			>
+				<Dashboard />
+			</Box>
 		</ThemeProvider>
 	);
 }

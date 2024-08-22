@@ -18,8 +18,8 @@ import {
 import SpeedIcon from '@mui/icons-material/Speed';
 import FolderIcon from '@mui/icons-material/Folder';
 import ScubaDivingIcon from '@mui/icons-material/ScubaDiving';
-import GroupIcon from '@mui/icons-material/Group';
-import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useState } from 'react';
 
@@ -32,9 +32,9 @@ type SideNavProps = {
 
 const sideNavLocations = [
 	{ label: 'Dashboard', icon: <SpeedIcon /> },
-	{ label: 'Worksheets', icon: <FolderIcon /> },
-	{ label: 'Groups', icon: <GroupIcon /> },
-	{ label: 'Meetings', icon: <CameraAltIcon /> },
+	{ label: 'Library', icon: <FolderIcon /> },
+	{ label: 'Create', icon: <EditIcon /> },
+	{ label: 'Saved', icon: <SaveIcon /> },
 	{ label: 'Programs', icon: <ScubaDivingIcon /> },
 ];
 
