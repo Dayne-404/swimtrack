@@ -5,9 +5,11 @@ import {
 	Box,
 	useMediaQuery,
 } from '@mui/material';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './styles/fonts.css';
 import Navigation from './components/Navigation';
 import Dashboard from './views/Dashboard';
+import Library from './views/Library';
 
 const theme = createTheme({
 	palette: {
@@ -30,29 +32,39 @@ function App() {
 
 	return (
 		<ThemeProvider theme={theme}>
-			<Navigation
-				isMediumOrBelow={isMediumOrBelow}
-				navbarHeight={navbarHeight}
-				smallSideNavWidth={smallSideNavWidth}
-				largeSideNavWidth={largeSideNavWidth}
-			/>
-			<Box
-				component="main"
-				width="100%"
-				height="100vh"
-				boxSizing="border-box"
-				p={
-					isMediumOrBelow
-						? navbarHeight + 16 + 'px 16px 16px 16px'
-						: navbarHeight +
-						  24 +
-						  'px 24px 24px ' +
-						  (largeSideNavWidth + 24) +
-						  'px'
-				}
-			>
-				<Dashboard />
-			</Box>
+			<Router>
+				<Navigation
+					isMediumOrBelow={isMediumOrBelow}
+					navbarHeight={navbarHeight}
+					smallSideNavWidth={smallSideNavWidth}
+					largeSideNavWidth={largeSideNavWidth}
+				/>
+				<Box
+					component="main"
+					width="100%"
+					height="100vh"
+					boxSizing="border-box"
+					p={
+						isMediumOrBelow
+							? navbarHeight + 16 + 'px 16px 16px 16px'
+							: navbarHeight +
+							  24 +
+							  'px 24px 24px ' +
+							  (largeSideNavWidth + 24) +
+							  'px'
+					}
+				>
+					<Routes>
+						<Route path='/' element={<Dashboard />} />
+						<Route path='/library' element={<Library />} />
+						<Route path='/create' element={<Dashboard />} />
+						<Route path='/saved' element={<Dashboard />} />
+						<Route path='/programs' element={<Dashboard />} />
+						<Route path='/profile' element={<Dashboard />} />
+						<Route path='/settings' element={<Dashboard />} />
+					</Routes>
+				</Box>
+			</Router>
 		</ThemeProvider>
 	);
 }

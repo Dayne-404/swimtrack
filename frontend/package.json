@@ -21,9 +21,11 @@
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
+    "@mui/x-charts": "^7.13.0",
     "i": "^0.3.7",
     "react": "^17.0.0 || ^18.0.0",
     "react-dom": "^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.26.1",
     "styled-components": "^6.1.12"
   },
   "devDependencies": {

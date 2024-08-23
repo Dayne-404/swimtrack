@@ -1,27 +1,18 @@
 import {
 	Drawer,
 	Box,
-	ListItem,
-	ListItemButton,
-	ListItemIcon,
-	ListItemText,
 	List,
-	Stack,
-	Avatar,
-	Typography,
-	IconButton,
-	ButtonBase,
 	useMediaQuery,
 	useTheme,
 } from '@mui/material';
-
 import SpeedIcon from '@mui/icons-material/Speed';
 import FolderIcon from '@mui/icons-material/Folder';
 import ScubaDivingIcon from '@mui/icons-material/ScubaDiving';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
-import SettingsIcon from '@mui/icons-material/Settings';
-import { useState } from 'react';
+
+import SideNavItem from './SideNavItem';
+import ProfileCard from './ProfileCard';
 
 type SideNavProps = {
 	open: boolean;
@@ -31,21 +22,21 @@ type SideNavProps = {
 };
 
 const sideNavLocations = [
-	{ label: 'Dashboard', icon: <SpeedIcon /> },
-	{ label: 'Library', icon: <FolderIcon /> },
-	{ label: 'Create', icon: <EditIcon /> },
-	{ label: 'Saved', icon: <SaveIcon /> },
-	{ label: 'Programs', icon: <ScubaDivingIcon /> },
+	{ label: 'Dashboard', icon: <SpeedIcon />, to: '/' },
+	{ label: 'Library', icon: <FolderIcon />, to: '/library' },
+	{ label: 'Create', icon: <EditIcon />, to: '/create' },
+	{ label: 'Saved', icon: <SaveIcon />, to: '/saved' },
+	{ label: 'Programs', icon: <ScubaDivingIcon />, to: '/programs' },
 ];
 
-export const SideNav = ({ open, smallWidth, largeWidth, onDrawerToggle, }: SideNavProps) => {
+export const SideNav = ({
+	open,
+	smallWidth,
+	largeWidth,
+	onDrawerToggle,
+}: SideNavProps) => {
 	const theme = useTheme();
 	const isMediumOrBelow = useMediaQuery(theme.breakpoints.down('md'));
-	const [selectedIndex, setSelectedIndex] = useState(0);
-
-	const handleListItemClick = (index: number) => {
-		setSelectedIndex(index);
-	};
 
 	return (
 		<Drawer
@@ -67,90 +58,18 @@ export const SideNav = ({ open, smallWidth, largeWidth, onDrawerToggle, }: SideN
 		>
 			<Box p={1} textAlign="center">
 				<List>
-					{sideNavLocations.map(({ label, icon }, index) => (
-						<ListItem key={label} disablePadding>
-							<ListItemButton
-								selected={selectedIndex === index}
-								onClick={() => handleListItemClick(index)}
-								sx={{
-									color:
-										selectedIndex === index
-											? theme.palette.primary.main
-											: 'black',
-								}}
-							>
-								<ListItemIcon
-									sx={{
-										color:
-											selectedIndex === index
-												? theme.palette.primary.main
-												: 'black',
-									}}
-								>
-									{icon}
-								</ListItemIcon>
-								<ListItemText
-									primary={label}
-									sx={{
-										typography: {
-											xs: 'body2',
-											sm: 'body1',
-											md: 'h6',
-										},
-									}}
-								/>
-							</ListItemButton>
-						</ListItem>
+					{sideNavLocations.map(({ label, icon, to }) => (
+						<SideNavItem
+							key={label}
+							label={label}
+							icon={icon}
+							to={to}
+						/>
 					))}
 				</List>
 			</Box>
-
-			<Stack
-				direction="row-reverse"
-				justifyContent="space-between"
-				p={1.5}
-			>
-				<IconButton size="large">
-					<SettingsIcon />
-				</IconButton>
-				<ButtonBase
-					sx={{
-						display: 'flex',
-						flexDirection: 'row',
-						alignItems: 'center',
-						gap: theme.spacing(1),
-						textAlign: 'left',
-						padding: theme.spacing(0.5),
-					}}
-				>
-					<Avatar>DD</Avatar>
-					<Stack>
-						<Typography
-							variant="subtitle1"
-							sx={{
-								fontSize: {
-									xs: '1rem',
-									sm: '1rem',
-								},
-							}}
-						>
-							Dayne
-						</Typography>
-						<Typography
-							variant="body2"
-							color="text.secondary"
-							sx={{
-								fontSize: {
-									xs: '0.75rem',
-									sm: '0.75rem',
-								},
-							}}
-						>
-							View profile
-						</Typography>
-					</Stack>
-				</ButtonBase>
-			</Stack>
+			
+			<ProfileCard />
 		</Drawer>
 	);
 };
