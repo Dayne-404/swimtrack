@@ -11,7 +11,7 @@ type WorksheetCard = {
 
 const WorksheetCard = ({level, session, day, time, year, createdOn}: WorksheetCard) => {
   return (
-    <Paper>
+    <Paper elevation={2}>
         <Box p={2}>
             <Typography variant="h6">{level}</Typography>
             <Typography variant="body1">{session} {year}</Typography>

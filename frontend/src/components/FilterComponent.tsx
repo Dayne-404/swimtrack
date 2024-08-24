@@ -1,17 +1,12 @@
-import React, { useState } from 'react';
-import {
-	MenuItem,
-	Select,
-	SelectChangeEvent,
-	useTheme,
-} from '@mui/material';
+import React, { useCallback } from 'react';
+import { MenuItem, Select, SelectChangeEvent, useTheme } from '@mui/material';
 
 interface FilterComponentProps {
 	size: 'medium' | 'small';
 	placeholder: string;
 	availableFilters: string[];
 	selectedFilters: string[];
-	onFiltersChange: (selectedFilters: string[]) => void;
+	onFiltersChange: (selectedFilter: string) => void;
 }
 
 const FilterComponent: React.FC<FilterComponentProps> = ({
@@ -22,25 +17,25 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
 	onFiltersChange,
 }) => {
 	const theme = useTheme();
-	const [selectedValue, setSelectedValue] = useState<string>('');
 
-	const MAX_VISIBLE_ITEMS = 3;
+	const MAX_VISIBLE_ITEMS = 5;
 	const ITEM_HEIGHT = 48;
 	const MENU_HEIGHT = ITEM_HEIGHT * MAX_VISIBLE_ITEMS;
 
-	const handleFilterChange = (event: SelectChangeEvent<string>) => {
-		const selectedFilter = event.target.value;
-		if (selectedFilter) {
-			const updatedFilters = [...selectedFilters, selectedFilter];
-			onFiltersChange(updatedFilters);
-			setSelectedValue('');
-		}
-	};
+	const handleFilterChange = useCallback(
+		(event: SelectChangeEvent<string>) => {
+			const selectedFilter = event.target.value as string;
+			if (selectedFilter && !selectedFilters.includes(selectedFilter)) {
+				onFiltersChange(selectedFilter);
+			}
+		},
+		[selectedFilters, onFiltersChange]
+	);
 
 	return (
 		<Select
 			size={size}
-			value={selectedValue}
+			value=""
 			onChange={handleFilterChange}
 			displayEmpty
 			fullWidth
@@ -52,13 +47,17 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
 				},
 			}}
 		>
-			<MenuItem value="" disabled sx={{ color: 'text.secondary' }}>
+			<MenuItem value="" disabled>
 				<span style={{ color: theme.palette.text.secondary }}>
 					{placeholder}
 				</span>
 			</MenuItem>
 			{availableFilters.map((filter) => (
-				<MenuItem key={filter} value={filter}>
+				<MenuItem
+					key={filter}
+					value={filter}
+					disabled={selectedFilters.includes(filter)}
+				>
 					{filter}
 				</MenuItem>
 			))}

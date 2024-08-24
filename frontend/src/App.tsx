@@ -40,13 +40,15 @@ function App() {
 					largeSideNavWidth={largeSideNavWidth}
 				/>
 				<Box
+					display='flex'
+					flexDirection='column'
 					component="main"
 					width="100%"
 					height="100vh"
 					boxSizing="border-box"
 					p={
 						isMediumOrBelow
-							? navbarHeight + 16 + 'px 16px 16px 16px'
+							? navbarHeight + 16 + 'px 5px 5px 5px'
 							: navbarHeight +
 							  24 +
 							  'px 24px 24px ' +

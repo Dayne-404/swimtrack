@@ -7,163 +7,89 @@ import {
 	Button,
 	MenuItem,
 	TextField,
-	Modal,
-	IconButton,
+	Grid,
 	ButtonBase,
-	useTheme,
 } from '@mui/material';
+import { FILTERS, getLevels } from '../config/filters';
 import SearchBar from '../components/SearchBar';
-import { useState } from 'react';
-import FilterComponent from '../components/FilterComponent';
+import { useRef, useState } from 'react';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import ActiveFilters from '../components/ActiveFilters';
-import CloseIcon from '@mui/icons-material/Close';
+import FilterModal from '../components/FilterModal';
+import { CARDS } from '../config/cards';
+import WorksheetCard from '../components/WorksheetCard';
 
 const Library = () => {
-	const theme = useTheme();
-	const initialFilters = [
-		'Filter 1',
-		'Filter 2',
-		'Filter 3',
-		'Filter 4',
-		'Filter 5',
-	];
+	const levels = getLevels();
 
-	const [availableFilters, setAvailableFilters] =
-		useState<string[]>(initialFilters);
 	const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 	const [sortOption, setSortOption] = useState<string>('');
-	const [modalOpen, setModalOpen] = useState<boolean>(true);
+	const [modalOpen, setModalOpen] = useState<boolean>(false);
 
-	const handleFiltersChange = (newFilters: string[]) => {
-		setSelectedFilters(newFilters);
-		setAvailableFilters(
-			initialFilters.filter((filter) => !newFilters.includes(filter))
-		);
+	const handleFilterSelect = (filter: string) => {
+		setSelectedFilters([...selectedFilters, filter]);
 	};
 
 	const handleFilterRemove = (filter: string) => {
 		setSelectedFilters(
 			selectedFilters.filter((selected) => selected !== filter)
 		);
-		setAvailableFilters([...availableFilters, filter]);
+	};
+
+	const clearFilters = () => {
+		setSelectedFilters([]);
 	};
 
 	const handleModalClose = () => {
 		setModalOpen(false);
 	};
 
+	const containerRef = useRef<HTMLDivElement>(null);
+	const scrollToTop = () => {
+		if (containerRef.current) {
+			containerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+		}
+	};
+
 	return (
-		<Box>
-			<Modal open={modalOpen} onClose={handleModalClose}>
-				<Paper
-					elevation={0}
+		<Box display="flex" flexDirection="column" height="100%">
+			<FilterModal
+				filters={FILTERS}
+				levels={levels}
+				selectedFilters={selectedFilters}
+				isModalOpen={modalOpen}
+				handleModalClose={handleModalClose}
+				handleFilterSelect={handleFilterSelect}
+				handleFilterRemove={handleFilterRemove}
+				clearFilters={clearFilters}
+			/>
+
+			<Box mb={2}>
+				<ButtonBase disableRipple onClick={scrollToTop}>
+					<Typography variant="h5">Library</Typography>
+				</ButtonBase>
+			</Box>
+
+			<Paper
+				sx={{
+					flex: 1,
+					display: 'flex',
+					flexDirection: 'column',
+					overflow: 'auto',
+					padding: 1.5,
+				}}
+				ref={containerRef}
+			>
+				<Stack
+					spacing={1}
 					sx={{
-						position: 'absolute',
-						p: 2,
-						boxSizing: 'border-box',
-						top: '50%',
-						left: '50%',
-						transform: 'translate(-50%, -50%)',
-						width: '95%',
-						height: '90vh',
-						overflow: 'scroll',
+						flex: 1,
 					}}
 				>
-					<Stack
-						direction="row"
-						justifyContent="space-between"
-						alignItems="center"
-						mb={1}
-					>
-						<Typography variant="h5">Filters</Typography>
-						<IconButton onClick={handleModalClose}>
-							<CloseIcon />
-						</IconButton>
-					</Stack>
-					<Divider />
-					<Stack mt={3} mb={3} spacing={2}>
-						<FilterComponent
-							size="medium"
-							placeholder="Level"
-							selectedFilters={selectedFilters}
-							availableFilters={availableFilters}
-							onFiltersChange={handleFiltersChange}
-						/>
-						<Stack direction="row" spacing={1}>
-							<FilterComponent
-								size="medium"
-								placeholder="Session"
-								selectedFilters={selectedFilters}
-								availableFilters={availableFilters}
-								onFiltersChange={handleFiltersChange}
-							/>
-
-							<FilterComponent
-								size="medium"
-								placeholder="Location"
-								selectedFilters={selectedFilters}
-								availableFilters={availableFilters}
-								onFiltersChange={handleFiltersChange}
-							/>
-						</Stack>
-						<Stack direction="row" spacing={1}>
-							<FilterComponent
-								size="medium"
-								placeholder="Day"
-								selectedFilters={selectedFilters}
-								availableFilters={availableFilters}
-								onFiltersChange={handleFiltersChange}
-							/>
-							<TextField
-								size="medium"
-								placeholder="Time"
-								fullWidth
-								sx={{
-									'& .MuiInputBase-input::placeholder': {
-										color: theme.palette.text.secondary,
-										opacity: 1, 
-									},
-								}}
-							/>
-						</Stack>
-					</Stack>
-					<Divider />
-					<Stack
-						mt={2.5}
-						direction="row"
-						justifyContent="space-between"
-						alignItems={'center'}
-					>
-						<Typography variant="h6" fontWeight="400">
-							Active Filters
-						</Typography>
-						<ButtonBase disableRipple>
-							<Typography
-								variant="body2"
-								fontWeight="400"
-								color="primary"
-							>
-								Clear Filters
-							</Typography>
-						</ButtonBase>
-					</Stack>
-					<ActiveFilters
-						filters={selectedFilters}
-						onRemoveFilter={handleFilterRemove}
-					/>
-				</Paper>
-			</Modal>
-			<Typography variant="h5" gutterBottom>
-				Library
-			</Typography>
-			<Paper>
-				<Stack height="80vh" p={1.5} spacing={1} boxSizing="border-box">
 					<SearchBar
 						size="small"
 						width="100%"
 						placeholderText="Search"
-					></SearchBar>
+					/>
 					<Stack direction="row" spacing={1}>
 						<Button
 							variant="outlined"
@@ -201,8 +127,42 @@ const Library = () => {
 							</MenuItem>
 						</TextField>
 					</Stack>
-
 					<Divider />
+					<Box flex={1} overflow="auto">
+						<Grid container>
+							{CARDS.map((card, index) => (
+								<Grid
+									item
+									xs={12}
+									sm={6}
+									md={4}
+									p={0.5}
+									key={index}
+								>
+									<WorksheetCard
+										level={card.level}
+										session={card.session}
+										day={card.day}
+										time={card.time}
+										year={card.year}
+										createdOn={card.createdOn}
+									/>
+								</Grid>
+							))}
+							<Grid
+								item
+								xs={12}
+								sm={12}
+								md={12}
+								key={'button'}
+								p={0.5}
+								pt={2}
+							></Grid>
+						</Grid>
+					</Box>
+					<Button fullWidth variant="contained">
+						View More
+					</Button>
 				</Stack>
 			</Paper>
 		</Box>

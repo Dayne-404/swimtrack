@@ -1,48 +1,14 @@
 import { Grid, Box, Typography } from '@mui/material';
+import { CARDS } from '../config/cards'
 import WorksheetCard from '../components/WorksheetCard';
 
 const Dashboard = () => {
-	const cards = [
-		{
-			level: 'Swimmer 2',
-			session: 'Summer',
-			day: 'Wed',
-			time: '12:30',
-			year: '2024',
-			createdOn: 'July 5 2023',
-		},
-		{
-			level: 'Swimmer 2',
-			session: 'Summer',
-			day: 'Wed',
-			time: '12:30',
-			year: '2024',
-			createdOn: 'July 5 2023',
-		},
-		{
-			level: 'Swimmer 2',
-			session: 'Summer',
-			day: 'Wed',
-			time: '12:30',
-			year: '2024',
-			createdOn: 'July 5 2023',
-		},
-		{
-			level: 'Swimmer 2',
-			session: 'Summer',
-			day: 'Wed',
-			time: '12:30',
-			year: '2024',
-			createdOn: 'July 5 2023',
-		},
-	];
-
 	return (
 		<Box>
 			<Box pb={3}>
 				<Typography variant="h5">Your Recent Worksheets</Typography>
 				<Grid container my={2} spacing={1}>
-					{cards.map((card, index) => (
+					{CARDS.map((card, index) => (
 						<Grid item xs={6} sm={6} md={3} key={index}>
 							<WorksheetCard
 								level={card.level}
@@ -59,7 +25,7 @@ const Dashboard = () => {
 			<Box pb={3}>
 				<Typography variant="h5">Your Saved Worksheets</Typography>
 				<Grid container my={2} spacing={1}>
-					{cards.map((card, index) => (
+					{CARDS.map((card, index) => (
 						<Grid item xs={6} sm={6} md={3} key={index}>
 							<WorksheetCard
 								level={card.level}
