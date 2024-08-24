@@ -1,25 +1,22 @@
-import { Chip, Box, useTheme } from '@mui/material';
+import { Chip, Stack } from '@mui/material';
 
 type ActiveFiltersProps = {
 	filters: string[];
 	onRemoveFilter: (filter: string) => void;
 };
 
-const ActiveFilters = ({ filters, onRemoveFilter }: ActiveFiltersProps) => {
-	const theme = useTheme();
-    
+const ActiveFilters = ({ filters, onRemoveFilter }: ActiveFiltersProps) => {    
     return (
-		<Box mt={2}>
+		<Stack mt={2} spacing={1} direction='row' useFlexGap flexWrap='wrap'>
 			{filters.map((filter) => (
 				<Chip
 					key={filter}
 					label={filter}
 					onDelete={() => onRemoveFilter(filter)}
                     color='primary'
-					style={{ marginRight: theme.spacing(1) }}
 				/>
 			))}
-		</Box>
+		</Stack>
 	);
 };
 
