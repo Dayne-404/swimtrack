@@ -49,7 +49,7 @@ function App() {
 					boxSizing="border-box"
 					p={
 						isMediumOrBelow
-							? navbarHeight + 16 + 'px 5px 5px 5px'
+							? navbarHeight + 16 + 'px 10px 10px 10px'
 							: navbarHeight +
 							  24 +
 							  'px 24px 24px ' +

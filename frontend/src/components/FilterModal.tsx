@@ -55,7 +55,7 @@ const FilterModal = ({
 					transform: 'translate(-50%, -50%)',
 					width: '95%',
 					height: '90vh',
-					overflow: 'scroll',
+					overflow: 'auto',
 				}}
 			>
 				<Stack
