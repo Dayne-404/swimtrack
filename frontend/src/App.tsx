@@ -10,6 +10,7 @@ import './styles/fonts.css';
 import Navigation from './components/Navigation';
 import Dashboard from './views/Dashboard';
 import Library from './views/Library';
+import Create from './views/Create';
 
 const theme = createTheme({
 	palette: {
@@ -59,7 +60,7 @@ function App() {
 					<Routes>
 						<Route path='/' element={<Dashboard />} />
 						<Route path='/library' element={<Library />} />
-						<Route path='/create' element={<Dashboard />} />
+						<Route path='/create' element={<Create />} />
 						<Route path='/saved' element={<Dashboard />} />
 						<Route path='/programs' element={<Dashboard />} />
 						<Route path='/profile' element={<Dashboard />} />

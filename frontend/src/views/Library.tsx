@@ -51,7 +51,7 @@ const Library = () => {
 	};
 
 	return (
-		<Box display="flex" flexDirection="column" height="100%">
+		<Box display="flex" flexDirection="column" flex={1}>
 			<FilterModal
 				filters={FILTERS}
 				levels={levels}
