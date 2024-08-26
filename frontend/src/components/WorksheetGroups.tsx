@@ -1,25 +1,54 @@
-import { Paper, Grid, Box, Typography } from '@mui/material';
+import { Paper, Grid, Box, Typography, Button, Stack, ButtonBase } from '@mui/material';
+import { GROUPS } from '../config/groups';
 import GroupButton from './GroupButton';
+import { useNavigate } from 'react-router-dom';
 
-interface WorksheetGroupsProps {
-	paperStyle: object;
+interface Group {
+	id: string;
+	name: string;
+	worksheets: string[];
 }
 
-const WorksheetGroups = ({ paperStyle }: WorksheetGroupsProps) => {
+interface WorksheetGroupsProps {
+	fullPage?: boolean;
+}
+
+const WorksheetGroups = ({fullPage = false} : WorksheetGroupsProps) => {
+	const navigate = useNavigate();
+	const groups: Group[] = GROUPS;
+	const displayedGroups = groups.slice(0, 7);
+
+	const paperStyle = {
+		display: 'flex',
+		padding: 1.5,
+		flex: fullPage ? 1 : 0,
+	};
+
 	return (
 		<Paper sx={paperStyle}>
-			<Box sx={{ maxHeight: '50vh', width: '100%', overflowY: 'auto' }}>
-				<Typography variant="h6" fontWeight="400" gutterBottom>
-					Groups
-				</Typography>
-				<Grid container spacing={1}>
-					<GroupButton newFolder />
-					<GroupButton groupName="Summer 2023" />
-					<GroupButton groupName="Summer 2025" />
-					<GroupButton groupName="Summer 2023" />
-					<GroupButton groupName="Summer 2023" />
-					<GroupButton groupName="Summer 2023" />
+			<Box sx={{width: '100%', overflowY: 'auto'}}>
+					<ButtonBase onClick={() => navigate('/library/groups')}>
+						<Typography variant="h6" fontWeight="400" gutterBottom>
+							Groups
+						</Typography>
+					</ButtonBase>
+				<Grid container spacing={1} justifyContent="undefined">
+					<GroupButton newFolder key={'new-folder-btn'} />
+					{displayedGroups.map((group) => (
+						<GroupButton
+							id={group.id}
+							key={group.id}
+							groupName={group.name}
+						/>
+					))}
 				</Grid>
+				{groups.length >= 8 ? (
+					<Stack pt={1.5} alignItems="center">
+						<Button onClick={() => navigate('/library/groups')}>View all</Button>
+					</Stack>
+				) : (
+					<></>
+				)}
 			</Box>
 		</Paper>
 	);

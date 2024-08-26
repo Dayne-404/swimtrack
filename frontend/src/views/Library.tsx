@@ -51,7 +51,7 @@ const Library = () => {
 
 			<Typography variant="h5">Library</Typography>
 
-			<WorksheetGroups paperStyle={paperStyle} />
+			<WorksheetGroups />
 
 			<LibraryWorksheetSearch
 				sortOptions={sortOptions}

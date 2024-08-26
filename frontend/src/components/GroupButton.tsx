@@ -1,14 +1,17 @@
 import { Button, Typography, Grid } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import FolderIcon from '@mui/icons-material/Folder';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 
 interface GroupButtonProps {
+	id?: string | null;
 	groupName?: string;
 	newFolder?: boolean;
 }
 
-const GroupButton = ({ groupName = '', newFolder }: GroupButtonProps) => {
+const GroupButton = ({groupName = '', newFolder, id = null}: GroupButtonProps) => {
 	const buttonIcon = newFolder ? <CreateNewFolderIcon /> : <FolderIcon />;
+	const navigate = useNavigate();
 
     const ButtonStyle = {
         textTransform: 'none',
@@ -23,6 +26,7 @@ const GroupButton = ({ groupName = '', newFolder }: GroupButtonProps) => {
 				variant="outlined"
 				fullWidth
 				endIcon={buttonIcon}
+				onClick={() => id ? navigate(`/library/groups/${id}`) : undefined}
 			>
 				<Typography variant="body1">
 					{newFolder ? 'New Group' : groupName}

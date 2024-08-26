@@ -11,6 +11,8 @@ import Navigation from './components/Navigation';
 import Dashboard from './views/Dashboard';
 import Library from './views/Library';
 import Create from './views/Create';
+import { Groups } from './views/Groups';
+import WorksheetGroups from './components/WorksheetGroups';
 
 const theme = createTheme({
 	palette: {
@@ -60,6 +62,8 @@ function App() {
 					<Routes>
 						<Route path='/' element={<Dashboard />} />
 						<Route path='/library' element={<Library />} />
+						<Route path='/library/groups' element={<WorksheetGroups fullPage />} />
+						<Route path='/library/groups/:groupId' element={<Groups />} />
 						<Route path='/create' element={<Create />} />
 						<Route path='/saved' element={<Dashboard />} />
 						<Route path='/programs' element={<Dashboard />} />
