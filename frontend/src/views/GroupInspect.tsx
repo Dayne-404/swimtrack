@@ -1,29 +1,19 @@
-import { useNavigate, useParams } from 'react-router-dom';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useParams } from 'react-router-dom';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
-import { Box, Button, Paper, Stack, Typography } from '@mui/material';
+import { Box, Paper, Stack, Typography } from '@mui/material';
 import { GROUPS } from '../config/groups';
+import BackButton from '../components/BackButton';
 
 export const Groups = () => {
 	const { groupId } = useParams();
-	const navigate = useNavigate();
 
 	const group = GROUPS.find((group) => group.id === groupId);
 
 	return (
 		<Box display="flex" flexDirection="column" flex={1} maxHeight="100%">
-            <Box>
-                <Button
-                    variant="text"
-                    startIcon={<ArrowBackIcon />}
-                    onClick={() => navigate('/library')}
-                >
-                    Groups
-                </Button>
-            </Box>
+            	<BackButton name='Groups' to='/library' />
 			<Paper
 				sx={{
-					marginTop: 2,
 					flex: 1,
 					display: 'flex',
 					flexDirection: 'column',

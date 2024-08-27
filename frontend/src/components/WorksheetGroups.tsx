@@ -1,7 +1,16 @@
-import { Paper, Grid, Box, Typography, Button, Stack, ButtonBase } from '@mui/material';
+import {
+	Paper,
+	Grid,
+	Box,
+	Typography,
+	Button,
+	Stack,
+	ButtonBase,
+} from '@mui/material';
 import { GROUPS } from '../config/groups';
 import GroupButton from './GroupButton';
 import { useNavigate } from 'react-router-dom';
+import BackButton from './BackButton';
 
 interface Group {
 	id: string;
@@ -13,7 +22,7 @@ interface WorksheetGroupsProps {
 	fullPage?: boolean;
 }
 
-const WorksheetGroups = ({fullPage = false} : WorksheetGroupsProps) => {
+const WorksheetGroups = ({ fullPage = false }: WorksheetGroupsProps) => {
 	const navigate = useNavigate();
 	const groups: Group[] = GROUPS;
 	const displayedGroups = groups.slice(0, 7);
@@ -25,32 +34,37 @@ const WorksheetGroups = ({fullPage = false} : WorksheetGroupsProps) => {
 	};
 
 	return (
-		<Paper sx={paperStyle}>
-			<Box sx={{width: '100%', overflowY: 'auto'}}>
+		<>
+			{fullPage ? <BackButton name="Library" to="/library" /> : undefined}
+			<Paper sx={paperStyle}>
+				<Box sx={{ width: '100%', overflowY: 'auto' }}>
 					<ButtonBase onClick={() => navigate('/library/groups')}>
 						<Typography variant="h6" fontWeight="400" gutterBottom>
 							Groups
 						</Typography>
 					</ButtonBase>
-				<Grid container spacing={1} justifyContent="undefined">
-					<GroupButton newFolder key={'new-folder-btn'} />
-					{displayedGroups.map((group) => (
-						<GroupButton
-							id={group.id}
-							key={group.id}
-							groupName={group.name}
-						/>
-					))}
-				</Grid>
-				{groups.length >= 8 ? (
-					<Stack pt={1.5} alignItems="center">
-						<Button onClick={() => navigate('/library/groups')}>View all</Button>
-					</Stack>
-				) : (
-					<></>
-				)}
-			</Box>
-		</Paper>
+					<Grid container spacing={1} justifyContent="undefined">
+						<GroupButton newFolder key={'new-folder-btn'} />
+						{displayedGroups.map((group) => (
+							<GroupButton
+								id={group.id}
+								key={group.id}
+								groupName={group.name}
+							/>
+						))}
+					</Grid>
+					{groups.length >= 8 ? (
+						<Stack pt={1.5} alignItems="center">
+							<Button onClick={() => navigate('/library/groups')}>
+								View all
+							</Button>
+						</Stack>
+					) : (
+						<></>
+					)}
+				</Box>
+			</Paper>
+		</>
 	);
 };
 

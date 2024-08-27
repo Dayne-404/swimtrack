@@ -11,7 +11,7 @@ import Navigation from './components/Navigation';
 import Dashboard from './views/Dashboard';
 import Library from './views/Library';
 import Create from './views/Create';
-import { Groups } from './views/Groups';
+import { Groups } from './views/GroupInspect';
 import WorksheetGroups from './components/WorksheetGroups';
 
 const theme = createTheme({
