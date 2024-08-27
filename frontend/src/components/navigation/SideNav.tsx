@@ -5,35 +5,24 @@ import {
 	useMediaQuery,
 	useTheme,
 } from '@mui/material';
-import SpeedIcon from '@mui/icons-material/Speed';
-import FolderIcon from '@mui/icons-material/Folder';
-import ScubaDivingIcon from '@mui/icons-material/ScubaDiving';
-import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save';
 
 import SideNavItem from './SideNavItem';
-import ProfileCard from './ProfileCard';
+import ProfileCard from '../cards/ProfileCard';
 
 type SideNavProps = {
 	open: boolean;
 	smallWidth: number;
 	largeWidth: number;
+	routes: object;
 	onDrawerToggle: () => void;
 };
-
-const sideNavLocations = [
-	{ label: 'Dashboard', icon: <SpeedIcon />, to: '/' },
-	{ label: 'Library', icon: <FolderIcon />, to: '/library' },
-	{ label: 'Create', icon: <EditIcon />, to: '/create' },
-	{ label: 'Saved', icon: <SaveIcon />, to: '/saved' },
-	{ label: 'Programs', icon: <ScubaDivingIcon />, to: '/programs' },
-];
 
 export const SideNav = ({
 	open,
 	smallWidth,
 	largeWidth,
 	onDrawerToggle,
+	routes,
 }: SideNavProps) => {
 	const theme = useTheme();
 	const isMediumOrBelow = useMediaQuery(theme.breakpoints.down('md'));
@@ -58,10 +47,10 @@ export const SideNav = ({
 		>
 			<Box p={1} textAlign="center">
 				<List>
-					{sideNavLocations.map(({ label, icon, to }) => (
+					{Object.entries(routes).map(([key, {icon, to}]) => (
 						<SideNavItem
-							key={label}
-							label={label}
+							key={key}
+							label={key}
 							icon={icon}
 							to={to}
 						/>

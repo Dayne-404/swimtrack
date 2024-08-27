@@ -26,7 +26,7 @@ const GroupButton = ({groupName = '', newFolder, id = null}: GroupButtonProps) =
 				variant="outlined"
 				fullWidth
 				endIcon={buttonIcon}
-				onClick={() => id ? navigate(`/library/groups/${id}`) : undefined}
+				onClick={() => id ? navigate(`./${id}`) : undefined}
 			>
 				<Typography variant="body1">
 					{newFolder ? 'New Group' : groupName}

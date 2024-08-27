@@ -9,8 +9,8 @@ import {
 	ButtonBase,
 	useTheme,
 } from '@mui/material';
-import FilterComponent from '../components/FilterComponent';
-import ActiveFilters from '../components/ActiveFilters';
+import FilterSearch from '../inputs/FilterSelect';
+import ActiveFilters from './ActiveFilters';
 import CloseIcon from '@mui/icons-material/Close';
 
 interface Filters {
@@ -71,7 +71,7 @@ const FilterModal = ({
 				</Stack>
 				<Divider />
 				<Stack mt={3} mb={3} spacing={2}>
-					<FilterComponent
+					<FilterSearch
 						size="medium"
 						placeholder="Level"
 						selectedFilters={selectedFilters}
@@ -79,14 +79,14 @@ const FilterModal = ({
 						onFiltersChange={handleFilterSelect}
 					/>
 					<Stack direction="row" spacing={1}>
-						<FilterComponent
+						<FilterSearch
 							size="medium"
 							placeholder="Session"
 							selectedFilters={selectedFilters}
 							availableFilters={filters.sessions}
 							onFiltersChange={handleFilterSelect}
 						/>
-						<FilterComponent
+						<FilterSearch
 							size="medium"
 							placeholder="Location"
 							selectedFilters={selectedFilters}
@@ -95,7 +95,7 @@ const FilterModal = ({
 						/>
 					</Stack>
 					<Stack direction="row" spacing={1}>
-						<FilterComponent
+						<FilterSearch
 							size="medium"
 							placeholder="Day"
 							selectedFilters={selectedFilters}

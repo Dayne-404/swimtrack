@@ -2,16 +2,16 @@ import { useParams } from 'react-router-dom';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import { Box, Paper, Stack, Typography } from '@mui/material';
 import { GROUPS } from '../config/groups';
-import BackButton from '../components/BackButton';
+import BackButton from '../components/inputs/BackButton';
 
-export const Groups = () => {
+export const GroupInspectView = () => {
 	const { groupId } = useParams();
 
 	const group = GROUPS.find((group) => group.id === groupId);
 
 	return (
 		<Box display="flex" flexDirection="column" flex={1} maxHeight="100%">
-            	<BackButton name='Groups' to='/library' />
+            	<BackButton name='Groups' to='/groups' />
 			<Paper
 				sx={{
 					flex: 1,

@@ -41,6 +41,6 @@ export const SWIMMER2SKILLS = [
 ]
 
 export const SKILLDESCRIPTIONS = {
-    'swimmer1': SWIMMER1SKILLS,
-    'swimmer2': SWIMMER2SKILLS
+    'Swimmer 1': SWIMMER1SKILLS,
+    'Swimmer 2': SWIMMER2SKILLS
 }

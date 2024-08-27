@@ -6,9 +6,9 @@ import {
 	MenuItem,
 } from '@mui/material';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import SearchBar from '../components/SearchBar';
+import SearchBar from '../inputs/SearchBar';
 
-interface LibraryFiltersProps {
+interface FilterButtonProps {
 	sortOption: string;
 	setSortOption: (value: string) => void;
 	setModalOpen: (value: boolean) => void;
@@ -18,7 +18,7 @@ const LibraryFilters = ({
 	sortOption,
 	setSortOption,
 	setModalOpen,
-}: LibraryFiltersProps) => {
+}: FilterButtonProps) => {
 	return (
 		<>
 			<SearchBar size="small" width="100%" placeholderText="Search" />

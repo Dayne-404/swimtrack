@@ -14,7 +14,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 
 const ProfileCard = () => {
 	const theme = useTheme();
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
 	const buttonBaseStyle: SxProps<Theme> = {
 		display: 'flex',
@@ -42,7 +42,10 @@ const ProfileCard = () => {
 
 	return (
 		<Stack direction="row" p={1.5}>
-			<ButtonBase sx={buttonBaseStyle} onClick={() => navigate('/profile')}>
+			<ButtonBase
+				sx={buttonBaseStyle}
+				onClick={() => navigate('/profile')}
+			>
 				<Avatar>DD</Avatar>
 				<Stack>
 					<Typography variant="subtitle1" sx={nameTextStyle}>

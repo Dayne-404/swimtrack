@@ -9,7 +9,7 @@ import SearchIcon from '@mui/icons-material/Search';
 
 type SearchBarProps = {
 	size: 'medium' | 'small';
-	width: string;
+	width?: string;
 	placeholderText?: string;
 };
 

@@ -1,6 +1,6 @@
 import { Box, Grid, Button } from '@mui/material';
-import { CARDS } from '../config/cards';
-import WorksheetCard from '../components/WorksheetCard';
+import { CARDS } from '../../config/cards';
+import WorksheetCard from '../cards/WorksheetCard';
 
 const LibraryCards = () => {
 	return (

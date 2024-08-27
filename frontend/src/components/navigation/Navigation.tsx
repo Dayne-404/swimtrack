@@ -7,6 +7,7 @@ type NavigationProp = {
 	smallSideNavWidth: number;
 	largeSideNavWidth: number;
 	navbarHeight: number;
+	routes: object;
 };
 
 const Navigation = ({
@@ -14,6 +15,7 @@ const Navigation = ({
 	smallSideNavWidth,
 	largeSideNavWidth,
 	navbarHeight,
+	routes,
 }: NavigationProp) => {
 	const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -39,6 +41,7 @@ const Navigation = ({
 				onDrawerToggle={handleDrawerToggle}
 				smallWidth={smallSideNavWidth}
 				largeWidth={largeSideNavWidth}
+				routes={routes}
 			/>
 			{/* Main content of your app goes here */}
 		</>

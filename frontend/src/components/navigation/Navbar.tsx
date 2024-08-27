@@ -5,15 +5,12 @@ import {
 	Typography,
 	Stack,
 	useTheme,
-	Box,
 	ButtonBase,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import PoolOutlinedIcon from '@mui/icons-material/PoolOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import SearchBar from './SearchBar';
 
 type NavbarProps = {
 	isMediumOrBelow: boolean;
@@ -44,15 +41,13 @@ const Navbar = ({ isMediumOrBelow, onDrawerToggle, height }: NavbarProps) => {
 				}}
 			>
 				{isMediumOrBelow && (
-					<Box width="80px">
-						<IconButton
-							color="inherit"
-							aria-label="open drawer"
-							onClick={onDrawerToggle}
-						>
-							<MenuIcon />
-						</IconButton>
-					</Box>
+					<IconButton
+						color="inherit"
+						aria-label="open drawer"
+						onClick={onDrawerToggle}
+					>
+						<MenuIcon />
+					</IconButton>
 				)}
 
 				<Stack
@@ -82,13 +77,6 @@ const Navbar = ({ isMediumOrBelow, onDrawerToggle, height }: NavbarProps) => {
 				</Stack>
 
 				<Stack direction="row" spacing={isMediumOrBelow ? 0 : 2}>
-					{isMediumOrBelow ? (
-						<IconButton color="inherit" aria-label="search">
-							<SearchIcon />
-						</IconButton>
-					) : (
-						<SearchBar size="small" width={200} />
-					)}
 					<IconButton color="inherit" aria-label="notifications">
 						<NotificationsIcon />
 					</IconButton>
