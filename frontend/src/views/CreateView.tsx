@@ -30,7 +30,7 @@ const CreateView = () => {
 	);
 	const [worksheetHeaderValues, setWorksheetHeaderValues] =
 		useState<WorksheetHeaderValues>({
-			instructor: 'Dayne',
+			instructor: 'Bianca',
 			level: '',
 			session: '',
 			year: '',

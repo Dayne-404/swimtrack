@@ -1,5 +1,5 @@
 import { TextField, MenuItem } from '@mui/material';
-
+import capitalizeFirstLetter from '../../helper/capitalizeFirstLetter';
 interface CreateSelectProps {
 	label: string;
 	menuItems?: string[] | { [key: string]: { name: string } };
@@ -8,11 +8,6 @@ interface CreateSelectProps {
 	error?: string;
 	handleChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
-
-const capitalizeFirstLetter = (str: string): string => {
-	if (!str) return '';
-	return str.charAt(0).toUpperCase() + str.slice(1);
-};
 
 const CreateSelect = ({
 	label,

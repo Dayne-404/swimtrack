@@ -2,7 +2,7 @@ const Worksheet = require('../models/Worksheet.model.js');
 
 const getWorksheets = async (req, res) => {
 	console.log(req.query);
-    try {
+	try {
 		const worksheets = await Worksheet.find({});
 		res.status(200).json(worksheets);
 	} catch (error) {
@@ -15,6 +15,18 @@ const getWorksheetById = async (req, res) => {
 		const { id } = req.params;
 		const worksheet = await Worksheet.findById(id);
 		res.status(200).json(worksheet);
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+};
+
+const getWorksheetByInstructor = async (req, res) => {
+	try {
+		const { instructorId } = req.params;
+		console.log('Getting worksheet by Instructor');
+		console.log(instructorId);
+		const worksheets = await Worksheet.find({ instructor: instructorId });
+		res.status(200).json(worksheets);
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}
@@ -65,7 +77,8 @@ const deleteWorksheetById = async (req, res) => {
 module.exports = {
 	getWorksheets,
 	getWorksheetById,
+	getWorksheetByInstructor,
 	createWorksheet,
 	updateWorksheetById,
-    deleteWorksheetById
+	deleteWorksheetById,
 };

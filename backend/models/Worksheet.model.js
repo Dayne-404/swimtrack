@@ -31,6 +31,11 @@ const WorksheetSchema = mongoose.Schema(
 			],
 			required: [true, 'Level is required'],
 		},
+		year: {
+			type: String,
+			match: [/^\d{4}$/, 'Please enter a valid year'],
+			required: [true, 'Time is required'],
+		},
 		session: {
 			type: String,
 			enum: ['winter', 'spring', 'summer', 'fall'],
