@@ -21,6 +21,7 @@ interface Student {
 interface StudentTableProps {
 	students: Student[];
 	skills: string[];
+	errors: { [key: string]: string };
 	onStudentNameChange: (index: number, name: string) => void;
 	onStudentRemove: (index: number) => void;
 	onStudentPassedChange: (index: number) => void;
@@ -34,13 +35,14 @@ const StudentTable = ({
 	onStudentRemove,
 	onStudentPassedChange,
 	onSkillChange,
+	errors,
 }: StudentTableProps) => {
 	return (
 		<TableContainer sx={{ paddingTop: '200px' }}>
 			<Table>
 				<TableHead>
 					<TableRow>
-						{students.length > 1 ? <TableCell></TableCell> : <></>}
+						{students.length > 1 && <TableCell></TableCell>}
 						<TableCell>Name</TableCell>
 						{skills.map((skill, index) => (
 							<TableCell
@@ -49,18 +51,20 @@ const StudentTable = ({
 								sx={{
 									position: 'relative',
 									padding: '2px',
-									height: '60px', // Set a height for the cell to ensure space for the rotated text
+									height: '60px', // Ensure sufficient height
 								}}
 							>
 								<div
 									style={{
 										position: 'absolute',
-										top: '50%',
-										left: '50%',
-										right: '20%',
+										top: '-110%',
+										left: '130%',
+
 										transform:
 											'translate(-50%, -50%) rotate(-70deg)',
-										whiteSpace: 'nowrap',
+										width: '260px', // Set a fixed width for the text container
+
+										textAlign: 'left', // Center text within the container
 									}}
 								>
 									{skill}
@@ -73,10 +77,10 @@ const StudentTable = ({
 				<TableBody>
 					{students.map((student, studentIndex) => (
 						<TableRow key={studentIndex}>
-							{students.length > 1 ? (
+							{students.length > 1 && (
 								<TableCell padding="none">
 									<IconButton
-                                        color='primary'
+										color="primary"
 										onClick={() =>
 											onStudentRemove(studentIndex)
 										}
@@ -84,17 +88,18 @@ const StudentTable = ({
 										<DeleteIcon />
 									</IconButton>
 								</TableCell>
-							) : (
-								<></>
 							)}
 							<TableCell>
 								<TextField
 									variant="standard"
 									placeholder="Name"
 									value={student.name}
-									sx={{
-										width: '10rem',
-									}}
+									sx={{ width: '10rem' }}
+									error={
+										!!errors[
+											`student-${studentIndex}-name`
+										]
+									}
 									InputProps={{
 										startAdornment: (
 											<InputAdornment position="start">

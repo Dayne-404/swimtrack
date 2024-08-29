@@ -12,16 +12,9 @@ import {
 import FilterSearch from '../inputs/FilterSelect';
 import ActiveFilters from './ActiveFilters';
 import CloseIcon from '@mui/icons-material/Close';
-
-interface Filters {
-	sessions: string[];
-	locations: string[];
-	days: string[];
-}
+import { WORKSHEETS, levelNames } from '../../config/levels';
 
 interface FilterModalProps {
-	filters: Filters;
-	levels: string[];
 	selectedFilters: string[];
 	isModalOpen: boolean;
 	handleModalClose: () => void;
@@ -31,8 +24,6 @@ interface FilterModalProps {
 }
 
 const FilterModal = ({
-	filters,
-	levels,
 	selectedFilters,
 	isModalOpen,
 	handleModalClose,
@@ -75,7 +66,7 @@ const FilterModal = ({
 						size="medium"
 						placeholder="Level"
 						selectedFilters={selectedFilters}
-						availableFilters={levels}
+						availableFilters={levelNames}
 						onFiltersChange={handleFilterSelect}
 					/>
 					<Stack direction="row" spacing={1}>
@@ -83,14 +74,14 @@ const FilterModal = ({
 							size="medium"
 							placeholder="Session"
 							selectedFilters={selectedFilters}
-							availableFilters={filters.sessions}
+							availableFilters={WORKSHEETS.sessions}
 							onFiltersChange={handleFilterSelect}
 						/>
 						<FilterSearch
 							size="medium"
 							placeholder="Location"
 							selectedFilters={selectedFilters}
-							availableFilters={filters.locations}
+							availableFilters={WORKSHEETS.locations}
 							onFiltersChange={handleFilterSelect}
 						/>
 					</Stack>
@@ -99,7 +90,7 @@ const FilterModal = ({
 							size="medium"
 							placeholder="Day"
 							selectedFilters={selectedFilters}
-							availableFilters={filters.days}
+							availableFilters={WORKSHEETS.days}
 							onFiltersChange={handleFilterSelect}
 						/>
 						<TextField

@@ -1,55 +1,108 @@
-import { TextField, Stack, Grid } from '@mui/material';
+import { Stack, TextField, Grid } from '@mui/material';
 import CreateSelect from './CreateSelect';
-import { getLevels } from '../../config/filters';
+import { WORKSHEETS } from '../../config/levels';
 
-interface WorksheetHeaderInputsProps {
-  level: string;
-  handleLevelChange: (level: string) => void;
+interface WorksheetHeaderInputs {
+	worksheetHeaderValues: {
+		instructor: string;
+		level: string;
+		session: string;
+		year: string;
+		day: string;
+		time: string;
+		location: string;
+	};
+	errors: { [key: string]: string };
+	handleLevelChange: (newLevel: string) => void;
+	handleHeaderChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const WorksheetHeaderInputs = ({level, handleLevelChange} : WorksheetHeaderInputsProps) => {
-	const levels = getLevels();
-  
-  return (
-		<Stack spacing={2}>
-			<TextField
-				id="instructor-input"
-				label="Instructor"
-				defaultValue="Dayne"
-				InputProps={{
-					readOnly: true,
-				}}
-			/>
-			<Stack direction="row" spacing={2}>
-				<CreateSelect
-          label='Level'
-          menuItems={levels}
-          value={level}
-          handleChange={handleLevelChange}
-        />
+const WorksheetHeaderInputs = ({
+	worksheetHeaderValues,
+	errors,
+	handleLevelChange,
+	handleHeaderChange,
+}: WorksheetHeaderInputs) => {
+	return (
+		<Stack>
+			<Stack direction='row' spacing={1}>
 				<TextField
-					fullWidth
-					id="session-select"
-					select
+					disabled
+					label="Instructor"
+					defaultValue={worksheetHeaderValues.instructor}
+					InputProps={{
+						readOnly: true,
+					}}
+					sx={{width: '150%'}}
+					error={!!errors.instructor}
+					helperText={errors.instructor ? errors.instructor : ' '}
+				/>
+				<CreateSelect
+					label="Group"
+					name="group"
+					menuItems={['RandomGroup1', 'RandomGroup2']}
+					error={errors.level}
+				/>
+			</Stack>
+			<Stack direction="row" spacing={1}>
+				<CreateSelect
+					label="Level"
+					name="level"
+					menuItems={WORKSHEETS.levels}
+					value={worksheetHeaderValues.level}
+					error={errors.level}
+					handleChange={(e) => handleLevelChange(e.target.value)}
+				/>
+				<CreateSelect
 					label="Session"
-				></TextField>
+					name="session"
+					menuItems={WORKSHEETS.sessions}
+					value={worksheetHeaderValues.session}
+					error={errors.session}
+					handleChange={handleHeaderChange}
+				/>
 			</Stack>
 			<Grid container>
 				<Grid item xs={6} md={3} p={0.5}>
-					<TextField fullWidth id="year-select" label="Year" />
+					<TextField
+						fullWidth
+						label="Year"
+						name="year"
+						value={worksheetHeaderValues.year}
+						error={!!errors.year}
+						helperText={errors.year}
+						onChange={handleHeaderChange}
+					/>
 				</Grid>
 				<Grid item xs={6} md={3} p={0.5}>
-					<TextField fullWidth id="day-select" select label="Day" />
-				</Grid>
-				<Grid item xs={6} md={3} p={0.5}>
-					<TextField fullWidth id="time-select" label="Time" />
+					<CreateSelect
+						label="Day"
+						name="day"
+						menuItems={WORKSHEETS.days}
+						value={worksheetHeaderValues.day}
+						error={errors.day}
+						handleChange={handleHeaderChange}
+					/>
 				</Grid>
 				<Grid item xs={6} md={3} p={0.5}>
 					<TextField
 						fullWidth
-						id="location-select"
-						select
+						label="Time"
+						name="time"
+						value={worksheetHeaderValues.time}
+						error={!!errors.time}
+						helperText={errors.time}
+						onChange={handleHeaderChange}
+					/>
+				</Grid>
+				<Grid item xs={6} md={3} p={0.5}>
+					<CreateSelect
 						label="Location"
+						name="location"
+						menuItems={WORKSHEETS.locations}
+						value={worksheetHeaderValues.location}
+						error={errors.location}
+						handleChange={handleHeaderChange}
 					/>
 				</Grid>
 			</Grid>

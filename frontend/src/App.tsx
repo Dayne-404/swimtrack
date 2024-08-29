@@ -10,8 +10,7 @@ import './styles/fonts.css';
 import Navigation from './components/navigation/Navigation';
 import Dashboard from './views/DashboardView';
 import Library from './views/LibraryView';
-import Create from './views/CreateView';
-import Finder from './views/FinderView'
+import Finder from './views/FinderView';
 import { GroupInspectView } from './views/GroupInspectView';
 import GroupView from './views/GroupView';
 
@@ -22,6 +21,7 @@ import ScubaDivingIcon from '@mui/icons-material/ScubaDiving';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
 import SettingsIcon from '@mui/icons-material/Settings';
+import Create from './views/CreateView';
 
 const theme = createTheme({
 	palette: {
@@ -42,9 +42,13 @@ function App() {
 	const SIDE_NAV_ROUTES = {
 		Dashboard: { icon: <SpeedIcon />, to: '/', element: <Dashboard /> },
 		Library: { icon: <FolderIcon />, to: '/library', element: <Library /> },
-		Groups: { icon: <FolderSpecialIcon />, to: '/groups', element: <GroupView /> },
+		Groups: {
+			icon: <FolderSpecialIcon />,
+			to: '/groups',
+			element: <GroupView />,
+		},
 		Create: { icon: <EditIcon />, to: '/create', element: <Create /> },
-		Finder: { icon: <SearchIcon />, to: '/finder', element: <Finder />},
+		Finder: { icon: <SearchIcon />, to: '/finder', element: <Finder /> },
 		Programs: {
 			icon: <ScubaDivingIcon />,
 			to: '/programs',
@@ -64,7 +68,7 @@ function App() {
 	const ALL_ROUTES = {
 		...SIDE_NAV_ROUTES,
 		...ROUTES,
-	}
+	};
 
 	const isMediumOrBelow = useMediaQuery(theme.breakpoints.down('md'));
 

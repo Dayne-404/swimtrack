@@ -9,16 +9,36 @@ const WorksheetSchema = mongoose.Schema(
 		},
 		level: {
 			type: String,
+			enum: [
+				'parentAndTot1',
+				'parentAndTot2',
+				'parentAndTot3',
+				'preschool1',
+				'preschool2',
+				'preschool3',
+				'preschool4',
+				'preschool5',
+				'preschool6',
+				'swimmer1',
+				'swimmer2',
+				'swimmer3',
+				'swimmer4',
+				'swimmer5',
+				'swimmer6',
+				'adult1',
+				'adult2',
+				'adult3',
+			],
 			required: [true, 'Level is required'],
 		},
 		session: {
 			type: String,
-			enum: ['Winter', 'Spring', 'Summer', 'Fall'],
+			enum: ['winter', 'spring', 'summer', 'fall'],
 			required: [true, 'Session is required'],
 		},
 		day: {
 			type: String,
-			enum: ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun'],
+			enum: ['mon', 'tue', 'wed', 'thur', 'fri', 'sat', 'sun', 'weekly'],
 			required: [true, 'Day is required'],
 		},
 		time: {
@@ -31,7 +51,7 @@ const WorksheetSchema = mongoose.Schema(
 		},
 		location: {
 			type: String,
-			enum: ['Rec', 'Dunbarton'],
+			enum: ['rec', 'dun'],
 			required: [true, 'Location is required'],
 		},
 		students: {
