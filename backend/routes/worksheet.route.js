@@ -1,16 +1,23 @@
 const express = require('express');
-const { getWorksheets, getWorksheetById, createWorksheet, updateWorksheetById, deleteWorksheetById } = require('../controllers/worksheet.controller.js')
+const {
+	getWorksheets,
+	getWorksheetById,
+	updateWorksheetById,
+    createWorksheet,
+	deleteWorksheetById,
+	getWorksheetByInstructor,
+} = require('../controllers/worksheet.controller.js');
 const router = express.Router();
 
 //Get
 router.get('/', getWorksheets);
 router.get('/:id', getWorksheetById);
+router.get('/instructor/:instructorId', getWorksheetByInstructor);
 
 // ? denotes a query string
 // ?filter= or //?sort=<value>&filter=<value>
 
-
-//Create 
+//Create
 router.post('/', createWorksheet);
 
 //Update

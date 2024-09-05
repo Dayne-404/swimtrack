@@ -7,12 +7,22 @@ import {
 } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './styles/fonts.css';
-import Navigation from './components/Navigation';
-import Dashboard from './views/Dashboard';
-import Library from './views/Library';
-import Create from './views/Create';
-import { Groups } from './views/Groups';
-import WorksheetGroups from './components/WorksheetGroups';
+import Navigation from './components/navigation/Navigation';
+import Dashboard from './views/DashboardView';
+import Library from './views/LibraryView';
+import Finder from './views/FinderView';
+import { GroupInspectView } from './views/GroupInspectView';
+import GroupView from './views/GroupView';
+
+import SpeedIcon from '@mui/icons-material/Speed';
+import FolderIcon from '@mui/icons-material/Folder';
+import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
+import ScubaDivingIcon from '@mui/icons-material/ScubaDiving';
+import EditIcon from '@mui/icons-material/Edit';
+import SearchIcon from '@mui/icons-material/Search';
+import SettingsIcon from '@mui/icons-material/Settings';
+import Create from './views/CreateView';
+import WorksheetInspectView from './views/WorksheetInspectView';
 
 const theme = createTheme({
 	palette: {
@@ -26,12 +36,42 @@ const theme = createTheme({
 });
 
 function App() {
-	const isMediumOrBelow = useMediaQuery(theme.breakpoints.down('md'));
-
 	const smallSideNavWidth = 200;
 	const largeSideNavWidth = 260;
-
 	const navbarHeight = 70;
+
+	const SIDE_NAV_ROUTES = {
+		Dashboard: { icon: <SpeedIcon />, to: '/', element: <Dashboard /> },
+		Library: { icon: <FolderIcon />, to: '/library', element: <Library /> },
+		Groups: {
+			icon: <FolderSpecialIcon />,
+			to: '/groups',
+			element: <GroupView />,
+		},
+		Create: { icon: <EditIcon />, to: '/create', element: <Create /> },
+		Finder: { icon: <SearchIcon />, to: '/finder', element: <Finder /> },
+		Programs: {
+			icon: <ScubaDivingIcon />,
+			to: '/programs',
+			element: <Dashboard />,
+		},
+	};
+
+	const ROUTES = {
+		Settings: {
+			icon: <SettingsIcon />,
+			to: '/settings',
+			element: <Dashboard />,
+		},
+		Profile: { to: '/profile', element: <Dashboard /> },
+	};
+
+	const ALL_ROUTES = {
+		...SIDE_NAV_ROUTES,
+		...ROUTES,
+	};
+
+	const isMediumOrBelow = useMediaQuery(theme.breakpoints.down('md'));
 
 	return (
 		<ThemeProvider theme={theme}>
@@ -41,10 +81,11 @@ function App() {
 					navbarHeight={navbarHeight}
 					smallSideNavWidth={smallSideNavWidth}
 					largeSideNavWidth={largeSideNavWidth}
+					routes={SIDE_NAV_ROUTES}
 				/>
 				<Box
-					display='flex'
-					flexDirection='column'
+					display="flex"
+					flexDirection="column"
 					component="main"
 					width="100%"
 					height="100vh"
@@ -60,15 +101,25 @@ function App() {
 					}
 				>
 					<Routes>
-						<Route path='/' element={<Dashboard />} />
-						<Route path='/library' element={<Library />} />
-						<Route path='/library/groups' element={<WorksheetGroups fullPage />} />
-						<Route path='/library/groups/:groupId' element={<Groups />} />
-						<Route path='/create' element={<Create />} />
-						<Route path='/saved' element={<Dashboard />} />
-						<Route path='/programs' element={<Dashboard />} />
-						<Route path='/profile' element={<Dashboard />} />
-						<Route path='/settings' element={<Dashboard />} />
+						{Object.values(ALL_ROUTES).map((route, index) => (
+							<Route
+								key={`route-${index}`}
+								path={route.to}
+								element={route.element}
+							/>
+						))}
+						<Route
+							path="/groups/:groupId"
+							element={<GroupInspectView />}
+						/>
+						<Route
+							path="/library/:worksheetId"
+							element={<WorksheetInspectView backText='Library' to='/library' />}
+						/>
+						<Route
+							path="/finder/:worksheetId"
+							element={<WorksheetInspectView backText='Finder' to='/finder' />}
+						/>
 					</Routes>
 				</Box>
 			</Router>

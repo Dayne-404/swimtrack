@@ -15,3 +15,9 @@ export const getLevels = (): string[] => {
         levelNumber.map(level => `${name} ${level}`)
     );
 }
+
+export const getLevelsNoFormat = (): string[] => {
+    return Object.values(FILTERS.levels).flatMap(({ name, levelNumber }) =>
+        levelNumber.map(level => `${name.toLowerCase()}${level}`)
+    );
+}
