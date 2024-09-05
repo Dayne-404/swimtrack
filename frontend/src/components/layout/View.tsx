@@ -4,14 +4,15 @@ interface SectionHeaderProps {
 	headerText: string;
 	body?: React.ReactElement;
 	maxHeight?: number;
+	flex?: number, 
 }
 
-const View = ({ headerText, body, maxHeight }: SectionHeaderProps) => {
+const View = ({ headerText, body, flex=1, maxHeight }: SectionHeaderProps) => {
 	const paperStyle = {
 		display: 'flex',
 		padding: 1.5,
 		maxHeight: maxHeight ? `${maxHeight}vh` : 'none',
-    flex: 1,
+		flex: flex,
 	};
 
 	return (

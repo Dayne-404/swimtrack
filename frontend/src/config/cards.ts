@@ -1,6 +1,6 @@
 export const CARDS = [
     {
-        level: 'Swimmer 2',
+        level: 'swimmer2',
         session: 'Summer',
         day: 'Wed',
         time: '12:30',
@@ -8,7 +8,7 @@ export const CARDS = [
         createdOn: 'July 5 2023',
     },
     {
-        level: 'Swimmer 2',
+        level: 'swimmer2',
         session: 'Summer',
         day: 'Wed',
         time: '12:30',
@@ -16,7 +16,7 @@ export const CARDS = [
         createdOn: 'July 5 2023',
     },
     {
-        level: 'Swimmer 2',
+        level: 'swimmer2',
         session: 'Summer',
         day: 'Wed',
         time: '12:30',
@@ -24,7 +24,7 @@ export const CARDS = [
         createdOn: 'July 5 2023',
     },
     {
-        level: 'Swimmer 2',
+        level: 'swimmer2',
         session: 'Summer',
         day: 'Wed',
         time: '12:30',
@@ -32,7 +32,7 @@ export const CARDS = [
         createdOn: 'July 5 2023',
     },
     {
-        level: 'Swimmer 2',
+        level: 'swimmer2',
         session: 'Summer',
         day: 'Wed',
         time: '12:30',
@@ -40,7 +40,7 @@ export const CARDS = [
         createdOn: 'July 5 2023',
     },
     {
-        level: 'Swimmer 2',
+        level: 'swimmer2',
         session: 'Summer',
         day: 'Wed',
         time: '12:30',
@@ -48,7 +48,7 @@ export const CARDS = [
         createdOn: 'July 5 2023',
     },
     {
-        level: 'Swimmer 2',
+        level: 'swimmer2',
         session: 'Summer',
         day: 'Wed',
         time: '12:30',
@@ -56,7 +56,7 @@ export const CARDS = [
         createdOn: 'July 5 2023',
     },
     {
-        level: 'Swimmer 2',
+        level: 'swimmer2',
         session: 'Summer',
         day: 'Wed',
         time: '12:30',
@@ -64,7 +64,7 @@ export const CARDS = [
         createdOn: 'July 5 2023',
     },
     {
-        level: 'Swimmer 2',
+        level: 'swimmer2',
         session: 'Summer',
         day: 'Wed',
         time: '12:30',

@@ -6,6 +6,7 @@ interface CreateSelectProps {
 	value?: string;
 	name?: string;
 	error?: string;
+	disabled?: boolean;
 	handleChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -16,9 +17,11 @@ const CreateSelect = ({
 	value = '',
 	error,
 	handleChange,
+	disabled = false,
 }: CreateSelectProps) => {
 	return (
 		<TextField
+			disabled={disabled}
 			fullWidth
 			name={name}
 			id="level-select"

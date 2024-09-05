@@ -1,35 +1,72 @@
-import { Box, Grid, Button } from '@mui/material';
-import { CARDS } from '../../config/cards';
+import { Box, Grid, Button, Typography } from '@mui/material';
 import WorksheetCard from '../cards/WorksheetCard';
+import { Worksheet } from '../../config/worksheetType';
 
-const LibraryCards = () => {
+interface LibraryCardsProps {
+	totalWorksheets: number;
+	currentWorksheets: number;
+	worksheets: Worksheet[];
+	loading: boolean;
+	moreWorksheets: boolean;
+	handleViewMore: () => void;
+}
+
+const LibraryCards = ({
+	totalWorksheets = 0,
+	currentWorksheets = 0,
+	worksheets,
+	moreWorksheets,
+	loading,
+	handleViewMore,
+}: LibraryCardsProps) => {
 	return (
-		<Box overflow="auto">
+		<Box overflow="auto" width="100%">
+			{worksheets.length === 0 && (
+				<Box textAlign="center" py={3}>
+					<Typography variant="h5">No Worksheets Found</Typography>
+				</Box>
+			)}
 			<Grid container>
-				{CARDS.map((card, index) => (
-					<Grid item xs={12} sm={6} md={4} p={0.5} key={index}>
+				<Grid item xs={12} pb={0.5} textAlign="center">
+					<Typography variant="subtitle1" color="text.secondary">
+						Showing {currentWorksheets} worksheets out of |{' '}
+						{totalWorksheets}
+					</Typography>
+				</Grid>
+				{worksheets.map((worksheet) => (
+					<Grid
+						item
+						xs={12}
+						sm={6}
+						md={4}
+						p={0.5}
+						key={worksheet._id}
+					>
 						<WorksheetCard
-							level={card.level}
-							session={card.session}
-							day={card.day}
-							time={card.time}
-							year={card.year}
-							createdOn={card.createdOn}
+							id={worksheet._id}
+							instructor={worksheet.instructor}
+							location={worksheet.location}
+							level={worksheet.level}
+							session={worksheet.session}
+							day={worksheet.day}
+							time={worksheet.time}
+							year={worksheet.year}
+							createdOn={worksheet.createdAt}
 						/>
 					</Grid>
 				))}
-				<Grid
-					item
-					xs={12}
-					sm={12}
-					md={12}
-					key={'button'}
-					p={0.5}
-					pt={2}
-				></Grid>
-				<Button fullWidth variant="contained">
-					View More
-				</Button>
+				{moreWorksheets && (
+					<Grid item xs={12} p={0.5} pt={2}>
+						<Button
+							fullWidth
+							variant="contained"
+							onClick={handleViewMore}
+							disabled={loading}
+						>
+							{loading ? 'Loading...' : 'View More'}
+						</Button>
+					</Grid>
+				)}
 			</Grid>
 		</Box>
 	);

@@ -6,8 +6,7 @@ import { WORKSHEETS, LevelKey } from '../config/levels';
 import StudentTable from '../components/inputs/StudentTable';
 import WorksheetFooterInputs from '../components/inputs/WorksheetFooterInputs';
 import CloseIcon from '@mui/icons-material/Close';
-import SnackbarAlert from '../components/layout/SnackbarAlert';
-import { useNavigate } from 'react-router-dom';
+
 interface WorksheetHeaderValues {
 	instructor: string;
 	level: string;
@@ -23,57 +22,22 @@ interface Student {
 	passed: boolean;
 }
 
-interface CreateViewProps {
-	headerValues?: WorksheetHeaderValues;
-	defaultStudents?: Student[];
-	id?: string;
-	disabled?: boolean;
-	fullView?: boolean;
-}
-
-interface SnackbarContent {
-	open: boolean;
-	severity: 'success' | 'error';
-	message: string;
-}
-
-const CreateView = ({
-	headerValues = {
-		instructor: 'Bianca',
-		level: '',
-		session: '',
-		year: '',
-		day: '',
-		time: '',
-		location: '',
-	},
-	defaultStudents,
-	id,
-	disabled = false,
-	fullView = true,
-}: CreateViewProps) => {
-	const navigate = useNavigate();
-	const getWorksheetSkills = (levelId: string): string[] | undefined => {
-		return WORKSHEETS.levels[levelId as LevelKey].descriptions || undefined;
-	};
-	const [isDisabled, setIsDisabled] = useState<boolean>(false);
-	const [students, setStudents] = useState<Student[] | undefined>(
-		defaultStudents
-	);
-	const [loading, setIsLoading] = useState<boolean>(false);
+const CreateView = () => {
+	const [students, setStudents] = useState<Student[] | null>(null);
 	const [errors, setErrors] = useState<{ [key: string]: string }>({});
-	const [snackbarState, setSnackbarState] = useState<SnackbarContent>({
-		open: false,
-		message: '',
-		severity: 'error',
-	});
-	const [worksheetSkills, setWorksheetSkills] = useState<
-		string[] | undefined
-	>(headerValues.level ? getWorksheetSkills(headerValues.level) : undefined);
-
+	const [worksheetSkills, setWorksheetSkills] = useState<string[] | null>(
+		null
+	);
 	const [worksheetHeaderValues, setWorksheetHeaderValues] =
-		useState<WorksheetHeaderValues>(headerValues);
-	const AUTO_HIDE_DURATION = 6000;
+		useState<WorksheetHeaderValues>({
+			instructor: 'Bianca',
+			level: '',
+			session: '',
+			year: '',
+			day: '',
+			time: '',
+			location: '',
+		});
 
 	const validateFields = () => {
 		const newErrors: { [key: string]: string } = {};
@@ -109,31 +73,24 @@ const CreateView = ({
 		}
 
 		setErrors(newErrors);
+		console.log(newErrors);
+		console.log(`ERRORS: ${Object.keys(newErrors).length}`);
 		return Object.keys(newErrors).length === 0;
 	};
 
 	const submitWorksheet = async () => {
-		let method = 'POST';
-		let uri = 'http://localhost:3000/api/worksheets';
-
 		if (!validateFields()) return;
-
-		if (id) {
-			method = 'PUT';
-			uri += `/${id}`;
-		}
 
 		const worksheetJSON = JSON.stringify({
 			...worksheetHeaderValues,
 			students: students,
 		});
 
-		try {
-			setIsLoading(true);
-			setIsDisabled(true);
+		console.log(worksheetJSON);
 
-			const res = await fetch(uri, {
-				method: method,
+		try {
+			const res = await fetch('http://localhost:3000/api/worksheets', {
+				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -141,27 +98,15 @@ const CreateView = ({
 			});
 
 			if (!res.ok) {
-				throw new Error(
-					`Network response was not ok: ${res.statusText}`
-				);
+				throw new Error('Network response was not ok');
 			}
 
 			const result = await res.json();
-			if (result._id && !id) navigate(`/library/${result._id}`);
+			console.log('Success:', result);
+			alert('Worksheet submitted successfully');
 		} catch (error) {
-			const errorMesage =
-				error instanceof Error
-					? error.message
-					: 'An unkown error occurred';
-
-			setSnackbarState({
-				open: true,
-				message: `Error submitting worksheet: ${errorMesage}`,
-				severity: 'error',
-			});
-		} finally {
-			setIsLoading(false);
-			setIsDisabled(false);
+			console.error('Error:', error);
+			alert('There was an error submitting the worksheet');
 		}
 	};
 
@@ -244,71 +189,51 @@ const CreateView = ({
 	};
 
 	const resetTable = () => {
-		setStudents(undefined);
-		setWorksheetSkills(undefined);
+		setStudents(null);
+		setWorksheetSkills(null);
 		setWorksheetHeaderValues((prevValues) => ({
 			...prevValues,
 			level: '',
 		}));
 	};
 
-	const content = (
-		<Stack width="100%" spacing={2}>
-			<WorksheetHeaderInputs
-				disabled={isDisabled || disabled}
-				worksheetHeaderValues={worksheetHeaderValues}
-				errors={errors}
-				handleLevelChange={handleLevelChange}
-				handleHeaderChange={handleHeaderChange}
-			/>
-			<Divider />
-			{students && worksheetSkills ? (
-				<>
-					<Stack alignItems="flex-end" mx={2} height={40}>
-						{(!id || !disabled) && (
-							<IconButton onClick={resetTable}>
-								<CloseIcon />
-							</IconButton>
-						)}
-					</Stack>
-
-					<StudentTable
-						disabled={isDisabled || disabled}
-						students={students}
-						skills={worksheetSkills}
-						errors={errors}
-						onStudentNameChange={handleStudentNameChange}
-						onStudentRemove={handleStudentRemove}
-						onStudentPassedChange={handlePassedChange}
-						onSkillChange={handleSkillChange}
-					/>
-
-					{(!id || !disabled) && (
-						<WorksheetFooterInputs
-							addStudent={addStudent}
-							disabled={isDisabled || disabled}
-							submit={submitWorksheet}
-							loading={loading}
-						/>
-					)}
-				</>
-			) : undefined}
-		</Stack>
-	);
-
-	if (!fullView) {
-		return content;
-	}
-
 	return (
-		<>
-			<SnackbarAlert
-				snackbarState={snackbarState}
-				setSnackbarState={setSnackbarState}
-				autoHideDuration={AUTO_HIDE_DURATION}
-			/>
-			<View headerText="Create" body={content} />
-		</>
+		<View
+			headerText="Create"
+			body={
+				<Stack width="100%" spacing={2}>
+					<WorksheetHeaderInputs
+						worksheetHeaderValues={worksheetHeaderValues}
+						errors={errors}
+						handleLevelChange={handleLevelChange}
+						handleHeaderChange={handleHeaderChange}
+					/>
+					<Divider />
+					{students && worksheetSkills ? (
+						<>
+							<Stack alignItems="flex-end" mx={2}>
+								<IconButton onClick={resetTable}>
+									<CloseIcon />
+								</IconButton>
+							</Stack>
+							<StudentTable
+								students={students}
+								skills={worksheetSkills}
+								errors={errors}
+								onStudentNameChange={handleStudentNameChange}
+								onStudentRemove={handleStudentRemove}
+								onStudentPassedChange={handlePassedChange}
+								onSkillChange={handleSkillChange}
+							/>
+							<WorksheetFooterInputs
+								addStudent={addStudent}
+								submit={submitWorksheet}
+							/>
+						</>
+					) : undefined}
+				</Stack>
+			}
+		/>
 	);
 };
 

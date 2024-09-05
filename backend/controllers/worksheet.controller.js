@@ -1,10 +1,65 @@
 const Worksheet = require('../models/Worksheet.model.js');
 
 const getWorksheets = async (req, res) => {
-	console.log(req.query);
+	const { limit = 10, skip = 0, ...filters } = req.query;
+
 	try {
-		const worksheets = await Worksheet.find({});
-		res.status(200).json(worksheets);
+		let query = {};
+
+		if (filters.instructor) query.instructor = filters.instructor;
+		if (filters.level)
+			query.level = {
+				$in: Array.isArray(filters.level)
+					? filters.level
+					: [filters.level],
+			};
+		if (filters.year)
+			query.year = {
+				$in: Array.isArray(filters.year)
+					? filters.year
+					: [filters.year],
+			};
+		if (filters.session)
+			query.session = {
+				$in: Array.isArray(filters.session)
+					? filters.session
+					: [filters.session],
+			};
+		if (filters.day)
+			query.day = {
+				$in: Array.isArray(filters.day) ? filters.day : [filters.day],
+			};
+		if (filters.time)
+			query.time = {
+				$in: Array.isArray(filters.time)
+					? filters.time
+					: [filters.time],
+			};
+		if (filters.location)
+			query.location = {
+				$in: Array.isArray(filters.location)
+					? filters.location
+					: [filters.location],
+			};
+
+		let sortQuery = {};
+		const sort = req.query.sort || [];
+		const sortArray = Array.isArray(sort) ? sort : [sort];
+
+		sortArray.forEach((field) => {
+			const order = field.startsWith('-') ? -1 : 1;
+			const key = field.replace(/^-/, '');
+			sortQuery[key] = order;
+		});
+
+		console.log('SORT QUERY: ', sortQuery);
+		const worksheets = await Worksheet.find(query)
+			.sort(sortQuery)
+			.skip(parseInt(skip))
+			.limit(parseInt(limit));
+
+		const totalCount = await Worksheet.countDocuments(query);
+		res.status(200).json({ worksheets, totalCount });
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}

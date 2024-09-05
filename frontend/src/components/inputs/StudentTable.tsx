@@ -22,6 +22,7 @@ interface StudentTableProps {
 	students: Student[];
 	skills: string[];
 	errors: { [key: string]: string };
+	disabled?: boolean;
 	onStudentNameChange: (index: number, name: string) => void;
 	onStudentRemove: (index: number) => void;
 	onStudentPassedChange: (index: number) => void;
@@ -36,13 +37,16 @@ const StudentTable = ({
 	onStudentPassedChange,
 	onSkillChange,
 	errors,
+	disabled = false,
 }: StudentTableProps) => {
 	return (
 		<TableContainer sx={{ paddingTop: '200px' }}>
 			<Table>
 				<TableHead>
 					<TableRow>
-						{students.length > 1 && <TableCell></TableCell>}
+						{students.length > 1 && !disabled && (
+							<TableCell></TableCell>
+						)}
 						<TableCell>Name</TableCell>
 						{skills.map((skill, index) => (
 							<TableCell
@@ -77,7 +81,7 @@ const StudentTable = ({
 				<TableBody>
 					{students.map((student, studentIndex) => (
 						<TableRow key={studentIndex}>
-							{students.length > 1 && (
+							{students.length > 1 && !disabled && (
 								<TableCell padding="none">
 									<IconButton
 										color="primary"
@@ -91,14 +95,13 @@ const StudentTable = ({
 							)}
 							<TableCell>
 								<TextField
+									disabled={disabled}
 									variant="standard"
 									placeholder="Name"
 									value={student.name}
 									sx={{ width: '10rem' }}
 									error={
-										!!errors[
-											`student-${studentIndex}-name`
-										]
+										!!errors[`student-${studentIndex}-name`]
 									}
 									InputProps={{
 										startAdornment: (
@@ -122,6 +125,7 @@ const StudentTable = ({
 									sx={{ padding: '2px' }}
 								>
 									<Checkbox
+										disabled={disabled}
 										checked={skill}
 										onChange={() =>
 											onSkillChange(
@@ -134,6 +138,7 @@ const StudentTable = ({
 							))}
 							<TableCell align="center" sx={{ padding: '2px' }}>
 								<Checkbox
+									disabled={disabled}
 									checked={student.passed}
 									onChange={() =>
 										onStudentPassedChange(studentIndex)

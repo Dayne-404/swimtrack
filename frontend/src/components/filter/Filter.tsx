@@ -1,23 +1,17 @@
-import {
-	Stack,
-	Button,
-	TextField,
-	Divider,
-	MenuItem,
-} from '@mui/material';
+import { Stack, Button, Divider } from '@mui/material';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import SortIcon from '@mui/icons-material/Sort';
 import SearchBar from '../inputs/SearchBar';
 
+
 interface FilterButtonProps {
-	sortOption: string;
-	setSortOption: (value: string) => void;
 	setModalOpen: (value: boolean) => void;
+	setSortModalOpen: (value: boolean) => void;
 }
 
 const LibraryFilters = ({
-	sortOption,
-	setSortOption,
 	setModalOpen,
+	setSortModalOpen,
 }: FilterButtonProps) => {
 	return (
 		<>
@@ -27,37 +21,18 @@ const LibraryFilters = ({
 					variant="outlined"
 					onClick={() => setModalOpen(true)}
 					startIcon={<FilterAltIcon />}
-					size="small"
 					fullWidth
 				>
 					Filter
 				</Button>
-				<TextField
-					size="small"
-					value={sortOption}
-					onChange={(e) => setSortOption(e.target.value)}
+				<Button
+					variant="outlined"
+					onClick={() => setSortModalOpen(true)}
+					startIcon={<SortIcon />}
 					fullWidth
-					select
-					sx={{
-						textAlign: 'center',
-						'& .MuiOutlinedInput-root': {
-							'& fieldset': { color: 'red' },
-						},
-					}}
-					SelectProps={{
-						displayEmpty: true,
-					}}
 				>
-					<MenuItem key="sort" value="" disabled>
-						Sort
-					</MenuItem>
-					<MenuItem key="newest" value="newest">
-						Newest
-					</MenuItem>
-					<MenuItem key="oldest" value="oldest">
-						Oldest
-					</MenuItem>
-				</TextField>
+					Sort
+				</Button>
 			</Stack>
 			<Divider />
 		</>

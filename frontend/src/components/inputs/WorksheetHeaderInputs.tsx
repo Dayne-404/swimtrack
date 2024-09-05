@@ -2,7 +2,7 @@ import { Stack, TextField, Grid } from '@mui/material';
 import CreateSelect from './CreateSelect';
 import { WORKSHEETS } from '../../config/levels';
 
-interface WorksheetHeaderInputs {
+interface WorksheetHeaderInputsProps {
 	worksheetHeaderValues: {
 		instructor: string;
 		level: string;
@@ -13,6 +13,7 @@ interface WorksheetHeaderInputs {
 		location: string;
 	};
 	errors: { [key: string]: string };
+	disabled?: boolean;
 	handleLevelChange: (newLevel: string) => void;
 	handleHeaderChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -22,7 +23,8 @@ const WorksheetHeaderInputs = ({
 	errors,
 	handleLevelChange,
 	handleHeaderChange,
-}: WorksheetHeaderInputs) => {
+	disabled = false,
+}: WorksheetHeaderInputsProps) => {
 	return (
 		<Stack>
 			<Stack direction='row' spacing={1}>
@@ -38,6 +40,7 @@ const WorksheetHeaderInputs = ({
 					helperText={errors.instructor ? errors.instructor : ' '}
 				/>
 				<CreateSelect
+					disabled = {disabled}
 					label="Group"
 					name="group"
 					menuItems={['RandomGroup1', 'RandomGroup2']}
@@ -46,6 +49,7 @@ const WorksheetHeaderInputs = ({
 			</Stack>
 			<Stack direction="row" spacing={1}>
 				<CreateSelect
+					disabled={disabled}
 					label="Level"
 					name="level"
 					menuItems={WORKSHEETS.levels}
@@ -54,6 +58,7 @@ const WorksheetHeaderInputs = ({
 					handleChange={(e) => handleLevelChange(e.target.value)}
 				/>
 				<CreateSelect
+					disabled={disabled}
 					label="Session"
 					name="session"
 					menuItems={WORKSHEETS.sessions}
@@ -65,6 +70,7 @@ const WorksheetHeaderInputs = ({
 			<Grid container>
 				<Grid item xs={6} md={3} p={0.5}>
 					<TextField
+						disabled={disabled}
 						fullWidth
 						label="Year"
 						name="year"
@@ -76,6 +82,7 @@ const WorksheetHeaderInputs = ({
 				</Grid>
 				<Grid item xs={6} md={3} p={0.5}>
 					<CreateSelect
+						disabled={disabled}
 						label="Day"
 						name="day"
 						menuItems={WORKSHEETS.days}
@@ -86,6 +93,7 @@ const WorksheetHeaderInputs = ({
 				</Grid>
 				<Grid item xs={6} md={3} p={0.5}>
 					<TextField
+						disabled={disabled}
 						fullWidth
 						label="Time"
 						name="time"
@@ -97,6 +105,7 @@ const WorksheetHeaderInputs = ({
 				</Grid>
 				<Grid item xs={6} md={3} p={0.5}>
 					<CreateSelect
+						disabled={disabled}
 						label="Location"
 						name="location"
 						menuItems={WORKSHEETS.locations}

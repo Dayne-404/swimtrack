@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
 	Modal,
 	Paper,
@@ -9,29 +10,50 @@ import {
 	ButtonBase,
 	useTheme,
 } from '@mui/material';
-import FilterSearch from '../inputs/FilterSelect';
+import FilterComponent from '../inputs/FilterSelect';
 import ActiveFilters from './ActiveFilters';
 import CloseIcon from '@mui/icons-material/Close';
 import { WORKSHEETS, levelNames } from '../../config/levels';
 
+interface FiltersByType {
+	[type: string]: string[];
+}
 interface FilterModalProps {
-	selectedFilters: string[];
+	selectedFilters: FiltersByType;
 	isModalOpen: boolean;
 	handleModalClose: () => void;
-	handleFilterSelect: (filter: string) => void;
-	handleFilterRemove: (filter: string) => void;
+	handleFilterSelect: (type: string, filter: string) => void;
+	handleFilterRemove: (type: string, filter: string) => void;
 	clearFilters: () => void;
 }
 
-const FilterModal = ({
+const FilterModal: React.FC<FilterModalProps> = ({
 	selectedFilters,
 	isModalOpen,
 	handleModalClose,
 	handleFilterSelect,
 	handleFilterRemove,
 	clearFilters,
-}: FilterModalProps) => {
+}) => {
 	const theme = useTheme();
+
+	const [time, setTime] = useState<string>('');
+	const [timeError, setTimeError] = useState<boolean>(false);
+
+	const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+		if (event.key === 'Enter') {
+			if (time && /^([01]\d|2[0-3]):([0-5]\d)$/.test(time)) {
+				setTimeError(false);
+				handleFilterSelect('time', time);
+			} else {
+				setTimeError(true);
+			}
+		}
+	};
+
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setTime(event.target.value);
+	};
 
 	return (
 		<Modal open={isModalOpen} onClose={handleModalClose}>
@@ -62,41 +84,64 @@ const FilterModal = ({
 				</Stack>
 				<Divider />
 				<Stack mt={3} mb={3} spacing={2}>
-					<FilterSearch
+					<FilterComponent
 						size="medium"
 						placeholder="Level"
-						selectedFilters={selectedFilters}
 						availableFilters={levelNames}
-						onFiltersChange={handleFilterSelect}
+						selectedFilters={selectedFilters['level'] || []}
+						onFiltersChange={(filter) =>
+							handleFilterSelect('level', filter)
+						}
 					/>
 					<Stack direction="row" spacing={1}>
-						<FilterSearch
+						<FilterComponent
 							size="medium"
 							placeholder="Session"
-							selectedFilters={selectedFilters}
 							availableFilters={WORKSHEETS.sessions}
-							onFiltersChange={handleFilterSelect}
+							selectedFilters={selectedFilters['session'] || []}
+							onFiltersChange={(filter) =>
+								handleFilterSelect('session', filter)
+							}
 						/>
-						<FilterSearch
+						<FilterComponent
 							size="medium"
 							placeholder="Location"
-							selectedFilters={selectedFilters}
 							availableFilters={WORKSHEETS.locations}
-							onFiltersChange={handleFilterSelect}
+							selectedFilters={selectedFilters['location'] || []}
+							onFiltersChange={(filter) =>
+								handleFilterSelect('location', filter)
+							}
 						/>
 					</Stack>
 					<Stack direction="row" spacing={1}>
-						<FilterSearch
+						<FilterComponent
 							size="medium"
 							placeholder="Day"
-							selectedFilters={selectedFilters}
 							availableFilters={WORKSHEETS.days}
-							onFiltersChange={handleFilterSelect}
+							selectedFilters={selectedFilters['day'] || []}
+							onFiltersChange={(filter) =>
+								handleFilterSelect('day', filter)
+							}
 						/>
 						<TextField
 							size="medium"
 							placeholder="Time"
+							error={timeError}
+							helperText={
+								timeError ? 'Time must be in HH:MM format' : ''
+							}
 							fullWidth
+							onKeyUp={handleKeyDown}
+							onChange={handleChange}
+							FormHelperTextProps={{
+								sx: {
+									position: 'absolute',
+									bottom: '-20px',
+									left: 10,
+									margin: 0,
+									fontSize: '0.75rem',
+								},
+							}}
 							sx={{
 								'& .MuiInputBase-input::placeholder': {
 									color: theme.palette.text.secondary,

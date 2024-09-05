@@ -1,5 +1,5 @@
 import { Grid, Box, Typography } from '@mui/material';
-import { CARDS } from '../config/cards'
+import { CARDS } from '../config/cards';
 import WorksheetCard from '../components/cards/WorksheetCard';
 
 const Dashboard = () => {

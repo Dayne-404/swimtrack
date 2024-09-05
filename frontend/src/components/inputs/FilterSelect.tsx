@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { MenuItem, Select, SelectChangeEvent, useTheme } from '@mui/material';
+import capitalizeFirstLetter from '../../helper/capitalizeFirstLetter';
 
 interface FilterComponentProps {
 	size: 'medium' | 'small';
@@ -58,7 +59,7 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
 					value={filter}
 					disabled={selectedFilters.includes(filter)}
 				>
-					{filter}
+					{capitalizeFirstLetter(filter)}
 				</MenuItem>
 			))}
 		</Select>

@@ -7,7 +7,6 @@ export type LevelKey =
 	| 'preschool3'
 	| 'preschool4'
 	| 'preschool5'
-	| 'preschool6'
 	| 'swimmer1'
 	| 'swimmer2'
 	| 'swimmer3'
@@ -78,7 +77,6 @@ export const LEVELS: Levels = {
 	preschool3: { name: 'Preschool 3', descriptions: SWIMMER1SKILLS },
 	preschool4: { name: 'Preschool 4', descriptions: SWIMMER1SKILLS },
 	preschool5: { name: 'Preschool 5', descriptions: SWIMMER1SKILLS },
-	preschool6: { name: 'Preschool 6', descriptions: SWIMMER1SKILLS },
 	swimmer1: { name: 'Swimmer 1', descriptions: SWIMMER1SKILLS },
 	swimmer2: { name: 'Swimmer 2', descriptions: SWIMMER2SKILLS },
 	swimmer3: { name: 'Swimmer 3', descriptions: SWIMMER2SKILLS },
@@ -91,6 +89,7 @@ export const LEVELS: Levels = {
 };
 
 export const levelNames = Object.values(LEVELS).map((level) => level.name);
+export const levelKeys = Object.keys(LEVELS);
 
 export const WORKSHEETS = {
 	levels: LEVELS,

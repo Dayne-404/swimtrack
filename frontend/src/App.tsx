@@ -22,6 +22,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Create from './views/CreateView';
+import WorksheetInspectView from './views/WorksheetInspectView';
 
 const theme = createTheme({
 	palette: {
@@ -110,6 +111,14 @@ function App() {
 						<Route
 							path="/groups/:groupId"
 							element={<GroupInspectView />}
+						/>
+						<Route
+							path="/library/:worksheetId"
+							element={<WorksheetInspectView backText='Library' to='/library' />}
+						/>
+						<Route
+							path="/finder/:worksheetId"
+							element={<WorksheetInspectView backText='Finder' to='/finder' />}
 						/>
 					</Routes>
 				</Box>

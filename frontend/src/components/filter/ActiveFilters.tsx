@@ -1,21 +1,30 @@
+import React from 'react';
 import { Chip, Stack } from '@mui/material';
+import capitalizeFirstLetter from '../../helper/capitalizeFirstLetter';
+interface FiltersByType {
+    [type: string]: string[];
+}
+interface ActiveFiltersProps {
+	filters: FiltersByType;
+	onRemoveFilter: (type: string, filter: string) => void;
+}
 
-type ActiveFiltersProps = {
-	filters: string[];
-	onRemoveFilter: (filter: string) => void;
-};
-
-const ActiveFilters = ({ filters, onRemoveFilter }: ActiveFiltersProps) => {    
-    return (
-		<Stack mt={2} spacing={1} direction='row' useFlexGap flexWrap='wrap'>
-			{filters.map((filter) => (
-				<Chip
-					key={filter}
-					label={filter}
-					onDelete={() => onRemoveFilter(filter)}
-                    color='primary'
-				/>
-			))}
+const ActiveFilters: React.FC<ActiveFiltersProps> = ({
+	filters,
+	onRemoveFilter,
+}) => {
+	return (
+		<Stack direction="row" spacing={1} flexWrap="wrap">
+			{Object.entries(filters).map(([type, filterArray]) =>
+				filterArray.map((filter) => (
+					<Chip
+						key={`${type}-${filter}`}
+						label={capitalizeFirstLetter(filter)}
+						onDelete={() => onRemoveFilter(type, filter)}
+						color='primary'
+					/>
+				))
+			)}
 		</Stack>
 	);
 };
