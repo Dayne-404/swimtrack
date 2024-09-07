@@ -1,25 +1,18 @@
 import { Stack, TextField, Grid } from '@mui/material';
 import CreateSelect from './CreateSelect';
-import { WORKSHEETS } from '../../config/levels';
+import { newWorksheet } from '../../config/worksheetType';
+import { WORKSHEET_VALUES } from '../../config/worksheetData';
 
 interface WorksheetHeaderInputsProps {
-	worksheetHeaderValues: {
-		instructor: string;
-		level: string;
-		session: string;
-		year: string;
-		day: string;
-		time: string;
-		location: string;
-	};
+	worksheetHeader: newWorksheet;
 	errors: { [key: string]: string };
 	disabled?: boolean;
-	handleLevelChange: (newLevel: string) => void;
+	handleLevelChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	handleHeaderChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const WorksheetHeaderInputs = ({
-	worksheetHeaderValues,
+	worksheetHeader, 
 	errors,
 	handleLevelChange,
 	handleHeaderChange,
@@ -31,7 +24,7 @@ const WorksheetHeaderInputs = ({
 				<TextField
 					disabled
 					label="Instructor"
-					defaultValue={worksheetHeaderValues.instructor}
+					defaultValue={worksheetHeader.instructor}
 					InputProps={{
 						readOnly: true,
 					}}
@@ -41,8 +34,7 @@ const WorksheetHeaderInputs = ({
 				/>
 				<CreateSelect
 					disabled = {disabled}
-					label="Group"
-					name="group"
+					label="group"
 					menuItems={['RandomGroup1', 'RandomGroup2']}
 					error={errors.level}
 				/>
@@ -50,19 +42,17 @@ const WorksheetHeaderInputs = ({
 			<Stack direction="row" spacing={1}>
 				<CreateSelect
 					disabled={disabled}
-					label="Level"
-					name="level"
-					menuItems={WORKSHEETS.levels}
-					value={worksheetHeaderValues.level}
+					label="level"
+					value={worksheetHeader.level}
+					menuItems={WORKSHEET_VALUES.levels.names}
 					error={errors.level}
-					handleChange={(e) => handleLevelChange(e.target.value)}
+					handleChange={handleLevelChange}
 				/>
 				<CreateSelect
 					disabled={disabled}
-					label="Session"
-					name="session"
-					menuItems={WORKSHEETS.sessions}
-					value={worksheetHeaderValues.session}
+					label="session"
+					value={worksheetHeader.session}
+					menuItems={WORKSHEET_VALUES.sessions}
 					error={errors.session}
 					handleChange={handleHeaderChange}
 				/>
@@ -73,8 +63,9 @@ const WorksheetHeaderInputs = ({
 						disabled={disabled}
 						fullWidth
 						label="Year"
-						name="year"
-						value={worksheetHeaderValues.year}
+						name='year'
+						type='number'
+						value={worksheetHeader.year || ''}
 						error={!!errors.year}
 						helperText={errors.year}
 						onChange={handleHeaderChange}
@@ -83,10 +74,9 @@ const WorksheetHeaderInputs = ({
 				<Grid item xs={6} md={3} p={0.5}>
 					<CreateSelect
 						disabled={disabled}
-						label="Day"
-						name="day"
-						menuItems={WORKSHEETS.days}
-						value={worksheetHeaderValues.day}
+						label="day"
+						value={worksheetHeader.day}
+						menuItems={WORKSHEET_VALUES.days}
 						error={errors.day}
 						handleChange={handleHeaderChange}
 					/>
@@ -96,8 +86,8 @@ const WorksheetHeaderInputs = ({
 						disabled={disabled}
 						fullWidth
 						label="Time"
-						name="time"
-						value={worksheetHeaderValues.time}
+						name='time'
+						value={worksheetHeader.time}
 						error={!!errors.time}
 						helperText={errors.time}
 						onChange={handleHeaderChange}
@@ -106,10 +96,9 @@ const WorksheetHeaderInputs = ({
 				<Grid item xs={6} md={3} p={0.5}>
 					<CreateSelect
 						disabled={disabled}
-						label="Location"
-						name="location"
-						menuItems={WORKSHEETS.locations}
-						value={worksheetHeaderValues.location}
+						label="location"
+						value={worksheetHeader.location}
+						menuItems={WORKSHEET_VALUES.locations}
 						error={errors.location}
 						handleChange={handleHeaderChange}
 					/>

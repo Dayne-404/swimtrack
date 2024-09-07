@@ -1,20 +1,18 @@
 import { Alert, Snackbar, SnackbarCloseReason } from '@mui/material';
 
-interface SnackbarState {
-	open: boolean;
-	message: string;
-	severity: 'success' | 'error';
-}
-
 interface SnackbarAlertProps {
 	autoHideDuration?: number;
-	snackbarState: SnackbarState;
-	setSnackbarState: React.Dispatch<React.SetStateAction<SnackbarState>>;
+	open: boolean;
+	severity?: 'success' | 'error';
+	message: string | null;
+	setState: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const SnackbarAlert = ({
-	snackbarState,
-	setSnackbarState,
+	open,
+	message,
+	severity = 'error',
+	setState,
 	autoHideDuration = 6000,
 }: SnackbarAlertProps) => {
 	const handleClose = (
@@ -25,24 +23,21 @@ const SnackbarAlert = ({
 			return;
 		}
 
-		setSnackbarState((prevState) => ({
-			...prevState,
-			open: false,
-		}));
+		setState(null);
 	};
 	return (
 		<Snackbar
-			open={snackbarState.open}
+			open={open}
 			onClose={handleClose}
 			autoHideDuration={autoHideDuration}
 			anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
 		>
 			<Alert
 				variant="filled"
-				severity={snackbarState.severity}
+				severity={severity}
 				sx={{ width: '100%' }}
 			>
-				{snackbarState.message}
+				{message}
 			</Alert>
 		</Snackbar>
 	);

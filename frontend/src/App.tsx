@@ -23,6 +23,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Create from './views/CreateView';
 import WorksheetInspectView from './views/WorksheetInspectView';
+import View from './components/layout/View';
 
 const theme = createTheme({
 	palette: {
@@ -41,23 +42,23 @@ function App() {
 	const navbarHeight = 70;
 
 	const SIDE_NAV_ROUTES = {
-		Dashboard: { icon: <SpeedIcon />, to: '/', element: <Dashboard /> },
+		// Dashboard: { icon: <SpeedIcon />, to: '/', element: <Dashboard /> },
 		Library: { icon: <FolderIcon />, to: '/library', element: <Library /> },
-		Groups: {
-			icon: <FolderSpecialIcon />,
-			to: '/groups',
-			element: <GroupView />,
-		},
+		// Groups: {
+		// 	icon: <FolderSpecialIcon />,
+		// 	to: '/groups',
+		// 	element: <GroupView />,
+		// },
 		Create: { icon: <EditIcon />, to: '/create', element: <Create /> },
-		Finder: { icon: <SearchIcon />, to: '/finder', element: <Finder /> },
-		Programs: {
-			icon: <ScubaDivingIcon />,
-			to: '/programs',
-			element: <Dashboard />,
-		},
+		// Finder: { icon: <SearchIcon />, to: '/finder', element: <Finder /> },
+		// Programs: {
+		// 	icon: <ScubaDivingIcon />,
+		// 	to: '/programs',
+		// 	element: <Dashboard />,
+		// },
 	};
 
-	const ROUTES = {
+	const SIDE_NAV_BOTTOM_ROUTES = {
 		Settings: {
 			icon: <SettingsIcon />,
 			to: '/settings',
@@ -66,9 +67,22 @@ function App() {
 		Profile: { to: '/profile', element: <Dashboard /> },
 	};
 
+	const EXTRA_ROUTES = {
+		GroupInspect: { to: '/groups/:groupId', element: <GroupInspectView /> },
+		InstructorInspect: {
+			to: '/library/:worksheetId',
+			element: <WorksheetInspectView backText="Library" to="/library" />,
+		},
+		FinderInspect: {
+			to: '/finder/:worksheetId',
+			element: <WorksheetInspectView backText="Finder" to="/finder" />,
+		},
+	};
+
 	const ALL_ROUTES = {
 		...SIDE_NAV_ROUTES,
-		...ROUTES,
+		...SIDE_NAV_BOTTOM_ROUTES,
+		...EXTRA_ROUTES,
 	};
 
 	const isMediumOrBelow = useMediaQuery(theme.breakpoints.down('md'));
@@ -100,27 +114,22 @@ function App() {
 							  'px'
 					}
 				>
-					<Routes>
-						{Object.values(ALL_ROUTES).map((route, index) => (
-							<Route
-								key={`route-${index}`}
-								path={route.to}
-								element={route.element}
-							/>
-						))}
-						<Route
-							path="/groups/:groupId"
-							element={<GroupInspectView />}
-						/>
-						<Route
-							path="/library/:worksheetId"
-							element={<WorksheetInspectView backText='Library' to='/library' />}
-						/>
-						<Route
-							path="/finder/:worksheetId"
-							element={<WorksheetInspectView backText='Finder' to='/finder' />}
-						/>
-					</Routes>
+					<View
+						headerText="TEST"
+						body={
+							<Routes>
+								{Object.values(ALL_ROUTES).map(
+									(route, index) => (
+										<Route
+											key={`route-${index}`}
+											path={route.to}
+											element={route.element}
+										/>
+									)
+								)}
+							</Routes>
+						}
+					/>
 				</Box>
 			</Router>
 		</ThemeProvider>

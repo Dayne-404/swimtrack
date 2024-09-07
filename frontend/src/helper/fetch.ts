@@ -21,7 +21,9 @@ export const fetchWorksheets = async ({
 	console.log('URI: ', uri);
 	const res = await fetch(uri);
 	if (!res.ok) {
-		throw new Error('Network response was not ok');
+		const errorData = await res.json();
+		const errorMessage = errorData.message || 'Network response was not ok';
+		throw new Error(errorMessage);
 	}
 	return res.json();
 };
@@ -31,7 +33,9 @@ export const fetchWorksheetsByInstructor = async (instructorId: string) => {
 		`http://localhost:3000/api/worksheets/instructor/${instructorId}`
 	);
 	if (!res.ok) {
-		throw new Error('Network response was not ok');
+		const errorData = await res.json();
+		const errorMessage = errorData.message || 'Network response was not ok';
+		throw new Error(errorMessage);
 	}
 	return res.json();
 };

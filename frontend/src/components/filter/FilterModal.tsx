@@ -13,7 +13,7 @@ import {
 import FilterComponent from '../inputs/FilterSelect';
 import ActiveFilters from './ActiveFilters';
 import CloseIcon from '@mui/icons-material/Close';
-import { WORKSHEETS, levelNames } from '../../config/levels';
+import { WORKSHEETS, levelNames } from '../../config/worksheetData';
 
 interface FiltersByType {
 	[type: string]: string[];

@@ -1,5 +1,5 @@
 import { Grid, Box, Button, Stack, Divider } from '@mui/material';
-import { GROUPS } from '../config/groups';
+import { GROUPS } from '../config/groupsPLACEHOLDER';
 import GroupCard from '../components/cards/GroupCard';
 import View from '../components/layout/View';
 import SearchBar from '../components/inputs/SearchBar';

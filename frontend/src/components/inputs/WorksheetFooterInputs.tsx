@@ -1,6 +1,7 @@
-import { Grid, Button, CircularProgress } from '@mui/material';
+import { Grid, Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import CheckIcon from '@mui/icons-material/Check';
+import LoadingButton from './LoadingButton';
 
 interface WorksheetFooterInputs {
 	loading: boolean;
@@ -34,27 +35,13 @@ const WorksheetFooterInputs = ({
 				</Button>
 			</Grid>
 			<Grid item xs={12} md={1} position="relative">
-				<Button
-					variant='outlined'
-					startIcon={<CheckIcon />}
+				<LoadingButton
+					text={'submit'}
 					onClick={submit}
-					fullWidth
-					disabled={loading || disabled}
-				>
-					submit
-				</Button>
-				{loading && (
-					<CircularProgress
-						size={24}
-						sx={{
-							position: 'absolute',
-							top: '50%',
-							left: '50%',
-							marginTop: '-7px',
-							marginLeft: '-12px',
-						}}
-					/>
-				)}
+					startIcon={<CheckIcon />}
+					disabled={disabled}
+					loading={loading}
+				/>
 			</Grid>
 		</Grid>
 	);

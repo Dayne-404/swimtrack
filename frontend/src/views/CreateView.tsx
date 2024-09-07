@@ -1,106 +1,79 @@
 import { useState } from 'react';
 import WorksheetHeaderInputs from '../components/inputs/WorksheetHeaderInputs';
-import View from '../components/layout/View';
 import { Stack, Divider, IconButton } from '@mui/material';
-import { WORKSHEETS, LevelKey } from '../config/levels';
 import StudentTable from '../components/inputs/StudentTable';
 import WorksheetFooterInputs from '../components/inputs/WorksheetFooterInputs';
 import CloseIcon from '@mui/icons-material/Close';
 import SnackbarAlert from '../components/layout/SnackbarAlert';
 import { useNavigate } from 'react-router-dom';
-interface WorksheetHeaderValues {
-	instructor: string;
-	level: string;
-	session: string;
-	year: string;
-	day: string;
-	time: string;
-	location: string;
-}
-interface Student {
-	name: string;
-	skills: boolean[];
-	passed: boolean;
-}
-
+import { newWorksheet } from '../config/worksheetType';
+import { SkillDescription } from '../config/levelSkillDescriptions';
+import { WORKSHEET_VALUES } from '../config/worksheetData';
 interface CreateViewProps {
-	headerValues?: WorksheetHeaderValues;
-	defaultStudents?: Student[];
-	id?: string;
+	defaultValues?: Partial<newWorksheet>;
+	worksheetId?: string;
 	disabled?: boolean;
-	fullView?: boolean;
 }
 
-interface SnackbarContent {
-	open: boolean;
-	severity: 'success' | 'error';
-	message: string;
-}
+const DEFAULT_HEADER_VALUES: newWorksheet = {
+	instructor: 'Dayne',
+	level: null,
+	session: null,
+	day: null,
+	time: '',
+	year: '',
+	location: null,
+	students: [],
+};
+
+const AUTO_HIDE_DURATION = 6000;
+const CURRENT_YEAR = new Date().getFullYear();
 
 const CreateView = ({
-	headerValues = {
-		instructor: 'Bianca',
-		level: '',
-		session: '',
-		year: '',
-		day: '',
-		time: '',
-		location: '',
-	},
-	defaultStudents,
-	id,
+	worksheetId = '',
+	defaultValues = {},
 	disabled = false,
-	fullView = true,
 }: CreateViewProps) => {
 	const navigate = useNavigate();
-	const getWorksheetSkills = (levelId: string): string[] | undefined => {
-		return WORKSHEETS.levels[levelId as LevelKey].descriptions || undefined;
-	};
-	const [isDisabled, setIsDisabled] = useState<boolean>(false);
-	const [students, setStudents] = useState<Student[] | undefined>(
-		defaultStudents
-	);
-	const [loading, setIsLoading] = useState<boolean>(false);
-	const [errors, setErrors] = useState<{ [key: string]: string }>({});
-	const [snackbarState, setSnackbarState] = useState<SnackbarContent>({
-		open: false,
-		message: '',
-		severity: 'error',
-	});
-	const [worksheetSkills, setWorksheetSkills] = useState<
-		string[] | undefined
-	>(headerValues.level ? getWorksheetSkills(headerValues.level) : undefined);
 
-	const [worksheetHeaderValues, setWorksheetHeaderValues] =
-		useState<WorksheetHeaderValues>(headerValues);
-	const AUTO_HIDE_DURATION = 6000;
+	const [header, setHeader] = useState<newWorksheet>({
+		...DEFAULT_HEADER_VALUES,
+		...defaultValues,
+	});
+
+	const [skills, setSkills] = useState<SkillDescription>(
+		defaultValues.level || defaultValues.level === 0
+			? WORKSHEET_VALUES.levels.descriptions[defaultValues.level]
+			: []
+	);
+
+	const [loading, setIsLoading] = useState<boolean>(false);
+	const [validationErrors, setValidationErrors] = useState<{
+		[key: string]: string;
+	}>({});
+	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
 	const validateFields = () => {
 		const newErrors: { [key: string]: string } = {};
+		const yearAsNum = Number(header.year);
 
-		if (!worksheetHeaderValues.instructor)
-			newErrors.instructor = 'Instructor is required';
-		if (!worksheetHeaderValues.level) newErrors.level = 'Level is required';
-		if (!worksheetHeaderValues.session)
-			newErrors.session = 'Session is required';
-		if (
-			!worksheetHeaderValues.year ||
-			!/^\d{4}$/.test(worksheetHeaderValues.year)
-		)
-			newErrors.year = 'Year must be a 4-digit number';
-		if (
-			!worksheetHeaderValues.time ||
-			!/^([01]\d|2[0-3]):([0-5]\d)$/.test(worksheetHeaderValues.time)
-		) {
+		if (!header.instructor) newErrors.instructor = 'Instructor is required';
+		if (header.level === null) newErrors.level = 'Level is required';
+		if (header.session === null) newErrors.session = 'Session is required';
+		if (!header.year || yearAsNum < 2000 || yearAsNum > CURRENT_YEAR) {
+			newErrors.year = `Year must be in range 2000-${CURRENT_YEAR}`;
+		}
+
+		if (!header.time || !/^([01]\d|2[0-3]):([0-5]\d)$/.test(header.time)) {
 			newErrors.time = 'Time must be in HH:MM format';
 		}
-		if (!worksheetHeaderValues.day) newErrors.day = 'Day is required';
-		if (!worksheetHeaderValues.location)
+		if (header.day === null) newErrors.day = 'Day is required';
+		if (header.location === null)
 			newErrors.location = 'Location is required';
-		if (!students || students.length === 0) {
+		if (!header.students || header.students.length === 0) {
 			newErrors.students = 'At least one student must be added';
 		} else {
-			students.forEach((student, index) => {
+			header.students.forEach((student, index) => {
 				if (!student.name) {
 					newErrors[`student-${index}-name`] =
 						'Student name is required';
@@ -108,7 +81,7 @@ const CreateView = ({
 			});
 		}
 
-		setErrors(newErrors);
+		setValidationErrors(newErrors);
 		return Object.keys(newErrors).length === 0;
 	};
 
@@ -118,19 +91,19 @@ const CreateView = ({
 
 		if (!validateFields()) return;
 
-		if (id) {
+		if (worksheetId) {
 			method = 'PUT';
-			uri += `/${id}`;
+			uri += `/${worksheetId}`;
 		}
 
 		const worksheetJSON = JSON.stringify({
-			...worksheetHeaderValues,
-			students: students,
+			...header,
+			year: Number(header.year),
 		});
 
+		console.log('SENDING: ', worksheetJSON);
 		try {
 			setIsLoading(true);
-			setIsDisabled(true);
 
 			const res = await fetch(uri, {
 				method: method,
@@ -141,86 +114,89 @@ const CreateView = ({
 			});
 
 			if (!res.ok) {
-				throw new Error(
-					`Network response was not ok: ${res.statusText}`
-				);
+				const errorData = await res.json();
+				const errorMessage =
+					errorData.message || 'Network response was not ok';
+				throw new Error(errorMessage);
 			}
 
 			const result = await res.json();
-			if (result._id && !id) navigate(`/library/${result._id}`);
+			if (result._id && !worksheetId) navigate(`/library/${result._id}`);
+			console.log(result);
 		} catch (error) {
 			const errorMesage =
 				error instanceof Error
 					? error.message
 					: 'An unkown error occurred';
 
-			setSnackbarState({
-				open: true,
-				message: `Error submitting worksheet: ${errorMesage}`,
-				severity: 'error',
-			});
+			setErrorMessage(errorMesage);
 		} finally {
 			setIsLoading(false);
-			setIsDisabled(false);
 		}
 	};
 
 	const handleHeaderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
-		setWorksheetHeaderValues((prevValues) => ({
-			...prevValues,
-			[name]: value,
-		}));
+
+		if (name in header) {
+			setHeader((prevValues) => ({
+				...prevValues,
+				[name]: value,
+			}));
+		}
 	};
 
-	const handleLevelChange = (newLevel: string) => {
-		const newWorksheetSkills =
-			WORKSHEETS.levels[newLevel as LevelKey].descriptions || null;
+	const handleLevelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const newLevel = parseInt(event.target.value);
+		const newSkills = WORKSHEET_VALUES.levels.descriptions[newLevel];
+		setSkills(newSkills);
 
-		setWorksheetSkills(newWorksheetSkills);
-
-		setStudents([
-			{
-				name: '',
-				skills: Array(newWorksheetSkills.length).fill(false),
-				passed: false,
-			},
-		]);
-
-		setWorksheetHeaderValues((prevValues) => ({
+		setHeader((prevValues) => ({
 			...prevValues,
 			level: newLevel,
+			students: [
+				{
+					name: '',
+					skills: Array(newSkills.length).fill(false),
+					passed: false,
+				},
+			],
 		}));
 	};
 
 	const addStudent = () => {
-		if (!students || !worksheetSkills) return;
-		setStudents([
-			...students,
-			{
-				name: '',
-				skills: Array(worksheetSkills.length).fill(false),
-				passed: false,
-			},
-		]);
+		const newStudent = {
+			name: '',
+			skills: Array(skills.length).fill(false),
+			passed: false,
+		};
+
+		setHeader((prevValues) => ({
+			...prevValues,
+			students: [...prevValues.students, newStudent],
+		}));
 	};
 
 	const handleStudentNameChange = (index: number, name: string) => {
-		if (!students) return;
-		const updatedStudents = [...students];
+		const updatedStudents = [...header.students];
 		updatedStudents[index].name = name;
-		setStudents(updatedStudents);
+
+		setHeader((prevValues) => ({
+			...prevValues,
+			students: updatedStudents,
+		}));
 	};
 
 	const handleStudentRemove = (index: number) => {
-		if (!students) return;
-		const updatedStudents = students.filter((_, i) => i !== index);
-		setStudents(updatedStudents);
+		const updatedStudents = header.students.filter((_, i) => i !== index);
+		setHeader((prevValues) => ({
+			...prevValues,
+			students: updatedStudents,
+		}));
 	};
 
 	const handleSkillChange = (studentIndex: number, skillIndex: number) => {
-		if (!students) return;
-		const updatedStudents = [...students];
+		const updatedStudents = [...header.students];
 		const updatedSkills = [...updatedStudents[studentIndex].skills];
 		updatedSkills[skillIndex] = !updatedSkills[skillIndex];
 
@@ -229,85 +205,86 @@ const CreateView = ({
 		updatedStudents[studentIndex].skills = updatedSkills;
 		updatedStudents[studentIndex].passed = allSkillsChecked;
 
-		setStudents(updatedStudents);
+		setHeader((prevValues) => ({
+			...prevValues,
+			students: updatedStudents,
+		}));
 	};
 
 	const handlePassedChange = (index: number) => {
-		if (!students || !worksheetSkills) return;
-		const updatedStudents = [...students];
-		const student = updatedStudents[index];
+		const students = [...header.students];
+		const student = students[index];
 		student.passed = !student.passed;
 		student.skills = student.passed
-			? Array(worksheetSkills.length).fill(true)
+			? Array(skills.length).fill(true)
 			: student.skills;
-		setStudents(updatedStudents);
+		setHeader((prevValues) => ({
+			...prevValues,
+			students: students,
+		}));
 	};
 
 	const resetTable = () => {
-		setStudents(undefined);
-		setWorksheetSkills(undefined);
-		setWorksheetHeaderValues((prevValues) => ({
+		setHeader((prevValues) => ({
 			...prevValues,
-			level: '',
+			level: -1,
+			students: [],
 		}));
+
+		setSkills([]);
 	};
 
 	const content = (
 		<Stack width="100%" spacing={2}>
 			<WorksheetHeaderInputs
-				disabled={isDisabled || disabled}
-				worksheetHeaderValues={worksheetHeaderValues}
-				errors={errors}
+				errors={validationErrors}
+				worksheetHeader={header}
 				handleLevelChange={handleLevelChange}
 				handleHeaderChange={handleHeaderChange}
+				disabled={disabled || loading}
 			/>
 			<Divider />
-			{students && worksheetSkills ? (
+			{header.students.length > 0 && skills && (
 				<>
 					<Stack alignItems="flex-end" mx={2} height={40}>
-						{(!id || !disabled) && (
+						{(!worksheetId || !disabled) && (
 							<IconButton onClick={resetTable}>
 								<CloseIcon />
 							</IconButton>
 						)}
 					</Stack>
-
 					<StudentTable
-						disabled={isDisabled || disabled}
-						students={students}
-						skills={worksheetSkills}
-						errors={errors}
+						disabled={loading || disabled}
+						students={header.students}
+						skills={skills}
+						errors={validationErrors}
 						onStudentNameChange={handleStudentNameChange}
 						onStudentRemove={handleStudentRemove}
 						onStudentPassedChange={handlePassedChange}
 						onSkillChange={handleSkillChange}
 					/>
-
-					{(!id || !disabled) && (
+					{(!worksheetId || !disabled) && (
 						<WorksheetFooterInputs
 							addStudent={addStudent}
-							disabled={isDisabled || disabled}
+							disabled={loading || disabled}
 							submit={submitWorksheet}
 							loading={loading}
 						/>
 					)}
 				</>
-			) : undefined}
+			)}
 		</Stack>
 	);
-
-	if (!fullView) {
-		return content;
-	}
 
 	return (
 		<>
 			<SnackbarAlert
-				snackbarState={snackbarState}
-				setSnackbarState={setSnackbarState}
+				open={Boolean(errorMessage)}
+				message={errorMessage}
+				setState={setErrorMessage}
 				autoHideDuration={AUTO_HIDE_DURATION}
 			/>
-			<View headerText="Create" body={content} />
+			{content}
 		</>
 	);
 };

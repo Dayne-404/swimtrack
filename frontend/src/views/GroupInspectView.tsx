@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import { Box, Paper, Stack, Typography } from '@mui/material';
-import { GROUPS } from '../config/groups';
+import { GROUPS } from '../config/groupsPLACEHOLDER';
 import BackButton from '../components/inputs/BackButton';
 
 export const GroupInspectView = () => {
