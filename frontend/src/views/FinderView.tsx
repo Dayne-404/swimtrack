@@ -1,66 +1,29 @@
 import { Stack, CircularProgress } from '@mui/material';
-import LibraryFilters from '../components/filter/Filter';
+import FinderHeader from '../components/filter/Filter';
 import FinderCards from '../components/layout/FinderCards';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Worksheet } from '../config/worksheetType';
 import { fetchWorksheets } from '../helper/fetch';
 import FilterModal from '../components/filter/FilterModal';
-import View from '../components/layout/View';
-import SnackbarAlert from '../components/layout/SnackbarAlert';
 import SortModal from '../components/filter/SortModal';
-interface SnackbarState {
-	open: boolean;
-	message: string;
-	severity: 'success' | 'error';
-}
-
-interface SortOptions {
-	level: 'recent' | 'oldest' | '';
-	time: 'recent' | 'oldest' | '';
-	day: 'recent' | 'oldest' | '';
-	session: 'recent' | 'oldest' | '';
-	createdAt: 'recent' | 'oldest';
-}
-
-interface FiltersByType {
-	[type: string]: string[];
-}
+import { AlertContext } from '../App';
 
 const DEFAULT_LIMIT = 9;
 
+interface FiltersByType {
+	[type: string]: (number | string)[];
+}
+
 const LibraryWorksheetSearch = () => {
-	const formatSortOptions = (sortOptions: SortOptions): string => {
-		let sortString = '';
-
-		Object.keys(sortOptions).forEach((key) => {
-			const value = sortOptions[key as keyof typeof sortOptions];
-
-			if (value === 'recent') {
-				sortString += `&sort=${key}`;
-			} else if (value === 'oldest') {
-				sortString += `&sort=-${key}`;
-			}
-		});
-
-		return sortString;
-	};
-
 	const [selectedFilters, setSelectedFilters] = useState<FiltersByType>({});
+	const [sortOptions, setSortOptions] = useState<{ [type: string]: number }>(
+		{}
+	);
+
 	const [formattedFilters, setFormattedFilters] = useState<string>('');
+	const [formattedSort, setFormattedSort] = useState<string>('');
+
 	const [moreWorksheets, setMoreWorksheets] = useState<boolean>(false);
-	const [snackbarState, setSnackbarState] = useState<SnackbarState>({
-		open: false,
-		message: '',
-		severity: 'error',
-	});
-	const [sortOptions, setSortOptions] = useState<SortOptions>({
-		level: '',
-		time: '',
-		day: '',
-		session: '',
-		createdAt: 'recent',
-	});
-	const [formattedSort, setFormattedSort] = useState<string>(formatSortOptions(sortOptions) || '');
 	const [loading, setLoading] = useState<boolean>(false);
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const [isSortModalOpen, setIsSortModalOpen] = useState<boolean>(false);
@@ -68,24 +31,41 @@ const LibraryWorksheetSearch = () => {
 	const [skip, setSkip] = useState<number>(0);
 	const [limit] = useState<number>(DEFAULT_LIMIT);
 	const [totalWorksheets, setTotalWorksheets] = useState<number>(0);
+	const showAlert = useContext(AlertContext);
+	const showAlertRef = useRef(showAlert);
 
-	const handleSortChange =
-		(key: keyof SortOptions) =>
-		(event: React.ChangeEvent<HTMLInputElement>) => {
-			setSortOptions((prevOptions) => ({
-				...prevOptions,
-				[key]: event.target.value as SortOptions[keyof SortOptions],
-			}));
-		};
+	const handleSortSelect = (type: string, sort: number) => {
+		setSortOptions((prevOptions) => {
+			const updatedOptions = { ...prevOptions };
 
-	const handleFilterSelect = (type: string, filter: string) => {
+			if (sort === 0) {
+				delete updatedOptions[type];
+			} else {
+				updatedOptions[type] = sort;
+			}
+
+			return updatedOptions;
+		});
+	};
+
+	const formatSortOptions = (sortOptions: {
+		[type: string]: number;
+	}): string => {
+		return Object.entries(sortOptions)
+			.map(([key, value]) => {
+				return value === 1 ? `&sort=-${key}` : `&sort=${key}`;
+			})
+			.join('');
+	};
+
+	const handleFilterSelect = (type: string, filter: number | string) => {
 		setSelectedFilters((prevFilters) => ({
 			...prevFilters,
 			[type]: [...(prevFilters[type] || []), filter],
 		}));
 	};
 
-	const handleFilterRemove = (type: string, filter: string) => {
+	const handleFilterRemove = (type: string, filter: number | string) => {
 		setSelectedFilters((prevFilters) => {
 			const updatedFilters =
 				prevFilters[type]?.filter((f) => f !== filter) || [];
@@ -107,14 +87,8 @@ const LibraryWorksheetSearch = () => {
 	const handleModalClose = () => {
 		const queryString = Object.keys(selectedFilters)
 			.map((key) => {
-				let values =
+				const values =
 					selectedFilters[key as keyof typeof selectedFilters];
-
-				if (key === 'level') {
-					values = values.map((value) =>
-						value.toLowerCase().replace(/\s+/g, '')
-					);
-				}
 
 				return values
 					.map(
@@ -138,10 +112,12 @@ const LibraryWorksheetSearch = () => {
 			}
 		}
 		setIsModalOpen(false);
+		console.log(selectedFilters);
 	};
 
 	const handleSortModalClose = () => {
 		const sortString = formatSortOptions(sortOptions);
+		console.log('SORT STRING: ', sortString);
 
 		if (sortString !== formattedSort) {
 			setWorksheets([]);
@@ -188,11 +164,12 @@ const LibraryWorksheetSearch = () => {
 					setMoreWorksheets(false);
 				}
 			} catch (error) {
-				setSnackbarState({
-					open: true,
-					message: `${error}`,
-					severity: 'error',
-				});
+				const errorMesage =
+					error instanceof Error
+						? error.message
+						: 'An unkown error occurred';
+
+				showAlertRef.current(errorMesage);
 			} finally {
 				setLoading(false);
 			}
@@ -218,11 +195,12 @@ const LibraryWorksheetSearch = () => {
 				/>
 				<SortModal
 					sortOptions={sortOptions}
-					handleChange={handleSortChange}
+					handleChange={handleSortSelect}
 					isModalOpen={isSortModalOpen}
 					handleModalClose={handleSortModalClose}
 				/>
-				<LibraryFilters
+				<FinderHeader
+					disabled={loading}
 					setModalOpen={setIsModalOpen}
 					setSortModalOpen={setIsSortModalOpen}
 				/>
@@ -244,22 +222,7 @@ const LibraryWorksheetSearch = () => {
 		);
 	};
 
-	return (
-		<View
-			maxHeight={80}
-			headerText="Worksheet Finder"
-			flex={0}
-			body={
-				<>
-					<SnackbarAlert
-						snackbarState={snackbarState}
-						setSnackbarState={setSnackbarState}
-					/>{' '}
-					{content()}
-				</>
-			}
-		/>
-	);
+	return <>{content()}</>;
 };
 
 export default LibraryWorksheetSearch;

@@ -43,15 +43,8 @@ const LibraryCards = ({
 						key={worksheet._id}
 					>
 						<WorksheetCard
-							id={worksheet._id}
-							instructor={worksheet.instructor}
-							location={worksheet.location}
-							level={worksheet.level}
-							session={worksheet.session}
-							day={worksheet.day}
-							time={worksheet.time}
-							year={worksheet.year}
-							createdOn={worksheet.createdAt}
+							worksheet={worksheet}
+							IncludeInstructor
 						/>
 					</Grid>
 				))}

@@ -1,14 +1,16 @@
-import { CircularProgress, Grid, Stack } from '@mui/material';
+import { CircularProgress, Divider, Grid, Stack, Box, Typography } from '@mui/material';
 import { fetchWorksheetsByInstructor } from '../helper/fetch';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import WorksheetCard from '../components/cards/WorksheetCard';
 import { Worksheet } from '../config/worksheetType';
-import SnackbarAlert from '../components/layout/SnackbarAlert';
+import ViewHeader from '../components/layout/ViewHeader';
+import { AlertContext } from '../App';
 
 const Library = () => {
 	const [worksheets, setWorksheets] = useState<Worksheet[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
-	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const showAlert = useContext(AlertContext);
+	const showAlertRef = useRef(showAlert);
 
 	useEffect(() => {
 		const getWorksheets = async () => {
@@ -17,20 +19,21 @@ const Library = () => {
 					'Dayne'
 				);
 				setWorksheets(data);
+				setLoading(false);
 			} catch (error) {
 				const errorMessage =
 					error instanceof Error
 						? error.message
 						: 'An unkown error occurred';
 
-				setErrorMessage(errorMessage);
+				showAlertRef.current(errorMessage);
 			} finally {
 				setLoading(false);
 			}
 		};
 
 		getWorksheets();
-	}, [errorMessage]);
+	}, []);
 
 	const Loading = () => {
 		return (
@@ -42,22 +45,23 @@ const Library = () => {
 
 	return (
 		<>
-			<SnackbarAlert
-				open={Boolean(errorMessage)}
-				message={errorMessage}
-				setState={setErrorMessage}
-			/>
-
-			{loading ? (
+			{loading || worksheets.length === 0 ? (
 				<Loading />
 			) : (
-				<Grid container spacing={1.5}>
-					{worksheets.map((worksheet) => (
-						<Grid item sm={6} md={3} key={worksheet._id}>
-							<WorksheetCard worksheet={worksheet} />
+				<Stack width='100%' spacing={2}>
+					<ViewHeader text="Library" />
+					<Divider />
+					<Box width='100%'>
+						<Typography variant='h6'>Your Worksheets</Typography>
+						<Grid container spacing={1}>
+							{worksheets.map((worksheet) => (
+								<Grid item xs={12} sm={6} md={2} key={worksheet._id}>
+									<WorksheetCard worksheet={worksheet} />
+								</Grid>
+							))}
 						</Grid>
-					))}
-				</Grid>
+					</Box>
+				</Stack>
 			)}
 		</>
 	);

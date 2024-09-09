@@ -13,17 +13,17 @@ import {
 import FilterComponent from '../inputs/FilterSelect';
 import ActiveFilters from './ActiveFilters';
 import CloseIcon from '@mui/icons-material/Close';
-import { WORKSHEETS, levelNames } from '../../config/worksheetData';
+import { WORKSHEET_VALUES } from '../../config/worksheetData';
 
 interface FiltersByType {
-	[type: string]: string[];
+	[type: string]: (number | string)[];
 }
 interface FilterModalProps {
 	selectedFilters: FiltersByType;
 	isModalOpen: boolean;
 	handleModalClose: () => void;
-	handleFilterSelect: (type: string, filter: string) => void;
-	handleFilterRemove: (type: string, filter: string) => void;
+	handleFilterSelect: (type: string, filter: number | string) => void;
+	handleFilterRemove: (type: string, filter: number | string) => void;
 	clearFilters: () => void;
 }
 
@@ -44,7 +44,14 @@ const FilterModal: React.FC<FilterModalProps> = ({
 		if (event.key === 'Enter') {
 			if (time && /^([01]\d|2[0-3]):([0-5]\d)$/.test(time)) {
 				setTimeError(false);
-				handleFilterSelect('time', time);
+				setTime('');
+
+				if (
+					!selectedFilters['time'] ||
+					(selectedFilters['time'] &&
+						!selectedFilters['time'].includes(time))
+				)
+					handleFilterSelect('time', time);
 			} else {
 				setTimeError(true);
 			}
@@ -87,7 +94,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
 					<FilterComponent
 						size="medium"
 						placeholder="Level"
-						availableFilters={levelNames}
+						availableFilters={WORKSHEET_VALUES.levels.names}
 						selectedFilters={selectedFilters['level'] || []}
 						onFiltersChange={(filter) =>
 							handleFilterSelect('level', filter)
@@ -97,7 +104,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
 						<FilterComponent
 							size="medium"
 							placeholder="Session"
-							availableFilters={WORKSHEETS.sessions}
+							availableFilters={WORKSHEET_VALUES.sessions}
 							selectedFilters={selectedFilters['session'] || []}
 							onFiltersChange={(filter) =>
 								handleFilterSelect('session', filter)
@@ -106,7 +113,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
 						<FilterComponent
 							size="medium"
 							placeholder="Location"
-							availableFilters={WORKSHEETS.locations}
+							availableFilters={WORKSHEET_VALUES.locations}
 							selectedFilters={selectedFilters['location'] || []}
 							onFiltersChange={(filter) =>
 								handleFilterSelect('location', filter)
@@ -117,7 +124,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
 						<FilterComponent
 							size="medium"
 							placeholder="Day"
-							availableFilters={WORKSHEETS.days}
+							availableFilters={WORKSHEET_VALUES.days}
 							selectedFilters={selectedFilters['day'] || []}
 							onFiltersChange={(filter) =>
 								handleFilterSelect('day', filter)
@@ -131,6 +138,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
 								timeError ? 'Time must be in HH:MM format' : ''
 							}
 							fullWidth
+							value={time}
 							onKeyUp={handleKeyDown}
 							onChange={handleChange}
 							FormHelperTextProps={{

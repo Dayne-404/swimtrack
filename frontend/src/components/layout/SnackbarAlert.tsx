@@ -1,11 +1,12 @@
 import { Alert, Snackbar, SnackbarCloseReason } from '@mui/material';
+import { AlertType } from '../../config/alertType';
 
 interface SnackbarAlertProps {
 	autoHideDuration?: number;
 	open: boolean;
 	severity?: 'success' | 'error';
 	message: string | null;
-	setState: React.Dispatch<React.SetStateAction<string | null>>;
+	setState: React.Dispatch<React.SetStateAction<AlertType>>;
 }
 
 const SnackbarAlert = ({
@@ -23,7 +24,10 @@ const SnackbarAlert = ({
 			return;
 		}
 
-		setState(null);
+		setState((prevValues) => ({
+			...prevValues,
+			open: false,
+		}));
 	};
 	return (
 		<Snackbar

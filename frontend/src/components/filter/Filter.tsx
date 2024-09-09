@@ -3,21 +3,28 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SortIcon from '@mui/icons-material/Sort';
 import SearchBar from '../inputs/SearchBar';
 
-
 interface FilterButtonProps {
+	disabled?: boolean;
 	setModalOpen: (value: boolean) => void;
 	setSortModalOpen: (value: boolean) => void;
 }
 
 const LibraryFilters = ({
+	disabled = false,
 	setModalOpen,
 	setSortModalOpen,
 }: FilterButtonProps) => {
 	return (
 		<>
-			<SearchBar size="small" width="100%" placeholderText="Search" />
+			<SearchBar
+				size="small"
+				width="100%"
+				placeholderText="Search"
+				disabled={disabled}
+			/>
 			<Stack direction="row" spacing={1}>
 				<Button
+					disabled={disabled}
 					variant="outlined"
 					onClick={() => setModalOpen(true)}
 					startIcon={<FilterAltIcon />}
@@ -26,6 +33,7 @@ const LibraryFilters = ({
 					Filter
 				</Button>
 				<Button
+					disabled={disabled}
 					variant="outlined"
 					onClick={() => setSortModalOpen(true)}
 					startIcon={<SortIcon />}

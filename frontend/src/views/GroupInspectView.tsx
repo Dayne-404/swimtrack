@@ -4,7 +4,7 @@ import { Box, Paper, Stack, Typography } from '@mui/material';
 import { GROUPS } from '../config/groupsPLACEHOLDER';
 import BackButton from '../components/inputs/BackButton';
 
-export const GroupInspectView = () => {
+const GroupInspectView = () => {
 	const { groupId } = useParams();
 
 	const group = GROUPS.find((group) => group.id === groupId);
@@ -33,3 +33,5 @@ export const GroupInspectView = () => {
 		</Box>
 	);
 };
+
+export default GroupInspectView;

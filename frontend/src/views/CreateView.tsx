@@ -1,14 +1,15 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import WorksheetHeaderInputs from '../components/inputs/WorksheetHeaderInputs';
 import { Stack, Divider, IconButton } from '@mui/material';
 import StudentTable from '../components/inputs/StudentTable';
 import WorksheetFooterInputs from '../components/inputs/WorksheetFooterInputs';
 import CloseIcon from '@mui/icons-material/Close';
-import SnackbarAlert from '../components/layout/SnackbarAlert';
 import { useNavigate } from 'react-router-dom';
 import { newWorksheet } from '../config/worksheetType';
 import { SkillDescription } from '../config/levelSkillDescriptions';
 import { WORKSHEET_VALUES } from '../config/worksheetData';
+import { AlertContext } from '../App';
+import ViewHeader from '../components/layout/ViewHeader';
 interface CreateViewProps {
 	defaultValues?: Partial<newWorksheet>;
 	worksheetId?: string;
@@ -26,7 +27,6 @@ const DEFAULT_HEADER_VALUES: newWorksheet = {
 	students: [],
 };
 
-const AUTO_HIDE_DURATION = 6000;
 const CURRENT_YEAR = new Date().getFullYear();
 
 const CreateView = ({
@@ -35,7 +35,8 @@ const CreateView = ({
 	disabled = false,
 }: CreateViewProps) => {
 	const navigate = useNavigate();
-
+	const showAlert = useContext(AlertContext);
+	
 	const [header, setHeader] = useState<newWorksheet>({
 		...DEFAULT_HEADER_VALUES,
 		...defaultValues,
@@ -51,7 +52,6 @@ const CreateView = ({
 	const [validationErrors, setValidationErrors] = useState<{
 		[key: string]: string;
 	}>({});
-	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
 	const validateFields = () => {
 		const newErrors: { [key: string]: string } = {};
@@ -129,7 +129,8 @@ const CreateView = ({
 					? error.message
 					: 'An unkown error occurred';
 
-			setErrorMessage(errorMesage);
+			
+			showAlert(errorMesage || '', 'error');
 		} finally {
 			setIsLoading(false);
 		}
@@ -236,6 +237,7 @@ const CreateView = ({
 
 	const content = (
 		<Stack width="100%" spacing={2}>
+			<ViewHeader text='Create' />
 			<WorksheetHeaderInputs
 				errors={validationErrors}
 				worksheetHeader={header}
@@ -278,13 +280,7 @@ const CreateView = ({
 
 	return (
 		<>
-			<SnackbarAlert
-				open={Boolean(errorMessage)}
-				message={errorMessage}
-				setState={setErrorMessage}
-				autoHideDuration={AUTO_HIDE_DURATION}
-			/>
-			{content}
+		{content}
 		</>
 	);
 };

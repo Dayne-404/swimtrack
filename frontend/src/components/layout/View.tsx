@@ -1,13 +1,16 @@
-import { Typography, Paper } from '@mui/material';
+import {Paper } from '@mui/material';
 
 interface SectionHeaderProps {
-	headerText: string;
 	body?: React.ReactElement;
 	maxHeight?: number;
-	flex?: number, 
+	flex?: number;
 }
 
-const View = ({ headerText, body, flex=1, maxHeight }: SectionHeaderProps) => {
+const View = ({
+	body,
+	flex = 1,
+	maxHeight,
+}: SectionHeaderProps) => {
 	const paperStyle = {
 		display: 'flex',
 		padding: 1.5,
@@ -15,14 +18,7 @@ const View = ({ headerText, body, flex=1, maxHeight }: SectionHeaderProps) => {
 		flex: flex,
 	};
 
-	return (
-		<>
-			<Typography mb={1.5} variant="h5">
-				{headerText}
-			</Typography>
-			<Paper sx={paperStyle}>{body}</Paper>
-		</>
-	);
+	return <Paper sx={paperStyle}>{body}</Paper>;
 };
 
 export default View;

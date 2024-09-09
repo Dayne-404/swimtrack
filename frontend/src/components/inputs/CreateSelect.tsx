@@ -1,5 +1,7 @@
 import { TextField, MenuItem } from '@mui/material';
+import SelectMenuProps from '../../config/selectProps';
 import capitalizeFirstLetter from '../../helper/capitalizeFirstLetter';
+
 interface CreateSelectProps {
 	label: string;
 	menuItems?: string[];
@@ -18,6 +20,7 @@ const CreateSelect = ({
 	handleChange,
 	disabled = false,
 }: CreateSelectProps) => {
+	
 	return (
 		<TextField
 			select
@@ -29,6 +32,7 @@ const CreateSelect = ({
 			helperText={error ? error : ' '}
 			disabled={disabled}
 			fullWidth
+			SelectProps={SelectMenuProps}
 		>
 			{menuItems.map((item, index) => (
 				<MenuItem key={`${item}-${index}`} value={index}>
