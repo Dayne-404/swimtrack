@@ -5,7 +5,8 @@ const currentYear = new Date().getFullYear();
 const WorksheetSchema = mongoose.Schema(
     {
         instructor: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Instructor',
             required: [true, 'Instructor name required'],
         },
         level: {

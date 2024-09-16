@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const worksheetRoute = require('./routes/worksheet.route.js');
+const groupRoute = require('./routes/group.route.js')
+const instructorRoute = require('./routes/instructor.route.js')
 
 const uri =
 	'mongodb+srv://daynedell:JM3fX8dwa3CQ7DBH@cluster0.slzbw.mongodb.net/Worksheets?retryWrites=true&w=majority&appName=Cluster0';
@@ -10,11 +12,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.use('/api/instructors', instructorRoute);
 app.use('/api/worksheets', worksheetRoute);
-
-app.get('/', (req, res) => {
-	res.send('Hello from Node API');
-});
+app.use('/api/groups', groupRoute);
 
 mongoose
 	.connect(uri)

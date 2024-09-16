@@ -1,27 +1,36 @@
-import { Stack, CircularProgress } from '@mui/material';
-import FinderHeader from '../components/filter/Filter';
+import { Stack } from '@mui/material';
+import FinderHeader from '../components/filter/FilterHeader';
 import FinderCards from '../components/layout/FinderCards';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Worksheet } from '../config/worksheetType';
-import { fetchWorksheets } from '../helper/fetch';
+import { fetchWorksheets } from '../helper/worksheetFetch';
 import FilterModal from '../components/filter/FilterModal';
 import SortModal from '../components/filter/SortModal';
 import { AlertContext } from '../App';
+import Loading from '../components/layout/Loading';
 
 const DEFAULT_LIMIT = 9;
 
 interface FiltersByType {
-	[type: string]: (number | string)[];
+	[type: string]: (number | string)[]
 }
 
 const LibraryWorksheetSearch = () => {
+	const formatSortOptions = (sortOptions: {
+		[type: string]: number;
+	}): string => {
+		return Object.entries(sortOptions)
+			.map(([key, value]) => {
+				return value === 1 ? `&sort=-${key}` : `&sort=${key}`;
+			})
+			.join('');
+	};
+
 	const [selectedFilters, setSelectedFilters] = useState<FiltersByType>({});
-	const [sortOptions, setSortOptions] = useState<{ [type: string]: number }>(
-		{}
-	);
+	const [sortOptions, setSortOptions] = useState<{ [type: string]: number }>({'createdAt': 1});
 
 	const [formattedFilters, setFormattedFilters] = useState<string>('');
-	const [formattedSort, setFormattedSort] = useState<string>('');
+	const [formattedSort, setFormattedSort] = useState<string>(formatSortOptions(sortOptions));
 
 	const [moreWorksheets, setMoreWorksheets] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -46,16 +55,6 @@ const LibraryWorksheetSearch = () => {
 
 			return updatedOptions;
 		});
-	};
-
-	const formatSortOptions = (sortOptions: {
-		[type: string]: number;
-	}): string => {
-		return Object.entries(sortOptions)
-			.map(([key, value]) => {
-				return value === 1 ? `&sort=-${key}` : `&sort=${key}`;
-			})
-			.join('');
 	};
 
 	const handleFilterSelect = (type: string, filter: number | string) => {
@@ -205,9 +204,7 @@ const LibraryWorksheetSearch = () => {
 					setSortModalOpen={setIsSortModalOpen}
 				/>
 				{loading && worksheets.length === 0 ? (
-					<Stack width="100%" alignItems="center" pt={5}>
-						<CircularProgress size={60} />
-					</Stack>
+					<Loading />
 				) : (
 					<FinderCards
 						totalWorksheets={totalWorksheets}

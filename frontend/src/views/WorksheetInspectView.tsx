@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Worksheet } from '../config/worksheetType';
-import { fetchWorksheetById } from '../helper/fetch';
+import { fetchWorksheetById } from '../helper/worksheetFetch';
 import BackButton from '../components/inputs/BackButton';
 import CreateView from './CreateView';
 import { Button, Stack } from '@mui/material';

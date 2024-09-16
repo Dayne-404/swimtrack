@@ -1,10 +1,11 @@
-import { CircularProgress, Divider, Grid, Stack, Box, Typography } from '@mui/material';
-import { fetchWorksheetsByInstructor } from '../helper/fetch';
+import { Divider, Grid, Stack, Box, Typography } from '@mui/material';
+import { fetchWorksheetsByInstructor } from '../helper/worksheetFetch';
 import { useContext, useEffect, useRef, useState } from 'react';
 import WorksheetCard from '../components/cards/WorksheetCard';
 import { Worksheet } from '../config/worksheetType';
 import ViewHeader from '../components/layout/ViewHeader';
 import { AlertContext } from '../App';
+import Loading from '../components/layout/Loading';
 
 const Library = () => {
 	const [worksheets, setWorksheets] = useState<Worksheet[]>([]);
@@ -16,9 +17,10 @@ const Library = () => {
 		const getWorksheets = async () => {
 			try {
 				const data: Worksheet[] = await fetchWorksheetsByInstructor(
-					'Dayne'
+					'66e083d5e781e4ee0b2602e7'
 				);
 				setWorksheets(data);
+				console.log('DATA: ', data);
 				setLoading(false);
 			} catch (error) {
 				const errorMessage =
@@ -34,14 +36,6 @@ const Library = () => {
 
 		getWorksheets();
 	}, []);
-
-	const Loading = () => {
-		return (
-			<Stack width="100%" alignItems="center" pt={5}>
-				<CircularProgress size={60} />
-			</Stack>
-		);
-	};
 
 	return (
 		<>

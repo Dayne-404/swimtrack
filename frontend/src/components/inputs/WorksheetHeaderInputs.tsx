@@ -2,42 +2,47 @@ import { Stack, TextField, Grid } from '@mui/material';
 import CreateSelect from './CreateSelect';
 import { newWorksheet } from '../../config/worksheetType';
 import { WORKSHEET_VALUES } from '../../config/worksheetData';
+import GroupSearch from './GroupSearch';
 
 interface WorksheetHeaderInputsProps {
 	worksheetHeader: newWorksheet;
 	errors: { [key: string]: string };
 	disabled?: boolean;
+	handleGroupChange: (e: string | null) => void;
 	handleLevelChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	handleHeaderChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const WorksheetHeaderInputs = ({
-	worksheetHeader, 
+	worksheetHeader,
 	errors,
+	handleGroupChange,
 	handleLevelChange,
 	handleHeaderChange,
 	disabled = false,
 }: WorksheetHeaderInputsProps) => {
+	
 	return (
 		<Stack>
-			<Stack direction='row' spacing={1}>
+			<Stack direction="row" spacing={1}>
 				<TextField
 					disabled
 					label="Instructor"
-					defaultValue={worksheetHeader.instructor}
+					defaultValue={
+						typeof worksheetHeader.instructor === 'string'
+							? worksheetHeader.instructor
+							: worksheetHeader.instructor.name
+					}
 					InputProps={{
 						readOnly: true,
 					}}
-					sx={{width: '150%'}}
+					sx={{ width: '150%' }}
 					error={!!errors.instructor}
 					helperText={errors.instructor ? errors.instructor : ' '}
 				/>
-				<CreateSelect
-					disabled = {disabled}
-					label="group"
-					menuItems={['RandomGroup1', 'RandomGroup2']}
-					error={errors.level}
-				/>
+				
+				<GroupSearch instructorId='66e083d5e781e4ee0b2602e7' handleGroupChange={handleGroupChange} />
+
 			</Stack>
 			<Stack direction="row" spacing={1}>
 				<CreateSelect
@@ -63,8 +68,8 @@ const WorksheetHeaderInputs = ({
 						disabled={disabled}
 						fullWidth
 						label="Year"
-						name='year'
-						type='number'
+						name="year"
+						type="number"
 						value={worksheetHeader.year || ''}
 						error={!!errors.year}
 						helperText={errors.year}
@@ -86,7 +91,7 @@ const WorksheetHeaderInputs = ({
 						disabled={disabled}
 						fullWidth
 						label="Time"
-						name='time'
+						name="time"
 						value={worksheetHeader.time}
 						error={!!errors.time}
 						helperText={errors.time}

@@ -3,10 +3,14 @@ export interface Student {
 	skills: boolean[];
 	passed: boolean;
 }
+export interface Instructor {
+	_id: string;
+	name: string;
+}
 
 export interface Worksheet {
 	_id: string;
-	instructor: string;
+	instructor: Instructor | string;
 	level: number;
 	session: number;
 	day: number;
@@ -19,7 +23,7 @@ export interface Worksheet {
 }
 
 export interface newWorksheet {
-	instructor: string;
+	instructor: Instructor | string;
 	level: number | null;
 	session: number | null;
 	day: number | null;

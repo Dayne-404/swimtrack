@@ -128,12 +128,12 @@ const SortModal = ({
 						key={`$createdOn-select`}
 						fullWidth
 						select
-						label='Created On'
-						value={sortOptions.createdOn || 1}
-						onChange={(event) => handleChange('createdOn', Number(event.target.value))}
+						label='Created At'
+						value={sortOptions.createdAt || 1}
+						onChange={(event) => handleChange('createdAt', Number(event.target.value))}
 					>
 						<MenuItem key={'createdAt-recent'} value={1}>
-							{'Recent'}
+							{'Newest'}
 						</MenuItem>
 						<MenuItem key={'createdAt-oldest'} value={2}>
 							{'Oldest'}

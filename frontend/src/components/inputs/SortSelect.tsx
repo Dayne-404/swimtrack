@@ -12,6 +12,7 @@ const SortSelect = ({ menuItems }: SortSelectProps) => {
 		<TextField
 			size="small"
 			value={sortOption}
+			label='Sort'
 			onChange={(e) => setSortOption(e.target.value)}
 			fullWidth
 			select

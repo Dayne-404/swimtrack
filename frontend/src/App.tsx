@@ -79,6 +79,7 @@ function App() {
 						<SnackbarAlert
 							open={snackbarState.open}
 							message={snackbarState.message}
+							severity={snackbarState.severity}
 							setState={setSnackbarState}
 						/>
 						<View

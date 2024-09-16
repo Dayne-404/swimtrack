@@ -5,7 +5,7 @@ interface ViewHeaderProps {
 }
 
 const ViewHeader = ({ text }: ViewHeaderProps) => {
-	return <Typography variant="h5"> {text} </Typography>;
+	return <Typography variant="h5" gutterBottom> {text} </Typography>;
 };
 
 export default ViewHeader;

@@ -15,43 +15,45 @@ import SearchIcon from '@mui/icons-material/Search';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 export const SIDE_NAV_ROUTES = {
-    // Dashboard: { icon: <SpeedIcon />, to: '/', element: <Dashboard /> },
-    Library: { icon: <FolderIcon />, to: '/library', element: <Library /> },
-    // Groups: {
-    // 	icon: <FolderSpecialIcon />,
-    // 	to: '/groups',
-    // 	element: <GroupView />,
-    // },
-    Create: { icon: <EditIcon />, to: '/create', element: <Create /> },
-    Finder: { icon: <SearchIcon />, to: '/finder', element: <Finder /> },
-    // Programs: {
-    // 	icon: <ScubaDivingIcon />,
-    // 	to: '/programs',
-    // 	element: <Dashboard />,
-    // },
+	Dashboard: { icon: <SpeedIcon />, to: '/', element: <Dashboard /> },
+	Library: { icon: <FolderIcon />, to: '/library', element: <Library /> },
+	Groups: {
+		icon: <FolderSpecialIcon />,
+		to: '/groups',
+		element: <GroupView />,
+	},
+	Create: { icon: <EditIcon />, to: '/create', element: <Create /> },
+	Finder: { icon: <SearchIcon />, to: '/finder', element: <Finder /> },
+	Programs: {
+		icon: <ScubaDivingIcon />,
+		to: '/programs',
+		element: <Dashboard />,
+	},
 };
 
 export const SIDE_NAV_BOTTOM_ROUTES = {
-    Settings: {
-        icon: <SettingsIcon />,
-        to: '/settings',
-        element: <Dashboard />,
-    },
-    Profile: { to: '/profile', element: <Dashboard />},
+	Settings: {
+		icon: <SettingsIcon />,
+		to: '/settings',
+		element: <Dashboard />,
+	},
+	Profile: { to: '/profile', element: <Dashboard /> },
 };
 
 export const EXTRA_ROUTES = {
-    GroupInspect: { to: '/groups/:groupId', element: <GroupInspect />},
-    InstructorInspect: {
-        to: '/library/:worksheetId',
-        element: <WorksheetInspect backText="Library" to="/library" />},
-    FinderInspect: {
-        to: '/finder/:worksheetId',
-        element: <WorksheetInspect backText="Finder" to="/finder" />},
+	GroupInspect: { to: '/groups/:groupId', element: <GroupInspect /> },
+	InstructorInspect: {
+		to: '/library/:worksheetId',
+		element: <WorksheetInspect backText="Library" to="/library" />,
+	},
+	FinderInspect: {
+		to: '/finder/:worksheetId',
+		element: <WorksheetInspect backText="Finder" to="/finder" />,
+	},
 };
 
 export const ALL_ROUTES = {
-    ...SIDE_NAV_ROUTES,
-    ...SIDE_NAV_BOTTOM_ROUTES,
-    ...EXTRA_ROUTES,
+	...SIDE_NAV_ROUTES,
+	...SIDE_NAV_BOTTOM_ROUTES,
+	...EXTRA_ROUTES,
 };

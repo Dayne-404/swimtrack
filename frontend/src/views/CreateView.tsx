@@ -10,6 +10,7 @@ import { SkillDescription } from '../config/levelSkillDescriptions';
 import { WORKSHEET_VALUES } from '../config/worksheetData';
 import { AlertContext } from '../App';
 import ViewHeader from '../components/layout/ViewHeader';
+import AddToGroupModal from '../components/filter/AddToGroupModal';
 interface CreateViewProps {
 	defaultValues?: Partial<newWorksheet>;
 	worksheetId?: string;
@@ -17,7 +18,7 @@ interface CreateViewProps {
 }
 
 const DEFAULT_HEADER_VALUES: newWorksheet = {
-	instructor: 'Dayne',
+	instructor: { _id: '66e0841ce781e4ee0b2602f1', name: 'Greg P' },
 	level: null,
 	session: null,
 	day: null,
@@ -36,7 +37,7 @@ const CreateView = ({
 }: CreateViewProps) => {
 	const navigate = useNavigate();
 	const showAlert = useContext(AlertContext);
-	
+
 	const [header, setHeader] = useState<newWorksheet>({
 		...DEFAULT_HEADER_VALUES,
 		...defaultValues,
@@ -48,6 +49,7 @@ const CreateView = ({
 			: []
 	);
 
+	const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
 	const [loading, setIsLoading] = useState<boolean>(false);
 	const [validationErrors, setValidationErrors] = useState<{
 		[key: string]: string;
@@ -96,12 +98,17 @@ const CreateView = ({
 			uri += `/${worksheetId}`;
 		}
 
+		const instructorId =
+			typeof header.instructor === 'string'
+				? header.instructor
+				: header.instructor._id;
+
 		const worksheetJSON = JSON.stringify({
 			...header,
+			instructor: instructorId,
 			year: Number(header.year),
 		});
 
-		console.log('SENDING: ', worksheetJSON);
 		try {
 			setIsLoading(true);
 
@@ -121,15 +128,15 @@ const CreateView = ({
 			}
 
 			const result = await res.json();
+
 			if (result._id && !worksheetId) navigate(`/library/${result._id}`);
-			console.log(result);
+			showAlert('Sucessfully created worksheet', 'success');
 		} catch (error) {
 			const errorMesage =
 				error instanceof Error
 					? error.message
 					: 'An unkown error occurred';
 
-			
 			showAlert(errorMesage || '', 'error');
 		} finally {
 			setIsLoading(false);
@@ -237,10 +244,11 @@ const CreateView = ({
 
 	const content = (
 		<Stack width="100%" spacing={2}>
-			<ViewHeader text='Create' />
+			<ViewHeader text="Create" />
 			<WorksheetHeaderInputs
 				errors={validationErrors}
 				worksheetHeader={header}
+				handleGroupChange={setSelectedGroupId}
 				handleLevelChange={handleLevelChange}
 				handleHeaderChange={handleHeaderChange}
 				disabled={disabled || loading}
@@ -278,11 +286,7 @@ const CreateView = ({
 		</Stack>
 	);
 
-	return (
-		<>
-		{content}
-		</>
-	);
+	return <>{content}</>;
 };
 
 export default CreateView;

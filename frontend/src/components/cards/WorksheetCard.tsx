@@ -43,7 +43,10 @@ const WorksheetCard = ({
 					<Divider />
 					{IncludeInstructor && (
 						<Typography variant="body1">
-							Instructor: {instructor}
+							Instructor:{' '}
+							{typeof instructor === 'string'
+								? instructor
+								: instructor.name}
 						</Typography>
 					)}
 					<Typography variant="body1">
