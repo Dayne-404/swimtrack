@@ -3,25 +3,60 @@ import CreateSelect from './CreateSelect';
 import { newWorksheet } from '../../config/worksheetType';
 import { WORKSHEET_VALUES } from '../../config/worksheetData';
 import GroupSearch from './GroupSearch';
+import { SkillDescription } from '../../config/levelSkillDescriptions';
 
 interface WorksheetHeaderInputsProps {
-	worksheetHeader: newWorksheet;
+	values: newWorksheet;
+	setGroupId: React.Dispatch<React.SetStateAction<string | null>>;
+	setHeader: React.Dispatch<React.SetStateAction<newWorksheet>>;
+	setSkills: React.Dispatch<React.SetStateAction<SkillDescription>>;
 	errors: { [key: string]: string };
 	disabled?: boolean;
-	handleGroupChange: (e: string | null) => void;
-	handleLevelChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	handleHeaderChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const WorksheetHeaderInputs = ({
-	worksheetHeader,
+	values,
+	setHeader,
+	setSkills,
+	setGroupId,
 	errors,
-	handleGroupChange,
-	handleLevelChange,
-	handleHeaderChange,
 	disabled = false,
 }: WorksheetHeaderInputsProps) => {
-	
+	const handleLevelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const newLevel = parseInt(event.target.value);
+		const newSkills = WORKSHEET_VALUES.levels.descriptions[newLevel];
+
+		setSkills(newSkills);
+		setHeader((prevValues) => ({
+			...prevValues,
+			level: newLevel,
+			students:
+				prevValues.students.length > 0
+					? prevValues.students.map((student) => ({
+							...student,
+							skills: Array(newSkills.length).fill(false),
+					  }))
+					: [
+							{
+								name: '',
+								skills: Array(newSkills.length).fill(false),
+								passed: false,
+							},
+					  ],
+		}));
+	};
+
+	const handleHeaderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target;
+
+		if (name in values) {
+			setHeader((prevValues) => ({
+				...prevValues,
+				[name]: value,
+			}));
+		}
+	};
+
 	return (
 		<Stack>
 			<Stack direction="row" spacing={1}>
@@ -29,9 +64,9 @@ const WorksheetHeaderInputs = ({
 					disabled
 					label="Instructor"
 					defaultValue={
-						typeof worksheetHeader.instructor === 'string'
-							? worksheetHeader.instructor
-							: worksheetHeader.instructor.name
+						typeof values.instructor === 'string'
+							? values.instructor
+							: values.instructor.name
 					}
 					InputProps={{
 						readOnly: true,
@@ -40,15 +75,17 @@ const WorksheetHeaderInputs = ({
 					error={!!errors.instructor}
 					helperText={errors.instructor ? errors.instructor : ' '}
 				/>
-				
-				<GroupSearch instructorId='66e083d5e781e4ee0b2602e7' handleGroupChange={handleGroupChange} />
 
+				<GroupSearch
+					instructorId="66e083d5e781e4ee0b2602e7"
+					handleGroupChange={setGroupId}
+				/>
 			</Stack>
 			<Stack direction="row" spacing={1}>
 				<CreateSelect
 					disabled={disabled}
 					label="level"
-					value={worksheetHeader.level}
+					value={values.level}
 					menuItems={WORKSHEET_VALUES.levels.names}
 					error={errors.level}
 					handleChange={handleLevelChange}
@@ -56,7 +93,7 @@ const WorksheetHeaderInputs = ({
 				<CreateSelect
 					disabled={disabled}
 					label="session"
-					value={worksheetHeader.session}
+					value={values.session}
 					menuItems={WORKSHEET_VALUES.sessions}
 					error={errors.session}
 					handleChange={handleHeaderChange}
@@ -70,7 +107,7 @@ const WorksheetHeaderInputs = ({
 						label="Year"
 						name="year"
 						type="number"
-						value={worksheetHeader.year || ''}
+						value={values.year || ''}
 						error={!!errors.year}
 						helperText={errors.year}
 						onChange={handleHeaderChange}
@@ -80,7 +117,7 @@ const WorksheetHeaderInputs = ({
 					<CreateSelect
 						disabled={disabled}
 						label="day"
-						value={worksheetHeader.day}
+						value={values.day}
 						menuItems={WORKSHEET_VALUES.days}
 						error={errors.day}
 						handleChange={handleHeaderChange}
@@ -92,7 +129,7 @@ const WorksheetHeaderInputs = ({
 						fullWidth
 						label="Time"
 						name="time"
-						value={worksheetHeader.time}
+						value={values.time}
 						error={!!errors.time}
 						helperText={errors.time}
 						onChange={handleHeaderChange}
@@ -102,7 +139,7 @@ const WorksheetHeaderInputs = ({
 					<CreateSelect
 						disabled={disabled}
 						label="location"
-						value={worksheetHeader.location}
+						value={values.location}
 						menuItems={WORKSHEET_VALUES.locations}
 						error={errors.location}
 						handleChange={handleHeaderChange}

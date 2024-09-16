@@ -107,6 +107,7 @@ const WorksheetInspectView = ({ backText, to }: WorksheetInspectViewProps) => {
 					worksheetId={worksheet._id}
 					defaultValues={worksheet}
 					disabled={!editing}
+					setDisabled={setEditing}
 				/>
 			)}
 		</Stack>

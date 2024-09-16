@@ -2,20 +2,36 @@ import { Grid, Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import CheckIcon from '@mui/icons-material/Check';
 import LoadingButton from './LoadingButton';
+import { newWorksheet } from '../../config/worksheetType';
 
 interface WorksheetFooterInputs {
-	loading: boolean;
-	disabled?: boolean;
-	addStudent: () => void;
+	numSkills: number;
+	setHeader: React.Dispatch<React.SetStateAction<newWorksheet>>;
 	submit: () => void;
+	loading?: boolean;
+	disabled?: boolean;
 }
 
 const WorksheetFooterInputs = ({
-	disabled = false,
-	loading,
-	addStudent,
+	numSkills,
+	setHeader,
 	submit,
+	loading = false,
+	disabled = false,
 }: WorksheetFooterInputs) => {
+	const addStudent = () => {
+		const newStudent = {
+			name: '',
+			skills: Array(numSkills).fill(false),
+			passed: false,
+		};
+
+		setHeader((prevValues) => ({
+			...prevValues,
+			students: [...prevValues.students, newStudent],
+		}));
+	};
+
 	return (
 		<Grid
 			container
@@ -25,7 +41,7 @@ const WorksheetFooterInputs = ({
 		>
 			<Grid item xs={12} md={2}>
 				<Button
-					disabled={disabled}
+					disabled={disabled || loading}
 					variant="contained"
 					onClick={addStudent}
 					startIcon={<AddIcon />}
@@ -39,7 +55,7 @@ const WorksheetFooterInputs = ({
 					text={'submit'}
 					onClick={submit}
 					startIcon={<CheckIcon />}
-					disabled={disabled}
+					disabled={disabled || loading}
 					loading={loading}
 				/>
 			</Grid>
