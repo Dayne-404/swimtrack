@@ -16,7 +16,8 @@ import { validateFields } from '../helper/validate';
 import {
 	submitNewWorksheet,
 	submitUpdatedWorksheet,
-} from '../helper/submitWorksheet';
+	submitWorksheetToGroups,
+} from '../helper/submit';
 interface CreateViewProps {
 	defaultValues?: Partial<newWorksheet>;
 	worksheetId?: string;
@@ -25,7 +26,7 @@ interface CreateViewProps {
 }
 
 const DEFAULT_HEADER_VALUES: newWorksheet = {
-	instructor: { _id: '66e0841ce781e4ee0b2602f1', name: 'Greg P' },
+	instructor: { _id: '66e083d5e781e4ee0b2602e7', name: 'Dayne D' },
 	level: null,
 	session: null,
 	day: null,
@@ -55,7 +56,9 @@ const CreateView = ({
 			: []
 	);
 
-	const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
+	const [selectedGroups, setSelectedGroups] = useState<
+		{ id: string; name: string }[]
+	>([]);
 
 	const [loading, setIsLoading] = useState<boolean>(false);
 	const [validationErrors, setValidationErrors] = useState<{
@@ -76,14 +79,19 @@ const CreateView = ({
 				? await submitNewWorksheet(header)
 				: await submitUpdatedWorksheet(worksheetId, header);
 
-			setIsLoading(false);
 			if (result._id && !worksheetId) {
+				if(selectedGroups.length > 0)
+					addToGroup(result._id);
 				showAlert('Sucessfully created worksheet', 'success');
+				setIsLoading(false);
 				navigate(`/library/${result._id}`);
 			} else {
+				if(selectedGroups.length > 0 && worksheetId)
+					addToGroup(worksheetId);
 				showAlert('Sucessfully updated worksheet', 'success');
 				setDisabled && setDisabled(false);
 			}
+			setIsLoading(false);
 		} catch (error) {
 			setIsLoading(false);
 			const errorMesage =
@@ -92,6 +100,17 @@ const CreateView = ({
 					: 'An unkown error occurred';
 
 			showAlert(errorMesage || '', 'error');
+		}
+	};
+
+	const addToGroup = async (worksheetId: string) => {
+		try {
+			submitWorksheetToGroups(
+				worksheetId,
+				selectedGroups.map((group) => group.id)
+			);
+		} catch {
+			console.error('ERROR ADDING TO GROUPS');
 		}
 	};
 
@@ -110,7 +129,8 @@ const CreateView = ({
 			<ViewHeader text="Create" />
 			<WorksheetHeaderInputs
 				values={header}
-				setGroupId={setSelectedGroupId}
+				selectedGroups={selectedGroups}
+				setSelectedGroups={setSelectedGroups}
 				setHeader={setHeader}
 				setSkills={setSkills}
 				errors={validationErrors}

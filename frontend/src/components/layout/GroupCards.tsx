@@ -8,17 +8,34 @@ import {
 } from '../../helper/groupFetch';
 import Loading from './Loading';
 
-const GroupCards = () => {
+interface GroupCardsProps {
+	sortOption?: number;
+}
+
+const GroupCards = ({ sortOption }: GroupCardsProps) => {
 	const [groups, setGroups] = useState<Group[]>([]);
 	const [totalGroups, setTotalGroups] = useState<number>(0);
 	const [loading, setLoading] = useState<boolean>(false);
+
+	//Turn into a helper function
+	const formatSortOption = (sortOption?: number): string => {
+		console.log('FORMAT SORT OPTION');
+
+		if (sortOption)
+			return sortOption === 1 ? '&sort=createdAt' : '&sort=-createdAt';
+
+		return '';
+	};
 
 	useEffect(() => {
 		const getWorksheets = async () => {
 			setLoading(true);
 			try {
 				const data: FetchGroupsResponse = await fetchGroupsByInstructor(
-					{ instructorId: '66e083d5e781e4ee0b2602e7' }
+					{
+						instructorId: '66e083d5e781e4ee0b2602e7',
+						sorting: formatSortOption(sortOption),
+					}
 				);
 
 				setGroups(data.groups);
@@ -36,7 +53,7 @@ const GroupCards = () => {
 		};
 
 		getWorksheets();
-	}, []);
+	}, [sortOption]);
 
 	return (
 		<>

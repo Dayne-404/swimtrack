@@ -5,6 +5,11 @@ import Loading from './Loading';
 
 interface WorksheetGridProps {
 	worksheets?: Worksheet[];
+	selectable?: {
+		canSelect: boolean;
+		selected: string[];
+		setSelected: React.Dispatch<React.SetStateAction<string[]>>;
+	};
 	includeInstructor?: boolean;
 	loading?: boolean;
 	numWorksheets?: {
@@ -20,7 +25,18 @@ const WorksheetGrid = ({
 	loading = false,
 	numWorksheets,
 	BottomButton,
+	selectable,
 }: WorksheetGridProps) => {
+	const handleSelectWorksheet = (worksheetId: string) => {
+		if (!selectable) return;
+
+		selectable.setSelected((prevSelected) =>
+			prevSelected.includes(worksheetId)
+				? prevSelected.filter((id) => id !== worksheetId)
+				: [...prevSelected, worksheetId]
+		);
+	};
+
 	if (loading) {
 		return <Loading />;
 	}
@@ -46,8 +62,14 @@ const WorksheetGrid = ({
 			{worksheets.map((worksheet) => (
 				<Grid item xs={12} sm={6} md={4} p={0.5} key={worksheet._id}>
 					<WorksheetCard
+						onClick={
+							selectable?.canSelect
+								? () => handleSelectWorksheet(worksheet._id)
+								: undefined
+						}
 						worksheet={worksheet}
 						IncludeInstructor={includeInstructor}
+						selected={selectable?.selected.includes(worksheet._id)}
 					/>
 				</Grid>
 			))}

@@ -8,12 +8,24 @@ interface WorksheetCardProps {
 	worksheet: Worksheet;
 	IncludeInstructor?: boolean;
 	IncludeUpdatedAt?: boolean;
+	onClick?: () => void;
+	disabled?: boolean;
+	selected?: boolean;
 }
+
+const WorksheetCardSelectedSx = {
+	width: '100%',
+	backgroundColor: 'grey.300',
+	transition: 'background-color 0.3s',
+};
 
 const WorksheetCard = ({
 	worksheet,
 	IncludeInstructor = false,
 	IncludeUpdatedAt = false,
+	onClick,
+	disabled = false,
+	selected = false,
 }: WorksheetCardProps) => {
 	const navigate = useNavigate();
 
@@ -33,9 +45,17 @@ const WorksheetCard = ({
 	return (
 		<ButtonBase
 			sx={{ width: '100%', textAlign: 'left' }}
-			onClick={() => navigate(_id)}
+			onClick={() => (onClick ? onClick() : navigate(_id))}
+			disabled={disabled}
 		>
-			<Paper elevation={2} sx={{ width: '100%' }}>
+			<Paper
+				elevation={2}
+				sx={
+					selected
+						? WorksheetCardSelectedSx
+						: { width: '100%', transition: 'background-color 0.3s' }
+				}
+			>
 				<Box p={2}>
 					<Typography variant="h6">
 						{WORKSHEET_VALUES.levels.names[level]}

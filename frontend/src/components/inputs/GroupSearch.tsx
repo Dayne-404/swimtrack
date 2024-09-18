@@ -5,21 +5,29 @@ import {
 	FetchGroupsResponse,
 } from '../../helper/groupFetch';
 import { Group } from '../../config/groupType';
+import { useNavigate } from 'react-router-dom';
 
 interface GroupSearchProps {
 	label?: string;
 	instructorId: string;
-    handleGroupChange: (e: string | null) => void;
+	size: 'small' | 'medium';
+	handleGroupChange?: (e: string | null, name: string | null) => void;
 }
 
-const GroupSearch = ({label = 'Add to Group', instructorId, handleGroupChange }: GroupSearchProps) => {
+const GroupSearch = ({
+	label = 'Add to Group',
+	instructorId,
+	handleGroupChange,
+	size,
+}: GroupSearchProps) => {
 	const [searchTerm, setSearchTerm] = useState<string>('');
 	const [options, setOptions] = useState<Group[]>([]);
 	const [loading, setLoading] = useState<boolean>(false);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchGroupNames = async () => {
-            setLoading(true);
+			setLoading(true);
 			try {
 				const data: FetchGroupsResponse = await fetchGroupsByInstructor(
 					{
@@ -42,16 +50,30 @@ const GroupSearch = ({label = 'Add to Group', instructorId, handleGroupChange }:
 		return () => clearTimeout(delayDebounceFn);
 	}, [searchTerm, instructorId]);
 
-	const handleChange = (_event: React.SyntheticEvent, newValue: Group | null) => {
-		handleGroupChange(newValue ? newValue._id : null);
+	const handleChange = (
+		_event: React.SyntheticEvent,
+		newValue: Group | null
+	) => {
+		if (handleGroupChange) {
+			handleGroupChange(
+				newValue ? newValue._id : null,
+				newValue ? newValue.name : null
+			);
+		} else {
+			if (newValue) navigate(newValue._id);
+		}
 	};
 
-    const handleInputChange = (_event: React.SyntheticEvent, newInputValue: string) => {
+	const handleInputChange = (
+		_event: React.SyntheticEvent,
+		newInputValue: string
+	) => {
 		setSearchTerm(newInputValue);
 	};
 
 	return (
 		<Autocomplete
+			size={size}
 			fullWidth
 			loading={loading}
 			options={options}
@@ -59,7 +81,7 @@ const GroupSearch = ({label = 'Add to Group', instructorId, handleGroupChange }:
 			isOptionEqualToValue={(option: Group, value: Group | null) =>
 				option._id === value?._id
 			}
-            onInputChange={handleInputChange}
+			onInputChange={handleInputChange}
 			onChange={handleChange}
 			renderInput={(params) => (
 				<TextField

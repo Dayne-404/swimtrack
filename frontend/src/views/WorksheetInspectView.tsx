@@ -1,16 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Worksheet } from '../config/worksheetType';
 import { fetchWorksheetById } from '../helper/worksheetFetch';
 import BackButton from '../components/inputs/BackButton';
 import CreateView from './CreateView';
-import { Button, Stack } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import { deleteWorksheetById } from '../helper/delete';
 import { useNavigate } from 'react-router-dom';
-import DeleteModal from '../components/navigation/DeleteModal';
+import DeleteButton from '../components/inputs/DeleteButton';
+import { WORKSHEET_LEVELS } from '../config/worksheetData';
+import { AlertContext } from '../App';
 
 interface WorksheetInspectViewProps {
 	backText: string;
@@ -21,10 +22,11 @@ const WorksheetInspectView = ({ backText, to }: WorksheetInspectViewProps) => {
 	const { worksheetId } = useParams();
 	const [worksheet, setWorksheet] = useState<Worksheet>();
 	const [editing, setEditing] = useState<boolean>(false);
-	const [modalOpen, setModalOpen] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [resetKey, setResetKey] = useState<number>(0);
 	const navigate = useNavigate();
+	const showAlert = useContext(AlertContext);
+	const showAlertRef = useRef(showAlert);
 
 	useEffect(() => {
 		const getWorksheet = async () => {
@@ -47,12 +49,17 @@ const WorksheetInspectView = ({ backText, to }: WorksheetInspectViewProps) => {
 			setLoading(true);
 			await deleteWorksheetById(worksheetId);
 		} catch (error) {
-			setLoading(false);
-			console.log('Error deleting');
+			const errorMessage =
+				error instanceof Error
+					? error.message
+					: 'An unkown error occurred';
+			showAlertRef.current(
+				`Error deleting the group: ${errorMessage}`,
+				'error'
+			);
 		} finally {
-			setModalOpen(false);
 			setLoading(false);
-			console.log('Success deleting');
+			showAlertRef.current('Sucessfully deleted worksheet', 'success');
 			navigate('/library');
 		}
 	};
@@ -68,13 +75,6 @@ const WorksheetInspectView = ({ backText, to }: WorksheetInspectViewProps) => {
 
 	return (
 		<Stack width="100%" spacing={1.5}>
-			<DeleteModal
-				open={modalOpen}
-				headerText="Are you sure you want to delete?"
-				loading={loading}
-				onCancel={() => setModalOpen(false)}
-				handleDelete={handleDelete}
-			/>
 			<Stack
 				direction="row"
 				alignItems="center"
@@ -91,13 +91,21 @@ const WorksheetInspectView = ({ backText, to }: WorksheetInspectViewProps) => {
 					>
 						{!editing ? <EditIcon /> : 'Cancel'}
 					</Button>
-					<Button
-						color="primary"
-						variant="outlined"
-						onClick={() => setModalOpen(true)}
-					>
-						<DeleteIcon />
-					</Button>
+
+					<DeleteButton
+						loading={loading}
+						handleDelete={handleDelete}
+						innerModal={
+							<Typography>
+								You will be deleting this{' '}
+								{worksheet?.level || worksheet?.level === 0
+									? WORKSHEET_LEVELS.names[worksheet.level]
+									: 'undefined'}{' '}
+								worksheet with {worksheet?.students.length}{' '}
+								student{'(s)'}
+							</Typography>
+						}
+					/>
 				</Stack>
 			</Stack>
 

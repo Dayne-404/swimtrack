@@ -2,6 +2,7 @@ import { Stack, Button, Divider } from '@mui/material';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SortIcon from '@mui/icons-material/Sort';
 import SearchBar from '../inputs/SearchBar';
+import InstructorSearch from '../inputs/InstructorSearch';
 
 
 interface FilterHeaderProps {
@@ -17,7 +18,7 @@ const FilterHeader = ({
 }: FilterHeaderProps) => {
 	return (
 		<>
-			<SearchBar size="small" width="100%" placeholderText="Search" disabled={disabled} />
+			<InstructorSearch label='Search' size='small' disabled={disabled} />
 			<Stack direction="row" spacing={1}>
 				<Button
 					disabled={disabled}

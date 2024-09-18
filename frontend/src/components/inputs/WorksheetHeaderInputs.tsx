@@ -1,13 +1,16 @@
-import { Stack, TextField, Grid } from '@mui/material';
+import { Stack, TextField, Grid, Button } from '@mui/material';
 import CreateSelect from './CreateSelect';
 import { newWorksheet } from '../../config/worksheetType';
 import { WORKSHEET_VALUES } from '../../config/worksheetData';
-import GroupSearch from './GroupSearch';
 import { SkillDescription } from '../../config/levelSkillDescriptions';
+import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
+import AddToGroupModal from '../filter/AddToGroupModal';
+import { useState } from 'react';
 
 interface WorksheetHeaderInputsProps {
 	values: newWorksheet;
-	setGroupId: React.Dispatch<React.SetStateAction<string | null>>;
+	selectedGroups: { id: string; name: string }[];
+	setSelectedGroups: React.Dispatch<React.SetStateAction<{ id: string; name: string }[]>>;
 	setHeader: React.Dispatch<React.SetStateAction<newWorksheet>>;
 	setSkills: React.Dispatch<React.SetStateAction<SkillDescription>>;
 	errors: { [key: string]: string };
@@ -16,12 +19,15 @@ interface WorksheetHeaderInputsProps {
 
 const WorksheetHeaderInputs = ({
 	values,
+	selectedGroups,
+	setSelectedGroups,
 	setHeader,
 	setSkills,
-	setGroupId,
 	errors,
 	disabled = false,
 }: WorksheetHeaderInputsProps) => {
+	const [modalOpen, setModalOpen] = useState<boolean>(false);
+
 	const handleLevelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const newLevel = parseInt(event.target.value);
 		const newSkills = WORKSHEET_VALUES.levels.descriptions[newLevel];
@@ -76,9 +82,22 @@ const WorksheetHeaderInputs = ({
 					helperText={errors.instructor ? errors.instructor : ' '}
 				/>
 
-				<GroupSearch
+				<Button
+					disabled={disabled}
+					variant="outlined"
+					startIcon={<CreateNewFolderIcon />}
+					fullWidth
+					sx={{ height: '56px' }}
+					onClick={() => setModalOpen(true)}
+				>
+					Add to Group
+				</Button>
+				<AddToGroupModal
+					selectedGroups={selectedGroups}
+					setSelectedGroups={setSelectedGroups}
+					open={modalOpen}
+					setOpen={setModalOpen}
 					instructorId="66e083d5e781e4ee0b2602e7"
-					handleGroupChange={setGroupId}
 				/>
 			</Stack>
 			<Stack direction="row" spacing={1}>

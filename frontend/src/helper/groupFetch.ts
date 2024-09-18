@@ -46,7 +46,7 @@ export const fetchGroupsByInstructor = async ({
 export const fetchGroupById = async ({
 	groupId,
 }: fetchGroupByIdProps): Promise<FetchedGroup> => {
-	const uri = `http://localhost:3000/api/groups/${groupId}/worksheets`;
+	const uri = `http://localhost:3000/api/groups/${groupId}/worksheets`; 
 
 	const res = await fetch(uri);
 
