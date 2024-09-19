@@ -1,39 +1,40 @@
-import { CircularProgress, Grid, Stack } from '@mui/material';
-import View from '../components/layout/View';
-import { fetchWorksheetsByInstructor } from '../helper/fetch';
-import { useEffect, useState } from 'react';
-import WorksheetCard from '../components/cards/WorksheetCard';
+import { Divider, Stack, Typography } from '@mui/material';
+import { fetchWorksheetsByInstructor } from '../helper/worksheetFetch';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Worksheet } from '../config/worksheetType';
-import SnackbarAlert from '../components/layout/SnackbarAlert';
+import ViewHeader from '../components/layout/ViewHeader';
+import { AlertContext } from '../App';
 
-interface SnackbarState {
-	open: boolean;
-	message: string;
-	severity: 'success' | 'error';
-}
+import LibraryCards from '../components/layout/LibraryCards';
+import LibraryGroups from '../components/layout/LibraryGroups';
+import LibraryHeader from '../components/layout/LibraryHeader';
 
 const Library = () => {
 	const [worksheets, setWorksheets] = useState<Worksheet[]>([]);
-	const [loading, setLoading] = useState<boolean>(true);
-	const [snackBarState, setSnackbarState] = useState<SnackbarState>({
-		open: false,
-		message: '',
-		severity: 'error',
-	});
+	const [totalCount, setTotalCount] = useState<number>(0);
+	const [loading, setLoading] = useState<boolean>(false);
+	const showAlert = useContext(AlertContext);
+	const showAlertRef = useRef(showAlert);
 
 	useEffect(() => {
 		const getWorksheets = async () => {
+			setLoading(true);
 			try {
-				const data: Worksheet[] = await fetchWorksheetsByInstructor(
-					'Dayne'
-				);
-				setWorksheets(data);
-			} catch (error) {
-				setSnackbarState({
-					open: true,
-					message: `${error}`,
-					severity: 'error',
+				const data = await fetchWorksheetsByInstructor({
+					instructor: '66e083d5e781e4ee0b2602e7',
+					limit: 30,
+					sorting: '-updatedAt',
 				});
+				setWorksheets(data.worksheets);
+				setTotalCount(data.totalCount);
+				setLoading(false);
+			} catch (error) {
+				const errorMessage =
+					error instanceof Error
+						? error.message
+						: 'An unkown error occurred';
+
+				showAlertRef.current(errorMessage);
 			} finally {
 				setLoading(false);
 			}
@@ -42,53 +43,22 @@ const Library = () => {
 		getWorksheets();
 	}, []);
 
-	const loadingComponent = () => {
-		if (loading) {
-			return (
-				<Stack width="100%" alignItems="center" pt={5}>
-					<CircularProgress size={60} />
-				</Stack>
-			);
-		}
-		return;
-	};
-
 	return (
-		<View
-			maxHeight={80}
-			headerText="Library"
-			body={
-				<>
-					<SnackbarAlert
-						snackbarState={snackBarState}
-						setSnackbarState={setSnackbarState}
-					/>
-					{loadingComponent()}
-					<Grid container spacing={1.5}>
-						{worksheets.map((worksheet) => (
-							<Grid
-								item
-								xs={6}
-								sm={6}
-								md={3}
-								key={`worksheet-item-${worksheet._id}`}
-							>
-								<WorksheetCard
-									id={worksheet._id}
-									key={worksheet._id}
-									level={worksheet.level}
-									session={worksheet.session}
-									day={worksheet.day}
-									time={worksheet.time}
-									year={worksheet.year}
-									createdOn={worksheet.createdAt}
-								/>
-							</Grid>
-						))}
-					</Grid>
-				</>
-			}
-		/>
+		<Stack width="100%" spacing={2}>
+			<ViewHeader text="Library" />
+			<Divider />
+			<LibraryHeader />
+			<Divider />
+			<Stack spacing={1}>
+				<LibraryGroups headerText="Recent" />
+				<LibraryCards worksheets={worksheets.slice(0, 6)} />
+			</Stack>
+			<Divider />
+			<Stack spacing={0.5} alignItems='center'>
+				<Typography variant='subtitle1' color='text.secondary'>You have created {totalCount} total worksheets</Typography>
+				<LibraryCards headerText="More" worksheets={worksheets.slice(6)} />
+			</Stack>
+		</Stack>
 	);
 };
 

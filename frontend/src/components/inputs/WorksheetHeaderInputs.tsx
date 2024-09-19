@@ -1,68 +1,119 @@
-import { Stack, TextField, Grid } from '@mui/material';
+import { Stack, TextField, Grid, Button } from '@mui/material';
 import CreateSelect from './CreateSelect';
-import { WORKSHEETS } from '../../config/levels';
+import { newWorksheet } from '../../config/worksheetType';
+import { WORKSHEET_VALUES } from '../../config/worksheetData';
+import { SkillDescription } from '../../config/levelSkillDescriptions';
+import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
+import AddToGroupModal from '../filter/AddToGroupModal';
+import { useState } from 'react';
 
 interface WorksheetHeaderInputsProps {
-	worksheetHeaderValues: {
-		instructor: string;
-		level: string;
-		session: string;
-		year: string;
-		day: string;
-		time: string;
-		location: string;
-	};
+	values: newWorksheet;
+	selectedGroups: { id: string; name: string }[];
+	setSelectedGroups: React.Dispatch<React.SetStateAction<{ id: string; name: string }[]>>;
+	setHeader: React.Dispatch<React.SetStateAction<newWorksheet>>;
+	setSkills: React.Dispatch<React.SetStateAction<SkillDescription>>;
 	errors: { [key: string]: string };
 	disabled?: boolean;
-	handleLevelChange: (newLevel: string) => void;
-	handleHeaderChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const WorksheetHeaderInputs = ({
-	worksheetHeaderValues,
+	values,
+	selectedGroups,
+	setSelectedGroups,
+	setHeader,
+	setSkills,
 	errors,
-	handleLevelChange,
-	handleHeaderChange,
 	disabled = false,
 }: WorksheetHeaderInputsProps) => {
+	const [modalOpen, setModalOpen] = useState<boolean>(false);
+
+	const handleLevelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const newLevel = parseInt(event.target.value);
+		const newSkills = WORKSHEET_VALUES.levels.descriptions[newLevel];
+
+		setSkills(newSkills);
+		setHeader((prevValues) => ({
+			...prevValues,
+			level: newLevel,
+			students:
+				prevValues.students.length > 0
+					? prevValues.students.map((student) => ({
+							...student,
+							skills: Array(newSkills.length).fill(false),
+					  }))
+					: [
+							{
+								name: '',
+								skills: Array(newSkills.length).fill(false),
+								passed: false,
+							},
+					  ],
+		}));
+	};
+
+	const handleHeaderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target;
+
+		if (name in values) {
+			setHeader((prevValues) => ({
+				...prevValues,
+				[name]: value,
+			}));
+		}
+	};
+
 	return (
 		<Stack>
-			<Stack direction='row' spacing={1}>
+			<Stack direction="row" spacing={1}>
 				<TextField
 					disabled
 					label="Instructor"
-					defaultValue={worksheetHeaderValues.instructor}
+					defaultValue={
+						typeof values.instructor === 'string'
+							? values.instructor
+							: values.instructor.name
+					}
 					InputProps={{
 						readOnly: true,
 					}}
-					sx={{width: '150%'}}
+					sx={{ width: '150%' }}
 					error={!!errors.instructor}
 					helperText={errors.instructor ? errors.instructor : ' '}
 				/>
-				<CreateSelect
-					disabled = {disabled}
-					label="Group"
-					name="group"
-					menuItems={['RandomGroup1', 'RandomGroup2']}
-					error={errors.level}
+
+				<Button
+					disabled={disabled}
+					variant="outlined"
+					startIcon={<CreateNewFolderIcon />}
+					fullWidth
+					sx={{ height: '56px' }}
+					onClick={() => setModalOpen(true)}
+				>
+					Add to Group
+				</Button>
+				<AddToGroupModal
+					selectedGroups={selectedGroups}
+					setSelectedGroups={setSelectedGroups}
+					open={modalOpen}
+					setOpen={setModalOpen}
+					instructorId="66e083d5e781e4ee0b2602e7"
 				/>
 			</Stack>
 			<Stack direction="row" spacing={1}>
 				<CreateSelect
 					disabled={disabled}
-					label="Level"
-					name="level"
-					menuItems={WORKSHEETS.levels}
-					value={worksheetHeaderValues.level}
+					label="level"
+					value={values.level}
+					menuItems={WORKSHEET_VALUES.levels.names}
 					error={errors.level}
-					handleChange={(e) => handleLevelChange(e.target.value)}
+					handleChange={handleLevelChange}
 				/>
 				<CreateSelect
 					disabled={disabled}
-					label="Session"
-					name="session"
-					menuItems={WORKSHEETS.sessions}
-					value={worksheetHeaderValues.session}
+					label="session"
+					value={values.session}
+					menuItems={WORKSHEET_VALUES.sessions}
 					error={errors.session}
 					handleChange={handleHeaderChange}
 				/>
@@ -74,7 +125,8 @@ const WorksheetHeaderInputs = ({
 						fullWidth
 						label="Year"
 						name="year"
-						value={worksheetHeaderValues.year}
+						type="number"
+						value={values.year || ''}
 						error={!!errors.year}
 						helperText={errors.year}
 						onChange={handleHeaderChange}
@@ -83,10 +135,9 @@ const WorksheetHeaderInputs = ({
 				<Grid item xs={6} md={3} p={0.5}>
 					<CreateSelect
 						disabled={disabled}
-						label="Day"
-						name="day"
-						menuItems={WORKSHEETS.days}
-						value={worksheetHeaderValues.day}
+						label="day"
+						value={values.day}
+						menuItems={WORKSHEET_VALUES.days}
 						error={errors.day}
 						handleChange={handleHeaderChange}
 					/>
@@ -97,7 +148,7 @@ const WorksheetHeaderInputs = ({
 						fullWidth
 						label="Time"
 						name="time"
-						value={worksheetHeaderValues.time}
+						value={values.time}
 						error={!!errors.time}
 						helperText={errors.time}
 						onChange={handleHeaderChange}
@@ -106,10 +157,9 @@ const WorksheetHeaderInputs = ({
 				<Grid item xs={6} md={3} p={0.5}>
 					<CreateSelect
 						disabled={disabled}
-						label="Location"
-						name="location"
-						menuItems={WORKSHEETS.locations}
-						value={worksheetHeaderValues.location}
+						label="location"
+						value={values.location}
+						menuItems={WORKSHEET_VALUES.locations}
 						error={errors.location}
 						handleChange={handleHeaderChange}
 					/>

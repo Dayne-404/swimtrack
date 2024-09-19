@@ -8,12 +8,14 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 
 type SearchBarProps = {
+	disabled?: boolean;
 	size: 'medium' | 'small';
 	width?: string;
 	placeholderText?: string;
 };
 
 const SearchBar = ({
+	disabled = false,
 	size,
 	width,
 	placeholderText = 'Search',
@@ -23,6 +25,7 @@ const SearchBar = ({
 	return (
 		<Box width={width}>
 			<TextField
+				disabled={disabled}
 				id="search-var"
 				placeholder={placeholderText}
 				size={size}

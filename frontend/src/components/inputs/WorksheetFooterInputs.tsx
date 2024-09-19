@@ -1,20 +1,37 @@
-import { Grid, Button, CircularProgress } from '@mui/material';
+import { Grid, Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import CheckIcon from '@mui/icons-material/Check';
+import LoadingButton from './LoadingButton';
+import { newWorksheet } from '../../config/worksheetType';
 
 interface WorksheetFooterInputs {
-	loading: boolean;
-	disabled?: boolean;
-	addStudent: () => void;
+	numSkills: number;
+	setHeader: React.Dispatch<React.SetStateAction<newWorksheet>>;
 	submit: () => void;
+	loading?: boolean;
+	disabled?: boolean;
 }
 
 const WorksheetFooterInputs = ({
-	disabled = false,
-	loading,
-	addStudent,
+	numSkills,
+	setHeader,
 	submit,
+	loading = false,
+	disabled = false,
 }: WorksheetFooterInputs) => {
+	const addStudent = () => {
+		const newStudent = {
+			name: '',
+			skills: Array(numSkills).fill(false),
+			passed: false,
+		};
+
+		setHeader((prevValues) => ({
+			...prevValues,
+			students: [...prevValues.students, newStudent],
+		}));
+	};
+
 	return (
 		<Grid
 			container
@@ -24,7 +41,7 @@ const WorksheetFooterInputs = ({
 		>
 			<Grid item xs={12} md={2}>
 				<Button
-					disabled={disabled}
+					disabled={disabled || loading}
 					variant="contained"
 					onClick={addStudent}
 					startIcon={<AddIcon />}
@@ -34,27 +51,13 @@ const WorksheetFooterInputs = ({
 				</Button>
 			</Grid>
 			<Grid item xs={12} md={1} position="relative">
-				<Button
-					variant='outlined'
-					startIcon={<CheckIcon />}
+				<LoadingButton
+					text={'submit'}
 					onClick={submit}
-					fullWidth
-					disabled={loading || disabled}
-				>
-					submit
-				</Button>
-				{loading && (
-					<CircularProgress
-						size={24}
-						sx={{
-							position: 'absolute',
-							top: '50%',
-							left: '50%',
-							marginTop: '-7px',
-							marginLeft: '-12px',
-						}}
-					/>
-				)}
+					startIcon={<CheckIcon />}
+					disabled={disabled || loading}
+					loading={loading}
+				/>
 			</Grid>
 		</Grid>
 	);

@@ -10,19 +10,9 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-interface SortOptions {
-	level: 'recent' | 'oldest' | '';
-	time: 'recent' | 'oldest' | '';
-	day: 'recent' | 'oldest' | '';
-	session: 'recent' | 'oldest' | '';
-	createdAt: 'recent' | 'oldest';
-}
-
 interface SortModalProps {
-	sortOptions: SortOptions;
-	handleChange: (
-		key: keyof SortOptions
-	) => (event: React.ChangeEvent<HTMLInputElement>) => void;
+	sortOptions: {[type: string]: (number)};
+	handleChange: (type: string, sort: number) => void
 	isModalOpen: boolean;
 	handleModalClose: () => void;
 }
@@ -66,17 +56,17 @@ const SortModal = ({
 						key={`$level-select`}
 						fullWidth
 						select
-						label={'Level'}
-						value={sortOptions.level}
-						onChange={handleChange('level')}
+						label='Level'
+						value={sortOptions.level || ''}
+						onChange={(event) => handleChange('level', Number(event.target.value))}
 					>
-						<MenuItem key={'$level-none'} value="">
+						<MenuItem key={'$level-none'} value=''>
 							None
 						</MenuItem>
-						<MenuItem key={'level-oldest'} value="oldest">
+						<MenuItem key={'level-highest'} value={1}> 
 							Highest
 						</MenuItem>
-						<MenuItem key={'level-recent'} value="recent">
+						<MenuItem key={'level-Lowest'} value={2}>
 							Lowest
 						</MenuItem>
 					</TextField>
@@ -84,35 +74,35 @@ const SortModal = ({
 						key={`$time-select`}
 						fullWidth
 						select
-						label={'time'}
-						value={sortOptions.time}
-						onChange={handleChange('time')}
+						label='Time'
+						value={sortOptions.time || ''}
+						onChange={(event) => handleChange('time', Number(event.target.value))}
 					>
-						<MenuItem key={'$time-none'} value="">
+						<MenuItem key={'$time-none'} value=''>
 							None
 						</MenuItem>
-						<MenuItem key={'time-recent'} value="recent">
-							Recent
+						<MenuItem key={'time-Earliest'} value={2}>
+							Earliest
 						</MenuItem>
-						<MenuItem key={'time-oldest'} value="oldest">
-							Oldest
+						<MenuItem key={'time-Latest'} value={1}>
+							Latest
 						</MenuItem>
 					</TextField>
 					<TextField
 						key={`$day-select`}
 						fullWidth
 						select
-						label={'day'}
-						value={sortOptions.day}
-						onChange={handleChange('day')}
+						label='Day'
+						value={sortOptions.day || ''}
+						onChange={(event) => handleChange('day', Number(event.target.value))}
 					>
-						<MenuItem key={'$day-none'} value="">
+						<MenuItem key={'$day-none'} value=''>
 							None
 						</MenuItem>
-						<MenuItem key={'day-recent'} value="recent">
+						<MenuItem key={'day-recent'} value={2}>
 							{'Start (Mon)'}
 						</MenuItem>
-						<MenuItem key={'day-oldest'} value="oldest">
+						<MenuItem key={'day-oldest'} value={1}>
 							{'End (Sun)'}
 						</MenuItem>
 					</TextField>
@@ -120,32 +110,32 @@ const SortModal = ({
 						key={`$session-select`}
 						fullWidth
 						select
-						label={'session'}
-						value={sortOptions.session}
-						onChange={handleChange('session')}
+						label={'Session'}
+						value={sortOptions.session || ''}
+						onChange={(event) => handleChange('session', Number(event.target.value))}
 					>
-						<MenuItem key={'$session-none'} value="">
+						<MenuItem key={'$session-none'} value=''>
 							None
 						</MenuItem>
-						<MenuItem key={'session-recent'} value="recent">
+						<MenuItem key={'session-recent'} value={1}>
 							{'Start (Spring)'}
 						</MenuItem>
-						<MenuItem key={'session-oldest'} value="oldest">
+						<MenuItem key={'session-oldest'} value={2}>
 							{'End (Winter)'}
 						</MenuItem>
 					</TextField>
 					<TextField
-						key={`$createdAt-select`}
+						key={`$createdOn-select`}
 						fullWidth
 						select
-						label={'createdAt'}
-						value={sortOptions.createdAt}
-						onChange={handleChange('createdAt')}
+						label='Created At'
+						value={sortOptions.createdAt || 1}
+						onChange={(event) => handleChange('createdAt', Number(event.target.value))}
 					>
-						<MenuItem key={'createdAt-recent'} value="recent">
-							{'Recent'}
+						<MenuItem key={'createdAt-recent'} value={1}>
+							{'Newest'}
 						</MenuItem>
-						<MenuItem key={'createdAt-oldest'} value="oldest">
+						<MenuItem key={'createdAt-oldest'} value={2}>
 							{'Oldest'}
 						</MenuItem>
 					</TextField>

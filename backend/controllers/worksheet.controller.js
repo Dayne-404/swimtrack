@@ -1,12 +1,15 @@
 const Worksheet = require('../models/Worksheet.model.js');
 
 const getWorksheets = async (req, res) => {
+	const { id, instructorId } = req.params;
 	const { limit = 10, skip = 0, ...filters } = req.query;
 
 	try {
 		let query = {};
 
-		if (filters.instructor) query.instructor = filters.instructor;
+		if(instructorId) query.instructor = instructorId;
+		else if (filters.instructor) query.instructor = filters.instructor;
+
 		if (filters.level)
 			query.level = {
 				$in: Array.isArray(filters.level)
@@ -52,11 +55,14 @@ const getWorksheets = async (req, res) => {
 			sortQuery[key] = order;
 		});
 
-		console.log('SORT QUERY: ', sortQuery);
+		console.log('SEARCH QUERY: ', query);
+		console.log('ID: ', instructorId);
+
 		const worksheets = await Worksheet.find(query)
 			.sort(sortQuery)
 			.skip(parseInt(skip))
-			.limit(parseInt(limit));
+			.limit(parseInt(limit))
+			.populate('instructor', '_id name');
 
 		const totalCount = await Worksheet.countDocuments(query);
 		res.status(200).json({ worksheets, totalCount });
@@ -68,7 +74,10 @@ const getWorksheets = async (req, res) => {
 const getWorksheetById = async (req, res) => {
 	try {
 		const { id } = req.params;
-		const worksheet = await Worksheet.findById(id);
+		const worksheet = await Worksheet.findById(id).populate(
+			'instructor',
+			'_id name'
+		);
 		res.status(200).json(worksheet);
 	} catch (error) {
 		res.status(500).json({ message: error.message });
@@ -78,8 +87,6 @@ const getWorksheetById = async (req, res) => {
 const getWorksheetByInstructor = async (req, res) => {
 	try {
 		const { instructorId } = req.params;
-		console.log('Getting worksheet by Instructor');
-		console.log(instructorId);
 		const worksheets = await Worksheet.find({ instructor: instructorId });
 		res.status(200).json(worksheets);
 	} catch (error) {

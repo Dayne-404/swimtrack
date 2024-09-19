@@ -1,49 +1,36 @@
 const mongoose = require('mongoose');
 const Student = require('./Student.model'); // Correct path to Student model
+const currentYear = new Date().getFullYear();
 
 const WorksheetSchema = mongoose.Schema(
     {
         instructor: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Instructor',
             required: [true, 'Instructor name required'],
         },
         level: {
-            type: String,
-            enum: [
-                'parentAndTot1',
-                'parentAndTot2',
-                'parentAndTot3',
-                'preschool1',
-                'preschool2',
-                'preschool3',
-                'preschool4',
-                'preschool5',
-                'preschool6',
-                'swimmer1',
-                'swimmer2',
-                'swimmer3',
-                'swimmer4',
-                'swimmer5',
-                'swimmer6',
-                'adult1',
-                'adult2',
-                'adult3',
-            ],
+            type: Number,
+            min: 0,
+            max: 20,
             required: [true, 'Level is required'],
         },
         year: {
-            type: String,
-            match: [/^\d{4}$/, 'Please enter a valid year'],
+            type: Number,
+            min: [2000, 'Year must be after 2000'],
+            max: [currentYear, 'Year cannot be in the future'],
             required: [true, 'Year is required'],
         },
         session: {
-            type: String,
-            enum: ['winter', 'spring', 'summer', 'fall'],
+            type: Number,
+            min: 0,
+            max: 3,
             required: [true, 'Session is required'],
         },
         day: {
-            type: String,
-            enum: ['mon', 'tue', 'wed', 'thur', 'fri', 'sat', 'sun', 'weekly'],
+            type: Number,
+            min: 0,
+            max: 7,
             required: [true, 'Day is required'],
         },
         time: {
@@ -55,8 +42,9 @@ const WorksheetSchema = mongoose.Schema(
             ],
         },
         location: {
-            type: String,
-            enum: ['rec', 'dun'],
+            type: Number,
+            min: 0,
+            max: 1,
             required: [true, 'Location is required'],
         },
         students: {
@@ -71,12 +59,12 @@ const WorksheetSchema = mongoose.Schema(
 
 WorksheetSchema.index({
     instructor: 'text',
-    level: 'text',
-    year: 'text',
-    session: 'text',
-    day: 'text',
+    level: 1,
+    year: 1,
+    session: 1,
+    day: 1,
     time: 'text',
-    location: 'text'
+    location: 1
 });
 
 const Worksheet = mongoose.model('Worksheet', WorksheetSchema);

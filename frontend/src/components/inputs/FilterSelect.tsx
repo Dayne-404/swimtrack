@@ -1,13 +1,12 @@
 import React, { useCallback } from 'react';
 import { MenuItem, Select, SelectChangeEvent, useTheme } from '@mui/material';
-import capitalizeFirstLetter from '../../helper/capitalizeFirstLetter';
-
+import SelectMenuProps from '../../config/selectProps';
 interface FilterComponentProps {
 	size: 'medium' | 'small';
 	placeholder: string;
 	availableFilters: string[];
-	selectedFilters: string[];
-	onFiltersChange: (selectedFilter: string) => void;
+	selectedFilters: (string | number)[];
+	onFiltersChange: (selectedFilter: number) => void;
 }
 
 const FilterComponent: React.FC<FilterComponentProps> = ({
@@ -19,14 +18,10 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
 }) => {
 	const theme = useTheme();
 
-	const MAX_VISIBLE_ITEMS = 5;
-	const ITEM_HEIGHT = 48;
-	const MENU_HEIGHT = ITEM_HEIGHT * MAX_VISIBLE_ITEMS;
-
 	const handleFilterChange = useCallback(
 		(event: SelectChangeEvent<string>) => {
-			const selectedFilter = event.target.value as string;
-			if (selectedFilter && !selectedFilters.includes(selectedFilter)) {
+			const selectedFilter = Number(event.target.value);
+			if (selectedFilter || selectedFilter === 0 && !selectedFilters.includes(selectedFilter)) {
 				onFiltersChange(selectedFilter);
 			}
 		},
@@ -40,26 +35,20 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
 			onChange={handleFilterChange}
 			displayEmpty
 			fullWidth
-			MenuProps={{
-				PaperProps: {
-					sx: {
-						maxHeight: MENU_HEIGHT,
-					},
-				},
-			}}
+			MenuProps={SelectMenuProps.MenuProps}
 		>
 			<MenuItem value="" disabled>
 				<span style={{ color: theme.palette.text.secondary }}>
 					{placeholder}
 				</span>
 			</MenuItem>
-			{availableFilters.map((filter) => (
+			{availableFilters.map((filter, index) => (
 				<MenuItem
-					key={filter}
-					value={filter}
-					disabled={selectedFilters.includes(filter)}
+					key={`${filter}-${index}`}
+					value={index}
+					disabled={selectedFilters.includes(index)}
 				>
-					{capitalizeFirstLetter(filter)}
+					{filter}
 				</MenuItem>
 			))}
 		</Select>

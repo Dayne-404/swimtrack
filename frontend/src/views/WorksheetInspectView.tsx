@@ -1,136 +1,124 @@
-import { useEffect, useState } from 'react';
-import View from '../components/layout/View';
+import { useEffect, useState, useContext, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Worksheet } from '../config/worksheetType';
-import { fetchWorksheetById } from '../helper/fetch';
+import { fetchWorksheetById } from '../helper/worksheetFetch';
 import BackButton from '../components/inputs/BackButton';
 import CreateView from './CreateView';
-import { Button, CircularProgress, Stack } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import InfoModal from '../components/navigation/InfoModal';
+import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import { deleteWorksheetById } from '../helper/delete';
 import { useNavigate } from 'react-router-dom';
+import DeleteButton from '../components/inputs/DeleteButton';
+import { WORKSHEET_LEVELS } from '../config/worksheetData';
+import { AlertContext } from '../App';
 
 interface WorksheetInspectViewProps {
 	backText: string;
 	to: string;
 }
 
-const WorksheetInspectView = ({backText, to}: WorksheetInspectViewProps) => {
+const WorksheetInspectView = ({ backText, to }: WorksheetInspectViewProps) => {
 	const { worksheetId } = useParams();
 	const [worksheet, setWorksheet] = useState<Worksheet>();
 	const [editing, setEditing] = useState<boolean>(false);
-	const [modalOpen, setModalOpen] = useState<boolean>(false);
-	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(false);
+	const [resetKey, setResetKey] = useState<number>(0);
 	const navigate = useNavigate();
+	const showAlert = useContext(AlertContext);
+	const showAlertRef = useRef(showAlert);
 
 	useEffect(() => {
-		const getWorksheets = async () => {
+		const getWorksheet = async () => {
 			try {
 				if (!worksheetId) return;
 				const data: Worksheet = await fetchWorksheetById(worksheetId);
 				setWorksheet(data);
 			} catch (error) {
-				console.log('Failed to fetch worksheets');
+				console.log('Failed to fetch worksheet');
 			}
 		};
 
-		getWorksheets();
+		getWorksheet();
 	}, [worksheetId]);
 
 	const handleDelete = async () => {
 		if (!worksheetId) return;
 
 		try {
-			setIsLoading(true);
+			setLoading(true);
 			await deleteWorksheetById(worksheetId);
 		} catch (error) {
-			setIsLoading(false);
-			console.log('Error deleting');
+			const errorMessage =
+				error instanceof Error
+					? error.message
+					: 'An unkown error occurred';
+			showAlertRef.current(
+				`Error deleting the group: ${errorMessage}`,
+				'error'
+			);
 		} finally {
-			setModalOpen(false);
-			setIsLoading(false);
-			console.log('Success deleting');
+			setLoading(false);
+			showAlertRef.current('Sucessfully deleted worksheet', 'success');
 			navigate('/library');
 		}
 	};
 
+	const handleEditChange = () => {
+		const isEditing = !editing;
+
+		setEditing(isEditing);
+		if (!isEditing) {
+			setResetKey(resetKey === 0 ? resetKey + 1 : resetKey - 1);
+		}
+	};
+
 	return (
-		<View
-			headerText=""
-			body={
-				<Stack width="100%" spacing={1.5}>
-					<InfoModal
-						open={modalOpen}
-						headerText="Are you sure you want to delete?"
-						body={
-							<Stack pt={3} direction="row" spacing={2}>
-								<Button
-									fullWidth
-									variant="outlined"
-									onClick={() => setModalOpen(false)}
-								>
-									Cancel
-								</Button>
-								<Button
-									disabled={isLoading}
-									fullWidth
-									variant="outlined"
-									color="error"
-									onClick={handleDelete}
-								>
-									Delete Forever
-								</Button>
-								{isLoading && <CircularProgress size="small" />}
-							</Stack>
+		<Stack width="100%" spacing={1.5}>
+			<Stack
+				direction="row"
+				alignItems="center"
+				justifyContent="space-between"
+			>
+				<BackButton name={backText} to={to} />
+
+				<Stack direction="row" spacing={1}>
+					<Button
+						color="primary"
+						variant="outlined"
+						onClick={handleEditChange}
+						startIcon={editing && <DoNotDisturbIcon />}
+					>
+						{!editing ? <EditIcon /> : 'Cancel'}
+					</Button>
+
+					<DeleteButton
+						loading={loading}
+						handleDelete={handleDelete}
+						innerModal={
+							<Typography>
+								You will be deleting this{' '}
+								{worksheet?.level || worksheet?.level === 0
+									? WORKSHEET_LEVELS.names[worksheet.level]
+									: 'undefined'}{' '}
+								worksheet with {worksheet?.students.length}{' '}
+								student{'(s)'}
+							</Typography>
 						}
 					/>
-					<Stack
-						direction="row"
-						alignItems="center"
-						justifyContent="space-between"
-					>
-						<BackButton name={backText} to={to} />
-						{!editing && (
-							<Stack direction="row" spacing={1}>
-								<Button
-									color="primary"
-									variant="outlined"
-									onClick={() => setEditing(true)}
-								>
-									<EditIcon />
-								</Button>
-								<Button
-									color="primary"
-									variant="outlined"
-									onClick={() => setModalOpen(true)}
-								>
-									<DeleteIcon />
-								</Button>
-							</Stack>
-						)}
-					</Stack>
-					{worksheet && (
-						<CreateView
-							id={worksheet._id}
-							headerValues={{
-								instructor: worksheet.instructor,
-								level: worksheet.level,
-								session: worksheet.session,
-								year: worksheet.year,
-								day: worksheet.day,
-								time: worksheet.time,
-								location: worksheet.location,
-							}}
-							defaultStudents={worksheet.students}
-							disabled={!editing}
-							fullView={false}
-						/>
-					)}
 				</Stack>
-			}
-		/>
+			</Stack>
+
+			{worksheet && (
+				<CreateView
+					key={resetKey}
+					worksheetId={worksheet._id}
+					defaultValues={worksheet}
+					disabled={!editing}
+					setDisabled={setEditing}
+				/>
+			)}
+		</Stack>
 	);
 };
 

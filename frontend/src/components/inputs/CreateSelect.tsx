@@ -1,9 +1,11 @@
 import { TextField, MenuItem } from '@mui/material';
+import SelectMenuProps from '../../config/selectProps';
 import capitalizeFirstLetter from '../../helper/capitalizeFirstLetter';
+
 interface CreateSelectProps {
 	label: string;
-	menuItems?: string[] | { [key: string]: { name: string } };
-	value?: string;
+	menuItems?: string[];
+	value?: number | null;
 	name?: string;
 	error?: string;
 	disabled?: boolean;
@@ -12,37 +14,31 @@ interface CreateSelectProps {
 
 const CreateSelect = ({
 	label,
-	name = '',
 	menuItems = [],
-	value = '',
+	value = null,
 	error,
 	handleChange,
 	disabled = false,
 }: CreateSelectProps) => {
+	
 	return (
 		<TextField
-			disabled={disabled}
-			fullWidth
-			name={name}
-			id="level-select"
 			select
-			value={value}
+			label={capitalizeFirstLetter(label)}
+			name={label}
+			value={value ?? ''}
+			onChange={handleChange}
 			error={!!error}
 			helperText={error ? error : ' '}
-			onChange={handleChange}
-			label={label}
+			disabled={disabled}
+			fullWidth
+			SelectProps={SelectMenuProps}
 		>
-			{Array.isArray(menuItems)
-				? menuItems.map((item) => (
-						<MenuItem key={item} value={item}>
-							{capitalizeFirstLetter(item)}
-						</MenuItem>
-				  ))
-				: Object.entries(menuItems).map(([key, item]) => (
-						<MenuItem key={key} value={key}>
-							{capitalizeFirstLetter(item.name)}
-						</MenuItem>
-				  ))}
+			{menuItems.map((item, index) => (
+				<MenuItem key={`${item}-${index}`} value={index}>
+					{item}
+				</MenuItem>
+			))}
 		</TextField>
 	);
 };

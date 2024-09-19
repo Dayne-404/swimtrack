@@ -6,23 +6,16 @@ import {
 	useMediaQuery,
 } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './styles/fonts.css';
-import Navigation from './components/navigation/Navigation';
-import Dashboard from './views/DashboardView';
-import Library from './views/LibraryView';
-import Finder from './views/FinderView';
-import { GroupInspectView } from './views/GroupInspectView';
-import GroupView from './views/GroupView';
+import { createContext, useState } from 'react';
 
-import SpeedIcon from '@mui/icons-material/Speed';
-import FolderIcon from '@mui/icons-material/Folder';
-import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
-import ScubaDivingIcon from '@mui/icons-material/ScubaDiving';
-import EditIcon from '@mui/icons-material/Edit';
-import SearchIcon from '@mui/icons-material/Search';
-import SettingsIcon from '@mui/icons-material/Settings';
-import Create from './views/CreateView';
-import WorksheetInspectView from './views/WorksheetInspectView';
+import Navigation from './components/navigation/Navigation';
+import View from './components/layout/View';
+import SnackbarAlert from './components/layout/SnackbarAlert';
+
+import { ALL_ROUTES, SIDE_NAV_ROUTES } from './config/routes';
+import { DEFAULT_SNACKBAR_VALUES, AlertType } from './config/alertType';
+
+import './styles/fonts.css';
 
 const theme = createTheme({
 	palette: {
@@ -35,94 +28,78 @@ const theme = createTheme({
 	},
 });
 
+const SMALL_SIDE_WIDTH = 200;
+const LARGE_SIDE_WIDTH = 260;
+const NAVBAR_HEIGHT = 70;
+
+export const AlertContext = createContext<
+	(message: string, severity?: 'success' | 'error') => void
+>(() => {});
+
 function App() {
-	const smallSideNavWidth = 200;
-	const largeSideNavWidth = 260;
-	const navbarHeight = 70;
-
-	const SIDE_NAV_ROUTES = {
-		Dashboard: { icon: <SpeedIcon />, to: '/', element: <Dashboard /> },
-		Library: { icon: <FolderIcon />, to: '/library', element: <Library /> },
-		Groups: {
-			icon: <FolderSpecialIcon />,
-			to: '/groups',
-			element: <GroupView />,
-		},
-		Create: { icon: <EditIcon />, to: '/create', element: <Create /> },
-		Finder: { icon: <SearchIcon />, to: '/finder', element: <Finder /> },
-		Programs: {
-			icon: <ScubaDivingIcon />,
-			to: '/programs',
-			element: <Dashboard />,
-		},
-	};
-
-	const ROUTES = {
-		Settings: {
-			icon: <SettingsIcon />,
-			to: '/settings',
-			element: <Dashboard />,
-		},
-		Profile: { to: '/profile', element: <Dashboard /> },
-	};
-
-	const ALL_ROUTES = {
-		...SIDE_NAV_ROUTES,
-		...ROUTES,
-	};
-
 	const isMediumOrBelow = useMediaQuery(theme.breakpoints.down('md'));
+
+	const [snackbarState, setSnackbarState] = useState<AlertType>(
+		DEFAULT_SNACKBAR_VALUES
+	);
+
+	const showAlert = (
+		message: string,
+		severity: 'success' | 'error' = 'error'
+	) => {
+		setSnackbarState({ open: true, message, severity });
+	};
 
 	return (
 		<ThemeProvider theme={theme}>
-			<Router>
-				<Navigation
-					isMediumOrBelow={isMediumOrBelow}
-					navbarHeight={navbarHeight}
-					smallSideNavWidth={smallSideNavWidth}
-					largeSideNavWidth={largeSideNavWidth}
-					routes={SIDE_NAV_ROUTES}
-				/>
-				<Box
-					display="flex"
-					flexDirection="column"
-					component="main"
-					width="100%"
-					height="100vh"
-					boxSizing="border-box"
-					p={
-						isMediumOrBelow
-							? navbarHeight + 16 + 'px 10px 10px 10px'
-							: navbarHeight +
-							  24 +
-							  'px 24px 24px ' +
-							  (largeSideNavWidth + 24) +
-							  'px'
-					}
-				>
-					<Routes>
-						{Object.values(ALL_ROUTES).map((route, index) => (
-							<Route
-								key={`route-${index}`}
-								path={route.to}
-								element={route.element}
-							/>
-						))}
-						<Route
-							path="/groups/:groupId"
-							element={<GroupInspectView />}
+			<AlertContext.Provider value={showAlert}>
+				<Router>
+					<Navigation
+						isMediumOrBelow={isMediumOrBelow}
+						navbarHeight={NAVBAR_HEIGHT}
+						smallSideNavWidth={SMALL_SIDE_WIDTH}
+						largeSideNavWidth={LARGE_SIDE_WIDTH}
+						routes={SIDE_NAV_ROUTES}
+					/>
+					<Box
+						display="flex"
+						flexDirection="column"
+						component="main"
+						width="100%"
+						height="100vh"
+						boxSizing="border-box"
+						padding={
+							isMediumOrBelow
+								? `${NAVBAR_HEIGHT + 16}px 10px 10px 10px`
+								: `${NAVBAR_HEIGHT + 24}px 24px 24px ${
+										LARGE_SIDE_WIDTH + 24
+								  }px`
+						}
+					>
+						<SnackbarAlert
+							open={snackbarState.open}
+							message={snackbarState.message}
+							severity={snackbarState.severity}
+							setState={setSnackbarState}
 						/>
-						<Route
-							path="/library/:worksheetId"
-							element={<WorksheetInspectView backText='Library' to='/library' />}
+						<View
+							body={
+								<Routes>
+									{Object.values(ALL_ROUTES).map(
+										(route, index) => (
+											<Route
+												key={`route-${index}`}
+												path={route.to}
+												element={route.element}
+											/>
+										)
+									)}
+								</Routes>
+							}
 						/>
-						<Route
-							path="/finder/:worksheetId"
-							element={<WorksheetInspectView backText='Finder' to='/finder' />}
-						/>
-					</Routes>
-				</Box>
-			</Router>
+					</Box>
+				</Router>
+			</AlertContext.Provider>
 		</ThemeProvider>
 	);
 }

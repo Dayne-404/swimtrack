@@ -11,40 +11,76 @@ import {
 	InputAdornment,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-
-interface Student {
-	name: string;
-	skills: boolean[];
-	passed: boolean;
-}
+import { newWorksheet } from '../../config/worksheetType';
 
 interface StudentTableProps {
-	students: Student[];
+	values: newWorksheet;
+	setHeader: React.Dispatch<React.SetStateAction<newWorksheet>>;
 	skills: string[];
 	errors: { [key: string]: string };
 	disabled?: boolean;
-	onStudentNameChange: (index: number, name: string) => void;
-	onStudentRemove: (index: number) => void;
-	onStudentPassedChange: (index: number) => void;
-	onSkillChange: (studentIndex: number, skillIndex: number) => void;
 }
 
 const StudentTable = ({
-	students,
+	values,
+	setHeader,
 	skills,
-	onStudentNameChange,
-	onStudentRemove,
-	onStudentPassedChange,
-	onSkillChange,
 	errors,
 	disabled = false,
 }: StudentTableProps) => {
+	const handleStudentNameChange = (index: number, name: string) => {
+		const updatedStudents = [...values.students];
+		updatedStudents[index].name = name;
+
+		setHeader((prevValues) => ({
+			...prevValues,
+			students: updatedStudents,
+		}));
+	};
+
+	const handlePassedChange = (index: number) => {
+		const students = [...values.students];
+		const student = students[index];
+		student.passed = !student.passed;
+		student.skills = student.passed
+			? Array(skills.length).fill(true)
+			: student.skills;
+		setHeader((prevValues) => ({
+			...prevValues,
+			students: students,
+		}));
+	};
+
+	const handleSkillChange = (studentIndex: number, skillIndex: number) => {
+		const updatedStudents = [...values.students];
+		const updatedSkills = [...updatedStudents[studentIndex].skills];
+		updatedSkills[skillIndex] = !updatedSkills[skillIndex];
+
+		const allSkillsChecked = updatedSkills.every((skill) => skill);
+
+		updatedStudents[studentIndex].skills = updatedSkills;
+		updatedStudents[studentIndex].passed = allSkillsChecked;
+
+		setHeader((prevValues) => ({
+			...prevValues,
+			students: updatedStudents,
+		}));
+	};
+
+	const handleStudentRemove = (index: number) => {
+		const updatedStudents = values.students.filter((_, i) => i !== index);
+		setHeader((prevValues) => ({
+			...prevValues,
+			students: updatedStudents,
+		}));
+	};
+
 	return (
 		<TableContainer sx={{ paddingTop: '200px' }}>
 			<Table>
 				<TableHead>
 					<TableRow>
-						{students.length > 1 && !disabled && (
+						{values.students.length > 1 && !disabled && (
 							<TableCell></TableCell>
 						)}
 						<TableCell>Name</TableCell>
@@ -79,14 +115,14 @@ const StudentTable = ({
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{students.map((student, studentIndex) => (
+					{values.students.map((student, studentIndex) => (
 						<TableRow key={studentIndex}>
-							{students.length > 1 && !disabled && (
+							{values.students.length > 1 && !disabled && (
 								<TableCell padding="none">
 									<IconButton
 										color="primary"
 										onClick={() =>
-											onStudentRemove(studentIndex)
+											handleStudentRemove(studentIndex)
 										}
 									>
 										<DeleteIcon />
@@ -111,7 +147,7 @@ const StudentTable = ({
 										),
 									}}
 									onChange={(e) =>
-										onStudentNameChange(
+										handleStudentNameChange(
 											studentIndex,
 											e.target.value
 										)
@@ -128,7 +164,7 @@ const StudentTable = ({
 										disabled={disabled}
 										checked={skill}
 										onChange={() =>
-											onSkillChange(
+											handleSkillChange(
 												studentIndex,
 												skillIndex
 											)
@@ -141,7 +177,7 @@ const StudentTable = ({
 									disabled={disabled}
 									checked={student.passed}
 									onChange={() =>
-										onStudentPassedChange(studentIndex)
+										handlePassedChange(studentIndex)
 									}
 								/>
 							</TableCell>

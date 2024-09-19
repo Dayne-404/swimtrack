@@ -1,23 +1,31 @@
 import { Stack, Button, Divider } from '@mui/material';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SortIcon from '@mui/icons-material/Sort';
-import SearchBar from '../inputs/SearchBar';
+import InstructorSearch from '../inputs/InstructorSearch';
 
-
-interface FilterButtonProps {
+interface FilterHeaderProps {
+	disabled?: boolean;
 	setModalOpen: (value: boolean) => void;
 	setSortModalOpen: (value: boolean) => void;
+	handleMultipleInstructorSelect: (type: string, filter: string[]) => void;
 }
 
-const LibraryFilters = ({
+const FilterHeader = ({
+	disabled = false,
 	setModalOpen,
 	setSortModalOpen,
-}: FilterButtonProps) => {
+	handleMultipleInstructorSelect,
+}: FilterHeaderProps) => {
 	return (
 		<>
-			<SearchBar size="small" width="100%" placeholderText="Search" />
+			<InstructorSearch
+				label="Search"
+				size="small"
+				handleSelect={handleMultipleInstructorSelect}
+			/>
 			<Stack direction="row" spacing={1}>
 				<Button
+					disabled={disabled}
 					variant="outlined"
 					onClick={() => setModalOpen(true)}
 					startIcon={<FilterAltIcon />}
@@ -26,6 +34,7 @@ const LibraryFilters = ({
 					Filter
 				</Button>
 				<Button
+					disabled={disabled}
 					variant="outlined"
 					onClick={() => setSortModalOpen(true)}
 					startIcon={<SortIcon />}
@@ -39,4 +48,4 @@ const LibraryFilters = ({
 	);
 };
 
-export default LibraryFilters;
+export default FilterHeader;

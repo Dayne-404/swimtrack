@@ -1,29 +1,26 @@
 import { TextField, MenuItem } from '@mui/material';
-import { useState } from 'react';
 
 interface SortSelectProps {
 	menuItems: string[];
+	option: number;
+	setOption: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const SortSelect = ({ menuItems }: SortSelectProps) => {
-	const [sortOption, setSortOption] = useState<string>(menuItems[0]);
-
+const SortSelect = ({ menuItems, option, setOption }: SortSelectProps) => {
 	return (
 		<TextField
 			size="small"
-			value={sortOption}
-			onChange={(e) => setSortOption(e.target.value)}
+			value={option}
+			label='Sort'
+			onChange={(e) => setOption(Number(e.target.value))}
 			fullWidth
 			select
 			sx={{
 				textAlign: 'center',
-				'& .MuiOutlinedInput-root': {
-					'& fieldset': { color: 'red' },
-				},
 			}}
 		>
-			{menuItems.map((item) => (
-				<MenuItem key={item} value={item}>
+			{menuItems.map((item, index) => (
+				<MenuItem key={item} value={index}>
 					{item}
 				</MenuItem>
 			))}
