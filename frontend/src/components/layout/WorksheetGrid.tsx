@@ -17,6 +17,7 @@ interface WorksheetGridProps {
 		total: number;
 	};
 	BottomButton?: React.ReactElement;
+	gridSpace?: number;
 }
 
 const WorksheetGrid = ({
@@ -26,6 +27,7 @@ const WorksheetGrid = ({
 	numWorksheets,
 	BottomButton,
 	selectable,
+	gridSpace = 3,
 }: WorksheetGridProps) => {
 	const handleSelectWorksheet = (worksheetId: string) => {
 		if (!selectable) return;
@@ -60,7 +62,7 @@ const WorksheetGrid = ({
 				</Grid>
 			)}
 			{worksheets.map((worksheet) => (
-				<Grid item xs={12} sm={6} md={4} p={0.5} key={worksheet._id}>
+				<Grid item xs={12} sm={6} md={gridSpace} p={0.5} key={worksheet._id}>
 					<WorksheetCard
 						onClick={
 							selectable?.canSelect

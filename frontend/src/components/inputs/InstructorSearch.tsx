@@ -1,34 +1,42 @@
-import { Autocomplete, TextField } from '@mui/material';
+import {
+	Autocomplete,
+	TextField,
+	ListItem,
+	ListItemAvatar,
+	ListItemText,
+	Avatar,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
-import { Instructor } from '../../config/worksheetType';
+import { InstructorPublic } from '../../config/instructorType';
 import { fetchInstructors } from '../../helper/instructorFetch';
 
 interface InstructorSearchProps {
 	label?: string;
-    disabled?: boolean;
+	disabled?: boolean;
 	size?: 'small' | 'medium';
-	handleGroupChange: (e: string | null, name: string | null) => void;
+	handleSelect: (type: string, filter: string[]) => void;
 }
 
 const InstructorSearch = ({
 	label,
 	disabled = false,
-    size = 'medium',
-	handleGroupChange,
+	size = 'medium',
+	handleSelect,
 }: InstructorSearchProps) => {
 	const [searchTerm, setSearchTerm] = useState<string>('');
 	const [loading, setLoading] = useState<boolean>(false);
-	const [options, setOptions] = useState<Instructor[]>([]);
+	const [instructors, setInstructors] = useState<InstructorPublic[]>([]);
 
 	useEffect(() => {
 		const fetchGroupNames = async () => {
 			setLoading(true);
 			try {
-				const data: Instructor[] = await fetchInstructors({
+				const data: InstructorPublic[] = await fetchInstructors({
 					search: searchTerm,
 				});
 
-				setOptions(data);
+				console.log('DATA: ', data);
+				setInstructors(data);
 			} catch (error) {
 				console.error('Error fetching instructors:', error);
 			} finally {
@@ -45,12 +53,9 @@ const InstructorSearch = ({
 
 	const handleChange = (
 		_event: React.SyntheticEvent,
-		newValue: Instructor | null
+		instructor: InstructorPublic[]
 	) => {
-		handleGroupChange(
-			newValue ? newValue._id : null,
-			newValue ? newValue.name : null
-		);
+		handleSelect('instructor', instructor.map(instructor => instructor._id));
 	};
 
 	const handleInputChange = (
@@ -60,27 +65,48 @@ const InstructorSearch = ({
 		setSearchTerm(newInputValue);
 	};
 
+	const getInitials = (name: string) => {
+		if (name.length < 2) return name.charAt(0);
+		return `${name.charAt(0)}${name.charAt(name.length - 1)}`;
+	};
+
 	return (
 		<Autocomplete
-            disabled={disabled}
+			disabled={disabled}
 			size={size}
+			multiple
 			fullWidth
 			loading={loading}
-			options={options}
-			getOptionLabel={(option: Instructor) => option.name}
+			options={instructors}
+			getOptionLabel={(option: InstructorPublic) => option.name}
 			isOptionEqualToValue={(
-				option: Instructor,
-				value: Instructor | null
+				option: InstructorPublic,
+				value: InstructorPublic | null
 			) => option._id === value?._id}
 			onInputChange={handleInputChange}
 			onChange={handleChange}
+		
 			renderInput={(params) => (
 				<TextField
 					{...params}
+					disabled={disabled}
 					label={label}
 					variant="outlined"
 					fullWidth
 				/>
+			)}
+			renderOption={(props, instructor: InstructorPublic) => (
+				<ListItem {...props} key={instructor._id}>
+					<ListItemAvatar>
+						<Avatar
+							alt={instructor.name}
+							sx={{ width: '32px', height: '32px', fontSize: 14 }}
+						>
+							{getInitials(instructor.name)}
+						</Avatar>
+					</ListItemAvatar>
+					<ListItemText primary={instructor.name} />
+				</ListItem>
 			)}
 		/>
 	);

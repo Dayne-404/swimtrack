@@ -1,12 +1,15 @@
 const Worksheet = require('../models/Worksheet.model.js');
 
 const getWorksheets = async (req, res) => {
+	const { id, instructorId } = req.params;
 	const { limit = 10, skip = 0, ...filters } = req.query;
 
 	try {
 		let query = {};
 
-		if (filters.instructor) query.instructor = filters.instructor;
+		if(instructorId) query.instructor = instructorId;
+		else if (filters.instructor) query.instructor = filters.instructor;
+
 		if (filters.level)
 			query.level = {
 				$in: Array.isArray(filters.level)
@@ -51,6 +54,9 @@ const getWorksheets = async (req, res) => {
 			const key = field.replace(/^-/, '');
 			sortQuery[key] = order;
 		});
+
+		console.log('SEARCH QUERY: ', query);
+		console.log('ID: ', instructorId);
 
 		const worksheets = await Worksheet.find(query)
 			.sort(sortQuery)

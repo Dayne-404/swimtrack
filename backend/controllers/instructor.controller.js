@@ -31,7 +31,7 @@ const getInstructor = async (req, res) => {
 
 		const instructor = await Instructor.find(searchQuery).limit(
 			parseInt(limit)
-		);
+		).select('name _id');
 
 		res.status(200).json(instructor);
 	} catch (error) {

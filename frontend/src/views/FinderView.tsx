@@ -12,7 +12,7 @@ import Loading from '../components/layout/Loading';
 const DEFAULT_LIMIT = 9;
 
 interface FiltersByType {
-	[type: string]: (number | string)[]
+	[type: string]: (number | string)[];
 }
 
 const LibraryWorksheetSearch = () => {
@@ -27,10 +27,13 @@ const LibraryWorksheetSearch = () => {
 	};
 
 	const [selectedFilters, setSelectedFilters] = useState<FiltersByType>({});
-	const [sortOptions, setSortOptions] = useState<{ [type: string]: number }>({'createdAt': 1});
-
+	const [sortOptions, setSortOptions] = useState<{ [type: string]: number }>({
+		createdAt: 1,
+	});
 	const [formattedFilters, setFormattedFilters] = useState<string>('');
-	const [formattedSort, setFormattedSort] = useState<string>(formatSortOptions(sortOptions));
+	const [formattedSort, setFormattedSort] = useState<string>(
+		formatSortOptions(sortOptions)
+	);
 
 	const [moreWorksheets, setMoreWorksheets] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -64,6 +67,15 @@ const LibraryWorksheetSearch = () => {
 		}));
 	};
 
+	const handleMultipleFilterSelect = (type: string, filter: string[]) => {
+		setSelectedFilters((prevFilters) => ({
+			...prevFilters,
+			[type]: filter,
+		}));
+
+		console.log('Handle: ', selectedFilters);
+	};
+
 	const handleFilterRemove = (type: string, filter: number | string) => {
 		setSelectedFilters((prevFilters) => {
 			const updatedFilters =
@@ -84,32 +96,6 @@ const LibraryWorksheetSearch = () => {
 	const clearFilters = () => setSelectedFilters({});
 
 	const handleModalClose = () => {
-		const queryString = Object.keys(selectedFilters)
-			.map((key) => {
-				const values =
-					selectedFilters[key as keyof typeof selectedFilters];
-
-				return values
-					.map(
-						(value) =>
-							`${encodeURIComponent(key)}=${encodeURIComponent(
-								value
-							)}`
-					)
-					.join('&');
-			})
-			.join('&');
-
-		if (queryString || (!queryString && formattedFilters)) {
-			setWorksheets([]);
-			setSkip(0);
-
-			if (!queryString && formattedFilters) {
-				setFormattedFilters('');
-			} else {
-				setFormattedFilters(`&${queryString}`);
-			}
-		}
 		setIsModalOpen(false);
 		console.log(selectedFilters);
 	};
@@ -134,8 +120,9 @@ const LibraryWorksheetSearch = () => {
 				const data = await fetchWorksheets({
 					limit,
 					skip,
-					filters: formattedFilters,
-					sorting: formattedSort,
+
+					filters: formattedFilters, //Change this move inside function?
+					sorting: formattedSort, //Change this move inside function?
 				});
 				const totalCount = data.totalCount;
 				setTotalWorksheets(totalCount);
@@ -177,6 +164,39 @@ const LibraryWorksheetSearch = () => {
 		loadWorksheets();
 	}, [limit, skip, formattedFilters, formattedSort]);
 
+	useEffect(() => {
+		const formatFilters = () => {
+			const queryString = Object.keys(selectedFilters)
+				.map((key) => {
+					const values =
+						selectedFilters[key as keyof typeof selectedFilters];
+	
+					return values
+						.map(
+							(value) =>
+								`${encodeURIComponent(key)}=${encodeURIComponent(
+									value
+								)}`
+						)
+						.join('&');
+				})
+				.join('&');
+	
+			if (queryString || (!queryString && formattedFilters)) {
+				setWorksheets([]);
+				setSkip(0);
+	
+				if (!queryString && formattedFilters) {
+					setFormattedFilters('');
+				} else {
+					setFormattedFilters(`&${queryString}`);
+				}
+			}
+		};
+
+		formatFilters()
+	}, [selectedFilters, formattedFilters]);
+
 	const handleViewMore = () => {
 		setSkip((prevSkip) => prevSkip + limit);
 	};
@@ -202,6 +222,7 @@ const LibraryWorksheetSearch = () => {
 					disabled={loading}
 					setModalOpen={setIsModalOpen}
 					setSortModalOpen={setIsSortModalOpen}
+					handleMultipleInstructorSelect={handleMultipleFilterSelect}
 				/>
 				{loading && worksheets.length === 0 ? (
 					<Loading />

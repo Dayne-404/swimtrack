@@ -3,10 +3,6 @@ export interface Student {
 	skills: boolean[];
 	passed: boolean;
 }
-export interface Instructor {
-	_id: string;
-	name: string;
-}
 
 export interface Worksheet {
 	_id: string;

@@ -1,26 +1,32 @@
-import { Divider, Grid, Stack, Box, Typography } from '@mui/material';
+import { Divider, Stack, Typography } from '@mui/material';
 import { fetchWorksheetsByInstructor } from '../helper/worksheetFetch';
 import { useContext, useEffect, useRef, useState } from 'react';
-import WorksheetCard from '../components/cards/WorksheetCard';
 import { Worksheet } from '../config/worksheetType';
 import ViewHeader from '../components/layout/ViewHeader';
 import { AlertContext } from '../App';
-import Loading from '../components/layout/Loading';
+
+import LibraryCards from '../components/layout/LibraryCards';
+import LibraryGroups from '../components/layout/LibraryGroups';
+import LibraryHeader from '../components/layout/LibraryHeader';
 
 const Library = () => {
 	const [worksheets, setWorksheets] = useState<Worksheet[]>([]);
-	const [loading, setLoading] = useState<boolean>(true);
+	const [totalCount, setTotalCount] = useState<number>(0);
+	const [loading, setLoading] = useState<boolean>(false);
 	const showAlert = useContext(AlertContext);
 	const showAlertRef = useRef(showAlert);
 
 	useEffect(() => {
 		const getWorksheets = async () => {
+			setLoading(true);
 			try {
-				const data: Worksheet[] = await fetchWorksheetsByInstructor(
-					'66e083d5e781e4ee0b2602e7'
-				);
-				setWorksheets(data);
-				console.log('DATA: ', data);
+				const data = await fetchWorksheetsByInstructor({
+					instructor: '66e083d5e781e4ee0b2602e7',
+					limit: 30,
+					sorting: '-updatedAt',
+				});
+				setWorksheets(data.worksheets);
+				setTotalCount(data.totalCount);
 				setLoading(false);
 			} catch (error) {
 				const errorMessage =
@@ -38,26 +44,21 @@ const Library = () => {
 	}, []);
 
 	return (
-		<>
-			{loading || worksheets.length === 0 ? (
-				<Loading />
-			) : (
-				<Stack width='100%' spacing={2}>
-					<ViewHeader text="Library" />
-					<Divider />
-					<Box width='100%'>
-						<Typography variant='h6'>Your Worksheets</Typography>
-						<Grid container spacing={1}>
-							{worksheets.map((worksheet) => (
-								<Grid item xs={12} sm={6} md={2} key={worksheet._id}>
-									<WorksheetCard worksheet={worksheet} />
-								</Grid>
-							))}
-						</Grid>
-					</Box>
-				</Stack>
-			)}
-		</>
+		<Stack width="100%" spacing={2}>
+			<ViewHeader text="Library" />
+			<Divider />
+			<LibraryHeader />
+			<Divider />
+			<Stack spacing={1}>
+				<LibraryGroups headerText="Recent" />
+				<LibraryCards worksheets={worksheets.slice(0, 6)} />
+			</Stack>
+			<Divider />
+			<Stack spacing={0.5} alignItems='center'>
+				<Typography variant='subtitle1' color='text.secondary'>You have created {totalCount} total worksheets</Typography>
+				<LibraryCards headerText="More" worksheets={worksheets.slice(6)} />
+			</Stack>
+		</Stack>
 	);
 };
 

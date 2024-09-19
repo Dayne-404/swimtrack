@@ -1,4 +1,5 @@
 interface fetchWorksheetsProps {
+	instructor?: string;
 	limit?: number;
 	skip?: number;
 	filters?: string;
@@ -13,10 +14,18 @@ export const fetchWorksheets = async ({
 }: fetchWorksheetsProps) => {
 	let uri = 'http://localhost:3000/api/worksheets?';
 
-	if (limit) { uri += `&limit=${limit}`; }
-	if (skip) { uri += `&skip=${skip}`; }
-	if (filters) { uri += filters; }
-	if (sorting) { uri += sorting; }
+	if (limit) {
+		uri += `&limit=${limit}`;
+	}
+	if (skip) {
+		uri += `&skip=${skip}`;
+	}
+	if (filters) {
+		uri += filters;
+	}
+	if (sorting) {
+		uri += sorting;
+	}
 
 	console.log('URI: ', uri);
 	const res = await fetch(uri);
@@ -28,10 +37,27 @@ export const fetchWorksheets = async ({
 	return res.json();
 };
 
-export const fetchWorksheetsByInstructor = async (instructorId: string) => {
-	const res = await fetch(
-		`http://localhost:3000/api/worksheets/instructor/${instructorId}`
-	);
+export const fetchWorksheetsByInstructor = async ({
+	instructor,
+	limit,
+	skip,
+	sorting,
+}: fetchWorksheetsProps) => {
+	let uri = `http://localhost:3000/api/worksheets/instructor/${instructor}?`;
+
+	if (limit) {
+		uri += `&limit=${limit}`;
+	}
+	if (skip) {
+		uri += `&skip=${skip}`;
+	}
+	if (sorting) {
+		uri += `&sort=${sorting}`;
+	}
+
+	console.log('URI:', uri);
+
+	const res = await fetch(uri);
 	if (!res.ok) {
 		const errorData = await res.json();
 		const errorMessage = errorData.message || 'Network response was not ok';

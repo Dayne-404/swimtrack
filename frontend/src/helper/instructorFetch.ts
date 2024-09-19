@@ -1,4 +1,4 @@
-import { Instructor } from "../config/worksheetType";
+import { InstructorPublic } from "../config/instructorType"
 
 interface fetchInstructorsProps {
 	limit?: number;
@@ -14,7 +14,7 @@ export const fetchInstructors = async ({
 	search = '',
 	filters = '',
 	sorting = '',
-}: fetchInstructorsProps): Promise<Instructor[]> => {
+}: fetchInstructorsProps): Promise<InstructorPublic[]> => {
 	let uri = `http://localhost:3000/api/instructors?`;
 
 	if (limit) { uri += `&limit=${limit}`; }

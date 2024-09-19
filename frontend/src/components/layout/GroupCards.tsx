@@ -9,18 +9,22 @@ import {
 import Loading from './Loading';
 
 interface GroupCardsProps {
+	limit?: number;
+	displayNumGroups?: boolean;
 	sortOption?: number;
 }
 
-const GroupCards = ({ sortOption }: GroupCardsProps) => {
+const GroupCards = ({
+	limit,
+	displayNumGroups = true,
+	sortOption,
+}: GroupCardsProps) => {
 	const [groups, setGroups] = useState<Group[]>([]);
 	const [totalGroups, setTotalGroups] = useState<number>(0);
 	const [loading, setLoading] = useState<boolean>(false);
 
 	//Turn into a helper function
 	const formatSortOption = (sortOption?: number): string => {
-		console.log('FORMAT SORT OPTION');
-
 		if (sortOption)
 			return sortOption === 1 ? '&sort=createdAt' : '&sort=-createdAt';
 
@@ -35,6 +39,7 @@ const GroupCards = ({ sortOption }: GroupCardsProps) => {
 					{
 						instructorId: '66e083d5e781e4ee0b2602e7',
 						sorting: formatSortOption(sortOption),
+						limit: limit,
 					}
 				);
 
@@ -53,7 +58,7 @@ const GroupCards = ({ sortOption }: GroupCardsProps) => {
 		};
 
 		getWorksheets();
-	}, [sortOption]);
+	}, [sortOption, limit]);
 
 	return (
 		<>
@@ -61,7 +66,7 @@ const GroupCards = ({ sortOption }: GroupCardsProps) => {
 				<Loading />
 			) : (
 				<>
-					{totalGroups === 0 && (
+					{totalGroups === 0 && displayNumGroups && (
 						<Box textAlign="center" py={3}>
 							<Typography variant="h5">
 								No Groups Found
@@ -75,17 +80,19 @@ const GroupCards = ({ sortOption }: GroupCardsProps) => {
 						</Box>
 					)}
 					<Grid container spacing={1}>
-						<Grid item xs={12} pb={0.5} textAlign="center">
-							{groups.length > 0 && (
-								<Typography
-									variant="subtitle1"
-									color="text.secondary"
-								>
-									Showing {groups.length} groups out of |{' '}
-									{totalGroups}
-								</Typography>
-							)}
-						</Grid>
+						{displayNumGroups && (
+							<Grid item xs={12} pb={0.5} textAlign="center">
+								{groups.length > 0 && (
+									<Typography
+										variant="subtitle1"
+										color="text.secondary"
+									>
+										Showing {groups.length} groups out of |{' '}
+										{totalGroups}
+									</Typography>
+								)}
+							</Grid>
+						)}
 
 						{groups.map((group) => (
 							<GroupCard

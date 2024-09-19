@@ -12,7 +12,7 @@ const router = express.Router();
 //Get
 router.get('/', getWorksheets);
 router.get('/:id', getWorksheetById);
-router.get('/instructor/:instructorId', getWorksheetByInstructor);
+router.get('/instructor/:instructorId', getWorksheets);
 
 // ? denotes a query string
 // ?filter= or //?sort=<value>&filter=<value>
