@@ -8,9 +8,9 @@ const LibraryHeader = () => {
 	const navigate = useNavigate();
     
     return (
-		<Box width="100%">
-            <Typography variant="h6">Actions</Typography>
-			<Grid container spacing={1} >
+		<Box width="100%" alignItems='center' display='flex' flexDirection='column'>
+            <Typography variant="h6" gutterBottom>Actions</Typography>
+			<Grid container spacing={1} justifyContent='center'>
 				<Grid item xs={12} sm={4} md={2}>
 					<Button
 						startIcon={<CreateIcon />}

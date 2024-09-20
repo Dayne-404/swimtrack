@@ -9,9 +9,9 @@ interface LibraryCardsProps {
 
 const LibraryCards = ({headerText, worksheets}: LibraryCardsProps) => {
 	return (
-		<Box width="100%">
-			{headerText && <Typography variant="h6">{headerText}</Typography>}
-			<WorksheetGrid worksheets={worksheets} includeInstructor={false} gridSpace={2} />
+		<Box width="100%" alignItems='center' display='flex' flexDirection='column'>
+			{headerText && <Typography variant="h6" gutterBottom>{headerText}</Typography>}
+			<WorksheetGrid worksheets={worksheets} includeInstructor={false} gridSpace={4} />
 		</Box>
 	);
 };

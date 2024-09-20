@@ -7,8 +7,8 @@ interface LibraryGroupsProps {
 
 const LibraryGroups = ({ headerText }: LibraryGroupsProps) => {
 	return (
-		<Box width="100%">
-			{headerText && <Typography variant="h6">{headerText}</Typography>}
+		<Box width="100%" alignItems='center' display='flex' flexDirection='column'>
+			{headerText && <Typography variant="h6" gutterBottom>{headerText}</Typography>}
 			<GroupCards limit={4} displayNumGroups={false} />
 		</Box>
 	);

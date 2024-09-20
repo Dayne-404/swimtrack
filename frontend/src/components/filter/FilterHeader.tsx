@@ -5,6 +5,7 @@ import InstructorSearch from '../inputs/InstructorSearch';
 
 interface FilterHeaderProps {
 	disabled?: boolean;
+	includeSearch?: boolean;
 	setModalOpen: (value: boolean) => void;
 	setSortModalOpen: (value: boolean) => void;
 	handleMultipleInstructorSelect: (type: string, filter: string[]) => void;
@@ -12,17 +13,20 @@ interface FilterHeaderProps {
 
 const FilterHeader = ({
 	disabled = false,
+	includeSearch = true,
 	setModalOpen,
 	setSortModalOpen,
 	handleMultipleInstructorSelect,
 }: FilterHeaderProps) => {
 	return (
 		<>
-			<InstructorSearch
-				label="Search"
-				size="small"
-				handleSelect={handleMultipleInstructorSelect}
-			/>
+			{includeSearch && (
+				<InstructorSearch
+					label="Search"
+					size="small"
+					handleSelect={handleMultipleInstructorSelect}
+				/>
+			)}
 			<Stack direction="row" spacing={1}>
 				<Button
 					disabled={disabled}

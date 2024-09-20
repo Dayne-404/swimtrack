@@ -22,13 +22,22 @@ const ActiveFilters: React.FC<ActiveFiltersProps> = ({
 				filterArray.map((filter) => {
 					let label: string | number = filter;
 					const pluralType = type + 's';
-			
+
+					if (pluralType === 'instructors') return;
+
 					if (pluralType === 'levels' && typeof filter === 'number') {
-						label = WORKSHEET_VALUES.levels.names[filter] ?? `Level ${filter}`;
+						label =
+							WORKSHEET_VALUES.levels.names[filter] ??
+							`Level ${filter}`;
 					} else {
-						const worksheetValuesForType = WORKSHEET_VALUES[pluralType as keyof typeof WORKSHEET_VALUES];
+						const worksheetValuesForType =
+							WORKSHEET_VALUES[
+								pluralType as keyof typeof WORKSHEET_VALUES
+							];
 						label = worksheetValuesForType
-							? worksheetValuesForType[filter as keyof typeof worksheetValuesForType] ?? filter
+							? worksheetValuesForType[
+									filter as keyof typeof worksheetValuesForType
+							  ] ?? filter
 							: filter;
 					}
 

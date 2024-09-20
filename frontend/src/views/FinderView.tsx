@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Divider, Stack } from '@mui/material';
 import FinderHeader from '../components/filter/FilterHeader';
 import FinderCards from '../components/layout/FinderCards';
 import { useContext, useEffect, useRef, useState } from 'react';
@@ -8,6 +8,7 @@ import FilterModal from '../components/filter/FilterModal';
 import SortModal from '../components/filter/SortModal';
 import { AlertContext } from '../App';
 import Loading from '../components/layout/Loading';
+import ViewHeader from '../components/layout/ViewHeader';
 
 const DEFAULT_LIMIT = 9;
 
@@ -15,7 +16,11 @@ interface FiltersByType {
 	[type: string]: (number | string)[];
 }
 
-const LibraryWorksheetSearch = () => {
+interface FinderViewProps {
+	defaultInstructorId: string;
+}
+
+const LibraryWorksheetSearch = ({ defaultInstructorId }: FinderViewProps) => {
 	const formatSortOptions = (sortOptions: {
 		[type: string]: number;
 	}): string => {
@@ -26,11 +31,15 @@ const LibraryWorksheetSearch = () => {
 			.join('');
 	};
 
-	const [selectedFilters, setSelectedFilters] = useState<FiltersByType>({});
+	const [selectedFilters, setSelectedFilters] = useState<FiltersByType>(
+		defaultInstructorId ? { instructor: ['66e083d5e781e4ee0b2602e7'] } : {}
+	);
 	const [sortOptions, setSortOptions] = useState<{ [type: string]: number }>({
 		createdAt: 1,
 	});
-	const [formattedFilters, setFormattedFilters] = useState<string>('');
+	const [formattedFilters, setFormattedFilters] = useState<string>(
+		defaultInstructorId ? '&instructor=66e083d5e781e4ee0b2602e7' : ''
+	);
 	const [formattedSort, setFormattedSort] = useState<string>(
 		formatSortOptions(sortOptions)
 	);
@@ -102,7 +111,6 @@ const LibraryWorksheetSearch = () => {
 
 	const handleSortModalClose = () => {
 		const sortString = formatSortOptions(sortOptions);
-		console.log('SORT STRING: ', sortString);
 
 		if (sortString !== formattedSort) {
 			setWorksheets([]);
@@ -170,22 +178,22 @@ const LibraryWorksheetSearch = () => {
 				.map((key) => {
 					const values =
 						selectedFilters[key as keyof typeof selectedFilters];
-	
+
 					return values
 						.map(
 							(value) =>
-								`${encodeURIComponent(key)}=${encodeURIComponent(
-									value
-								)}`
+								`${encodeURIComponent(
+									key
+								)}=${encodeURIComponent(value)}`
 						)
 						.join('&');
 				})
 				.join('&');
-	
+
 			if (queryString || (!queryString && formattedFilters)) {
 				setWorksheets([]);
 				setSkip(0);
-	
+
 				if (!queryString && formattedFilters) {
 					setFormattedFilters('');
 				} else {
@@ -194,7 +202,7 @@ const LibraryWorksheetSearch = () => {
 			}
 		};
 
-		formatFilters()
+		formatFilters();
 	}, [selectedFilters, formattedFilters]);
 
 	const handleViewMore = () => {
@@ -204,6 +212,8 @@ const LibraryWorksheetSearch = () => {
 	const content = () => {
 		return (
 			<Stack spacing={1} width="100%">
+				{!defaultInstructorId && <ViewHeader text='Finder' /> }
+				<Divider />
 				<FilterModal
 					selectedFilters={selectedFilters}
 					isModalOpen={isModalOpen}
@@ -219,6 +229,7 @@ const LibraryWorksheetSearch = () => {
 					handleModalClose={handleSortModalClose}
 				/>
 				<FinderHeader
+					includeSearch={defaultInstructorId === undefined}
 					disabled={loading}
 					setModalOpen={setIsModalOpen}
 					setSortModalOpen={setIsSortModalOpen}

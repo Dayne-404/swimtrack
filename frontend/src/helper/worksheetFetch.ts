@@ -55,8 +55,6 @@ export const fetchWorksheetsByInstructor = async ({
 		uri += `&sort=${sorting}`;
 	}
 
-	console.log('URI:', uri);
-
 	const res = await fetch(uri);
 	if (!res.ok) {
 		const errorData = await res.json();
