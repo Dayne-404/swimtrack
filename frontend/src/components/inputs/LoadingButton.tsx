@@ -3,16 +3,20 @@ import { Button, CircularProgress } from '@mui/material';
 interface LoadingButtonProps {
 	text: string;
 	color?: 'primary' | 'error';
-    onClick: () => void;
+	onClick: () => void | Promise<void>;
 	loading?: boolean;
+	fullwidth?: boolean;
 	disabled?: boolean;
+	varient?: 'contained' | 'outlined';
 	startIcon?: React.ReactElement;
 }
 
 const LoadingButton = ({
 	text,
-    loading,
+	loading,
 	color = 'primary',
+	fullwidth = false,
+	varient = 'outlined',
 	disabled,
 	startIcon,
 	onClick,
@@ -20,27 +24,28 @@ const LoadingButton = ({
 	return (
 		<>
 			<Button
-				variant="outlined"
+				variant={varient}
 				color={color}
 				startIcon={startIcon}
 				onClick={onClick}
-				fullWidth
+				fullWidth={fullwidth}
 				disabled={loading || disabled}
+				sx={{ position: 'relative' }}
 			>
 				{text}
+				{loading && (
+					<CircularProgress
+						size={24}
+						sx={{
+							position: 'absolute',
+							top: '50%',
+							left: '50%',
+							marginTop: '-12px',
+							marginLeft: '-12px',
+						}}
+					/>
+				)}
 			</Button>
-			{loading && (
-				<CircularProgress
-					size={24}
-					sx={{
-						position: 'absolute',
-						top: '50%',
-						left: '50%',
-						marginTop: '-7px',
-						marginLeft: '-12px',
-					}}
-				/>
-			)}
 		</>
 	);
 };

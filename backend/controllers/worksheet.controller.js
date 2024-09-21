@@ -55,9 +55,6 @@ const getWorksheets = async (req, res) => {
 			sortQuery[key] = order;
 		});
 
-		console.log('SEARCH QUERY: ', query);
-		console.log('ID: ', instructorId);
-
 		const worksheets = await Worksheet.find(query)
 			.sort(sortQuery)
 			.skip(parseInt(skip))
@@ -99,7 +96,7 @@ const createWorksheet = async (req, res) => {
 		const worksheet = await Worksheet.create(req.body);
 		res.status(200).json(worksheet);
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		res.status(500).json({ message: error.message });
 	}
 };

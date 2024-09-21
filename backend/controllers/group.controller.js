@@ -58,7 +58,7 @@ const createGroup = async (req, res) => {
 
 		res.status(200).json(newGroup);
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		res.status(500).json({ message: error.message });
 	}
 };
@@ -76,7 +76,7 @@ const getWorksheetsByGroupId = async (req, res) => {
 
 		res.status(200).json(group);
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		res.status(500).json({ message: error.message });
 	}
 };
@@ -88,7 +88,7 @@ const getGroupById = async (req, res) => {
 
 		res.status(200).json(group);
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		res.status(500).json({ message: error.message });
 	}
 };

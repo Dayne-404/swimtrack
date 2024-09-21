@@ -19,6 +19,23 @@ export const submitNewWorksheet = async (header: newWorksheet) => {
 	return res.json();
 };
 
+export const login = async (userCredentials: {email: string, password: string}) => {
+	const res = await fetch('http://localhost:3000/api/login', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(userCredentials),
+	});
+
+	if (!res.ok) {
+		const errorData = await res.json();
+		const errorMessage = errorData.message || 'Network response was not ok';
+		throw new Error(errorMessage);
+	}
+	return res.json();
+};
+
 export const submitUpdatedWorksheet = async (
 	worksheetId: string,
 	header: newWorksheet
@@ -75,20 +92,17 @@ export const createGroup = async (
 	name: string,
 	worksheetIds?: string[]
 ) => {
-	const res = await fetch(
-		`http://localhost:3000/api/groups`,
-		{
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				instructor: instructor,
-				name: name,
-				worksheetIds: worksheetIds,
-			}),
-		}
-	);
+	const res = await fetch(`http://localhost:3000/api/groups`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			instructor: instructor,
+			name: name,
+			worksheetIds: worksheetIds,
+		}),
+	});
 
 	if (!res.ok) {
 		const errorData = await res.json();

@@ -9,13 +9,15 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { createContext, useState } from 'react';
 
 import Navigation from './components/navigation/Navigation';
-import View from './components/layout/View';
 import SnackbarAlert from './components/layout/SnackbarAlert';
 
 import { ALL_ROUTES, SIDE_NAV_ROUTES } from './config/routes';
 import { DEFAULT_SNACKBAR_VALUES, AlertType } from './config/alertType';
 
 import './styles/fonts.css';
+import AuthenticatedRoute from './components/AuthenticatedRoute';
+import LoginView from './views/LoginView';
+import View from './components/layout/View';
 
 const theme = createTheme({
 	palette: {
@@ -50,54 +52,58 @@ function App() {
 		setSnackbarState({ open: true, message, severity });
 	};
 
+	const MainContentSx = {
+		display: 'flex',
+		flexDirection: 'column',
+		component: 'main',
+		width: '100%',
+		height: '100vh',
+		boxSizing: 'border-box',
+		padding: {
+			xs: `${NAVBAR_HEIGHT + 16}px 10px 10px 10px`,
+			md: `${NAVBAR_HEIGHT + 24}px 24px 24px ${LARGE_SIDE_WIDTH + 24}px`,
+		},
+	};
+
 	return (
 		<ThemeProvider theme={theme}>
 			<AlertContext.Provider value={showAlert}>
 				<Router>
-					<Navigation
-						isMediumOrBelow={isMediumOrBelow}
-						navbarHeight={NAVBAR_HEIGHT}
-						smallSideNavWidth={SMALL_SIDE_WIDTH}
-						largeSideNavWidth={LARGE_SIDE_WIDTH}
-						routes={SIDE_NAV_ROUTES}
+					<SnackbarAlert
+						open={snackbarState.open}
+						message={snackbarState.message}
+						severity={snackbarState.severity}
+						setState={setSnackbarState}
 					/>
-					<Box
-						display="flex"
-						flexDirection="column"
-						component="main"
-						width="100%"
-						height="100vh"
-						boxSizing="border-box"
-						padding={
-							isMediumOrBelow
-								? `${NAVBAR_HEIGHT + 16}px 10px 10px 10px`
-								: `${NAVBAR_HEIGHT + 24}px 24px 24px ${
-										LARGE_SIDE_WIDTH + 24
-								  }px`
-						}
-					>
-						<SnackbarAlert
-							open={snackbarState.open}
-							message={snackbarState.message}
-							severity={snackbarState.severity}
-							setState={setSnackbarState}
-						/>
-						<View
-							body={
-								<Routes>
-									{Object.values(ALL_ROUTES).map(
-										(route, index) => (
-											<Route
-												key={`route-${index}`}
-												path={route.to}
-												element={route.element}
+					<Routes>
+						<Route path="/login" element={<LoginView />} />
+						{Object.values(ALL_ROUTES).map((route, index) => (
+							<Route
+								key={`route-${index}`}
+								path={route.to}
+								element={
+									<>
+										<Navigation
+											isMediumOrBelow={isMediumOrBelow}
+											navbarHeight={NAVBAR_HEIGHT}
+											smallSideNavWidth={SMALL_SIDE_WIDTH}
+											largeSideNavWidth={LARGE_SIDE_WIDTH}
+											routes={SIDE_NAV_ROUTES}
+										/>
+										<Box sx={MainContentSx}>
+											<View
+												body={
+													<AuthenticatedRoute
+														children={route.element}
+													/>
+												}
 											/>
-										)
-									)}
-								</Routes>
-							}
-						/>
-					</Box>
+										</Box>
+									</>
+								}
+							/>
+						))}
+					</Routes>
 				</Router>
 			</AlertContext.Provider>
 		</ThemeProvider>

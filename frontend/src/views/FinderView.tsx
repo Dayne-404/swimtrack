@@ -17,7 +17,7 @@ interface FiltersByType {
 }
 
 interface FinderViewProps {
-	defaultInstructorId: string;
+	defaultInstructorId?: string;
 }
 
 const LibraryWorksheetSearch = ({ defaultInstructorId }: FinderViewProps) => {
