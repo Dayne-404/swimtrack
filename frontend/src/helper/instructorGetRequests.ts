@@ -1,4 +1,4 @@
-import { InstructorPublic } from '../config/instructorType';
+import { InstructorPrivate, InstructorPublic } from '../config/instructorType';
 import { apiRequest } from './apiRequest';
 
 interface fetchInstructorsProps {
@@ -16,11 +16,15 @@ export const fetchInstructors = async ({
 	if (search) params.append('search', search);
 	if (limit) params.append('limit', String(limit));
 	if (skip) params.append('skip', String(skip));
-
-	console.log('SEARCH: ', search);
 	
 	return apiRequest({
 		endpoint: '/instructors',
 		params: params,
 	});
 };
+
+export const fetchInstructor = async (instructorId: string): Promise<InstructorPrivate> => {
+	return apiRequest({
+		endpoint: `/instructors/profile/${instructorId}`
+	})
+}

@@ -34,7 +34,7 @@ const createInstructor = async (req, res) => {
 	}
 };
 
-const getInstructor = async (req, res) => {
+const getProtectedInstructor = async (req, res) => {
 	const { limit = 9, search = '' } = req.query;
 
 	let searchQuery = {};
@@ -57,7 +57,29 @@ const getInstructor = async (req, res) => {
 	}
 };
 
+const getInstructorProfile = async (req, res) => {
+	const user = req.user; 
+	const { id } = req.params;
+
+	try {
+		if (
+			user._id !== id &&
+			user.type !== 'admin'
+		) {
+			const instructor = await Instructor.findById(id).select('name _id email');
+			res.status(200).json(instructor);
+		} else {
+			const instructor = await Instructor.findById(id);
+			res.status(200).json(instructor);
+		}
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: error.message });
+	}
+};
+
 module.exports = {
-	getInstructor,
+	getProtectedInstructor,
+	getInstructorProfile,
 	createInstructor,
 };

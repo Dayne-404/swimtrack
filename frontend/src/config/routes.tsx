@@ -13,6 +13,7 @@ import ScubaDivingIcon from '@mui/icons-material/ScubaDiving';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
 import SettingsIcon from '@mui/icons-material/Settings';
+import ProfileView from '../views/ProfileView';
 
 export const SIDE_NAV_ROUTES = {
 	Dashboard: { icon: <SpeedIcon />, to: '/', element: <Dashboard /> },
@@ -37,7 +38,7 @@ export const SIDE_NAV_BOTTOM_ROUTES = {
 		to: '/settings',
 		element: <Dashboard />,
 	},
-	Profile: { to: '/profile', element: <Dashboard /> },
+	Profile: { to: '/profile', element: <ProfileView /> },
 };
 
 export const EXTRA_ROUTES = {
