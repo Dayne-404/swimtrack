@@ -1,10 +1,11 @@
 import { Stack, TextField, Button } from '@mui/material';
 import InfoModal from './InfoModal';
 import { useState, useContext } from 'react';
-import { createGroup } from '../../helper/submit';
+import { createGroup } from '../../helper/postRequests';
 import { Group } from '../../config/groupType';
 import { AlertContext } from '../../App';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../hooks/useUser';
 
 interface CreateGroupModalProps {
 	instructor: string;
@@ -13,7 +14,6 @@ interface CreateGroupModalProps {
 }
 
 const CreateGroupModal = ({
-	instructor,
 	open = false,
 	setOpen,
 }: CreateGroupModalProps) => {
@@ -21,11 +21,12 @@ const CreateGroupModal = ({
 	const [loading, setLoading] = useState<boolean>(false);
 	const showAlert = useContext(AlertContext);
 	const navigate = useNavigate();
+	const { user } = useUser() 
 
 	const submit = async () => {
 		setLoading(true);
 		try {
-			const data: Group = await createGroup(instructor, groupName);
+			const data: Group = await createGroup(user.id, groupName);
 
 			if (data._id) {
 				showAlert('Sucessfully created group', 'success');

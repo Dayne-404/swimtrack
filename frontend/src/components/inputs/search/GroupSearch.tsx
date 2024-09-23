@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import {
 	fetchGroupsByInstructor,
 	FetchGroupsResponse,
-} from '../../../helper/groupFetch';
+} from '../../../helper/groupGetRequests';
 import { Group } from '../../../config/groupType';
 import { useNavigate } from 'react-router-dom';
 

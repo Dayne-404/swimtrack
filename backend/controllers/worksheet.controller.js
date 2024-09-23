@@ -1,13 +1,19 @@
 const Worksheet = require('../models/Worksheet.model.js');
 
 const getWorksheets = async (req, res) => {
-	const { id, instructorId } = req.params;
-	const { limit = 10, skip = 0, ...filters } = req.query;
+	const userId = req.user._id;
+	const {
+		specific = false,
+		limit = 10,
+		skip = 0,
+		sort = [],
+		...filters
+	} = req.query;
 
 	try {
 		let query = {};
 
-		if(instructorId) query.instructor = instructorId;
+		if (specific && userId) query.instructor = userId;
 		else if (filters.instructor) query.instructor = filters.instructor;
 
 		if (filters.level)
@@ -46,7 +52,6 @@ const getWorksheets = async (req, res) => {
 			};
 
 		let sortQuery = {};
-		const sort = req.query.sort || [];
 		const sortArray = Array.isArray(sort) ? sort : [sort];
 
 		sortArray.forEach((field) => {
@@ -69,6 +74,8 @@ const getWorksheets = async (req, res) => {
 };
 
 const getWorksheetById = async (req, res) => {
+	console.log("GETTING WORKSHEETS!");
+	
 	try {
 		const { id } = req.params;
 		const worksheet = await Worksheet.findById(id).populate(

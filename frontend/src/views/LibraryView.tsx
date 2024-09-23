@@ -7,7 +7,7 @@ const Library = () => {
 	return (
 		<Stack width="100%" spacing={2}>
 			<ViewHeader text="Library" />
-			<LibraryWorksheetSearch defaultInstructorId='66e083d5e781e4ee0b2602e7' />
+			<LibraryWorksheetSearch specificToInstructor />
 		</Stack>
 	);
 };

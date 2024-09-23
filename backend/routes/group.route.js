@@ -1,5 +1,6 @@
 const express = require('express');
 const {
+    getGroups,
     removeWorksheetsFromGroup,
     deleteGroupById,
     getGroupsByInstructor,

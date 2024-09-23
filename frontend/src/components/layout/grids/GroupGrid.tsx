@@ -5,33 +5,27 @@ import { Group } from '../../../config/groupType';
 import {
 	fetchGroupsByInstructor,
 	FetchGroupsResponse,
-} from '../../../helper/groupFetch';
+} from '../../../helper/groupGetRequests';
 import Loading from '../main/Loading';
+import { useUser } from '../../hooks/useUser';
+
+const DEFAULT_LIMIT = 20;
 
 interface GroupGridProps {
 	limit?: number;
 	displayNumGroups?: boolean;
 	sortOption?: number;
-	alignItems?: 'center';
 }
 
 const GroupGrid = ({
-	limit,
+	limit = DEFAULT_LIMIT,
 	displayNumGroups = true,
 	sortOption,
-	alignItems,
 }: GroupGridProps) => {
 	const [groups, setGroups] = useState<Group[]>([]);
 	const [totalGroups, setTotalGroups] = useState<number>(0);
 	const [loading, setLoading] = useState<boolean>(false);
-
-	//Turn into a helper function
-	const formatSortOption = (sortOption?: number): string => {
-		if (sortOption)
-			return sortOption === 1 ? '&sort=createdAt' : '&sort=-createdAt';
-
-		return '';
-	};
+	const { user } = useUser();
 
 	useEffect(() => {
 		const getWorksheets = async () => {
@@ -39,8 +33,8 @@ const GroupGrid = ({
 			try {
 				const data: FetchGroupsResponse = await fetchGroupsByInstructor(
 					{
-						instructorId: '66e083d5e781e4ee0b2602e7',
-						sorting: formatSortOption(sortOption),
+						instructorId: user.id,
+						sorting: { updatedAt: 1 },
 						limit: limit,
 					}
 				);
@@ -60,12 +54,12 @@ const GroupGrid = ({
 		};
 
 		getWorksheets();
-	}, [sortOption, limit]);
+	}, [sortOption, limit, user.id]);
 
 	if (loading) return <Loading />;
 
 	return (
-		<Box width="100%" alignItems={alignItems} display='flex'>
+		<>
 			{totalGroups === 0 && displayNumGroups && (
 				<Box textAlign="center" py={3}>
 					<Typography variant="h5">No Groups Found</Typography>
@@ -97,7 +91,7 @@ const GroupGrid = ({
 					/>
 				))}
 			</Grid>
-		</Box>
+		</>
 	);
 };
 

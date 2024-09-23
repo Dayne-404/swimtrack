@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { InstructorPublic } from '../../../config/instructorType';
-import { fetchInstructors } from '../../../helper/instructorFetch';
+import { fetchInstructors } from '../../../helper/instructorGetRequests';
 
 interface InstructorSearchProps {
 	label?: string;
@@ -35,7 +35,6 @@ const InstructorSearch = ({
 					search: searchTerm,
 				});
 
-				console.log('DATA: ', data);
 				setInstructors(data);
 			} catch (error) {
 				console.error('Error fetching instructors:', error);

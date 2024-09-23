@@ -10,17 +10,17 @@ import {
 } from '@mui/material';
 import BackButton from '../components/inputs/buttons/BackButton';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { fetchGroupById } from '../helper/groupFetch';
+import { fetchGroupById } from '../helper/groupGetRequests';
 import { Worksheet } from '../config/worksheetType';
 import { FetchedGroup } from '../config/groupType';
 import WorksheetGrid from '../components/layout/grids/WorksheetGrid';
 import { AlertContext } from '../App';
 import DeleteButton from '../components/inputs/buttons/DeleteButton';
-import { deleteGroupById } from '../helper/delete';
+import { deleteGroupById } from '../helper/deleteRequests';
 import RemoveIcon from '@mui/icons-material/Remove';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckIcon from '@mui/icons-material/Check';
-import { removeWorksheetFromGroup } from '../helper/put';
+import { removeWorksheetFromGroup } from '../helper/putRequests';
 
 const GroupInspectView = () => {
 	const { groupId } = useParams();

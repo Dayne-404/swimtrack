@@ -16,7 +16,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useState } from 'react';
-import { login } from '../helper/submit';
+import { login } from '../helper/authenticatePostRequests';
 import LoadingButton from '../components/inputs/buttons/LoadingButton';
 import { useNavigate } from 'react-router-dom';
 

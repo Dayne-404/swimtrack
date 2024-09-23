@@ -6,6 +6,7 @@ import { SkillDescription } from '../../../config/levelSkillDescriptions';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import AddToGroupModal from '../../modals/AddToGroupModal';
 import { useState } from 'react';
+import { useUser } from '../../hooks/useUser';
 
 interface WorksheetHeaderInputsProps {
 	values: newWorksheet;
@@ -27,6 +28,7 @@ const WorksheetHeaderInputs = ({
 	disabled = false,
 }: WorksheetHeaderInputsProps) => {
 	const [modalOpen, setModalOpen] = useState<boolean>(false);
+	const { user } = useUser();
 
 	const handleLevelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const newLevel = parseInt(event.target.value);
@@ -97,7 +99,7 @@ const WorksheetHeaderInputs = ({
 					setSelectedGroups={setSelectedGroups}
 					open={modalOpen}
 					setOpen={setModalOpen}
-					instructorId="66e083d5e781e4ee0b2602e7"
+					instructorId={user.id}
 				/>
 			</Stack>
 			<Stack direction="row" spacing={1}>

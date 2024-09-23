@@ -14,27 +14,17 @@ import { WORKSHEET_VALUES } from '../config/worksheetData';
 import { AlertContext } from '../App';
 import { validateFields } from '../helper/validate';
 import {
-	submitNewWorksheet,
-	submitUpdatedWorksheet,
+	
+	submitWorksheet,
 	submitWorksheetToGroups,
-} from '../helper/submit';
+} from '../helper/postRequests';
+import { useUser } from '../components/hooks/useUser';
 interface CreateViewProps {
 	defaultValues?: Partial<newWorksheet>;
 	worksheetId?: string;
 	disabled?: boolean;
 	setDisabled?: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
-const DEFAULT_HEADER_VALUES: newWorksheet = {
-	instructor: { _id: '66e083d5e781e4ee0b2602e7', name: 'Dayne D' },
-	level: null,
-	session: null,
-	day: null,
-	time: '',
-	year: '',
-	location: null,
-	students: [],
-};
 
 const CreateView = ({
 	worksheetId = '',
@@ -44,6 +34,18 @@ const CreateView = ({
 }: CreateViewProps) => {
 	const navigate = useNavigate();
 	const showAlert = useContext(AlertContext);
+	const { user } = useUser();
+
+	const DEFAULT_HEADER_VALUES: newWorksheet = {
+		instructor: { _id: user.id, name: user.name },
+		level: null,
+		session: null,
+		day: null,
+		time: '',
+		year: '',
+		location: null,
+		students: [],
+	};
 
 	const [header, setHeader] = useState<newWorksheet>({
 		...DEFAULT_HEADER_VALUES,
@@ -75,18 +77,15 @@ const CreateView = ({
 		try {
 			setIsLoading(true);
 
-			const result = !worksheetId
-				? await submitNewWorksheet(header)
-				: await submitUpdatedWorksheet(worksheetId, header);
+			const result = await submitWorksheet(header, worksheetId);
 
 			if (result._id && !worksheetId) {
-				if(selectedGroups.length > 0)
-					addToGroup(result._id);
+				if (selectedGroups.length > 0) addToGroup(result._id);
 				showAlert('Sucessfully created worksheet', 'success');
 				setIsLoading(false);
 				navigate(`/library/${result._id}`);
 			} else {
-				if(selectedGroups.length > 0 && worksheetId)
+				if (selectedGroups.length > 0 && worksheetId)
 					addToGroup(worksheetId);
 				showAlert('Sucessfully updated worksheet', 'success');
 				setDisabled && setDisabled(false);

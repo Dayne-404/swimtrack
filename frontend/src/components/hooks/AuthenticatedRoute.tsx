@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import { validateToken } from '../../helper/submit';
+import { validateToken } from '../../helper/authenticatePostRequests';
 import { useUser } from './useUser';
 
 interface AuthenticatedRouteProps {
@@ -32,7 +32,7 @@ const AuthenticatedRoute = ({ children }: AuthenticatedRouteProps) => {
 						name: string;
 						type: string;
 					}>(token);
-					console.log('DECODED', decoded);
+
 					setUser(decoded);
 					setIsAuthenticated(true);
 				} else {

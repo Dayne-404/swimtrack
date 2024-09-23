@@ -1,5 +1,5 @@
 import { Divider, Stack, Typography, Box } from '@mui/material';
-import { fetchWorksheetsByInstructor } from '../helper/worksheetFetch';
+import { fetchWorksheets } from '../helper/worksheetGetRequests';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Worksheet } from '../config/worksheetType';
 import ViewHeader from '../components/layout/main/ViewHeader';
@@ -23,10 +23,10 @@ const DashboardView = () => {
 			setLoading(true);
 
 			try {
-				const data = await fetchWorksheetsByInstructor({
-					instructor: user.id,
+				const data = await fetchWorksheets({
 					limit: 6,
-					sorting: '-updatedAt',
+					sorting: { updatedAt: 1 },
+					specific: true,
 				});
 				setWorksheets(data.worksheets);
 				setTotalCount(data.totalCount);
