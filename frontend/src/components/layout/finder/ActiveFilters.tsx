@@ -1,7 +1,7 @@
 import React from 'react';
 import { Chip, Stack } from '@mui/material';
-import { WORKSHEET_VALUES } from '../../config/worksheetData';
-import capitalizeFirstLetter from '../../helper/capitalizeFirstLetter';
+import { WORKSHEET_VALUES } from '../../../config/worksheetData';
+import capitalizeFirstLetter from '../../../helper/capitalizeFirstLetter';
 
 interface FiltersByType {
 	[type: string]: (number | string)[];

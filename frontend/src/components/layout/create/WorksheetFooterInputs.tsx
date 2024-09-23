@@ -1,8 +1,8 @@
 import { Grid, Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import CheckIcon from '@mui/icons-material/Check';
-import LoadingButton from './LoadingButton';
-import { newWorksheet } from '../../config/worksheetType';
+import LoadingButton from '../../inputs/buttons/LoadingButton';
+import { newWorksheet } from '../../../config/worksheetType';
 
 interface WorksheetFooterInputs {
 	numSkills: number;

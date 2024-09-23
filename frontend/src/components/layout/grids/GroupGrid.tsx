@@ -1,24 +1,26 @@
 import { Grid, Typography, Box } from '@mui/material';
-import GroupCard from '../cards/GroupCard';
+import GroupCard from '../../cards/GroupCard';
 import { useEffect, useState } from 'react';
-import { Group } from '../../config/groupType';
+import { Group } from '../../../config/groupType';
 import {
 	fetchGroupsByInstructor,
 	FetchGroupsResponse,
-} from '../../helper/groupFetch';
-import Loading from './Loading';
+} from '../../../helper/groupFetch';
+import Loading from '../main/Loading';
 
-interface GroupCardsProps {
+interface GroupGridProps {
 	limit?: number;
 	displayNumGroups?: boolean;
 	sortOption?: number;
+	alignItems?: 'center';
 }
 
-const GroupCards = ({
+const GroupGrid = ({
 	limit,
 	displayNumGroups = true,
 	sortOption,
-}: GroupCardsProps) => {
+	alignItems,
+}: GroupGridProps) => {
 	const [groups, setGroups] = useState<Group[]>([]);
 	const [totalGroups, setTotalGroups] = useState<number>(0);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -60,52 +62,43 @@ const GroupCards = ({
 		getWorksheets();
 	}, [sortOption, limit]);
 
+	if (loading) return <Loading />;
+
 	return (
-		<>
-			{loading ? (
-				<Loading />
-			) : (
-				<>
-					{totalGroups === 0 && displayNumGroups && (
-						<Box textAlign="center" py={3}>
-							<Typography variant="h5">
-								No Groups Found
-							</Typography>
+		<Box width="100%" alignItems={alignItems} display='flex'>
+			{totalGroups === 0 && displayNumGroups && (
+				<Box textAlign="center" py={3}>
+					<Typography variant="h5">No Groups Found</Typography>
+					<Typography variant="subtitle1" color="text.secondary">
+						Have you tried making one?
+					</Typography>
+				</Box>
+			)}
+			<Grid container spacing={1}>
+				{displayNumGroups && (
+					<Grid item xs={12} pb={0.5} textAlign="center">
+						{groups.length > 0 && (
 							<Typography
 								variant="subtitle1"
 								color="text.secondary"
 							>
-								Have you tried making one?
+								Showing {groups.length} groups out of |{' '}
+								{totalGroups}
 							</Typography>
-						</Box>
-					)}
-					<Grid container spacing={1}>
-						{displayNumGroups && (
-							<Grid item xs={12} pb={0.5} textAlign="center">
-								{groups.length > 0 && (
-									<Typography
-										variant="subtitle1"
-										color="text.secondary"
-									>
-										Showing {groups.length} groups out of |{' '}
-										{totalGroups}
-									</Typography>
-								)}
-							</Grid>
 						)}
-
-						{groups.map((group) => (
-							<GroupCard
-								key={group._id}
-								id={group._id}
-								groupName={group.name}
-							/>
-						))}
 					</Grid>
-				</>
-			)}
-		</>
+				)}
+
+				{groups.map((group) => (
+					<GroupCard
+						key={group._id}
+						id={group._id}
+						groupName={group.name}
+					/>
+				))}
+			</Grid>
+		</Box>
 	);
 };
 
-export default GroupCards;
+export default GroupGrid;

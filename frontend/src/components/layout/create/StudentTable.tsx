@@ -11,7 +11,7 @@ import {
 	InputAdornment,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { newWorksheet } from '../../config/worksheetType';
+import { newWorksheet } from '../../../config/worksheetType';
 
 interface StudentTableProps {
 	values: newWorksheet;

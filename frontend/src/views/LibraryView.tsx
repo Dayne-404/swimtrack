@@ -1,5 +1,5 @@
 import { Stack } from '@mui/material';
-import ViewHeader from '../components/layout/ViewHeader';
+import ViewHeader from '../components/layout/main/ViewHeader';
 
 import LibraryWorksheetSearch from './FinderView';
 

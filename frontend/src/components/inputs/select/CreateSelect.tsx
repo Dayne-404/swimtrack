@@ -1,6 +1,6 @@
 import { TextField, MenuItem } from '@mui/material';
-import SelectMenuProps from '../../config/selectProps';
-import capitalizeFirstLetter from '../../helper/capitalizeFirstLetter';
+import SelectMenuProps from '../../../config/selectProps';
+import capitalizeFirstLetter from '../../../helper/capitalizeFirstLetter';
 
 interface CreateSelectProps {
 	label: string;

@@ -2,14 +2,14 @@ import { useEffect, useState, useContext, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Worksheet } from '../config/worksheetType';
 import { fetchWorksheetById } from '../helper/worksheetFetch';
-import BackButton from '../components/inputs/BackButton';
+import BackButton from '../components/inputs/buttons/BackButton';
 import CreateView from './CreateView';
 import { Button, Stack, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import { deleteWorksheetById } from '../helper/delete';
 import { useNavigate } from 'react-router-dom';
-import DeleteButton from '../components/inputs/DeleteButton';
+import DeleteButton from '../components/inputs/buttons/DeleteButton';
 import { WORKSHEET_LEVELS } from '../config/worksheetData';
 import { AlertContext } from '../App';
 

@@ -8,14 +8,14 @@ import {
 	Stack,
 	Typography,
 } from '@mui/material';
-import BackButton from '../components/inputs/BackButton';
+import BackButton from '../components/inputs/buttons/BackButton';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { fetchGroupById } from '../helper/groupFetch';
 import { Worksheet } from '../config/worksheetType';
 import { FetchedGroup } from '../config/groupType';
-import WorksheetGrid from '../components/layout/WorksheetGrid';
+import WorksheetGrid from '../components/layout/grids/WorksheetGrid';
 import { AlertContext } from '../App';
-import DeleteButton from '../components/inputs/DeleteButton';
+import DeleteButton from '../components/inputs/buttons/DeleteButton';
 import { deleteGroupById } from '../helper/delete';
 import RemoveIcon from '@mui/icons-material/Remove';
 import CancelIcon from '@mui/icons-material/Cancel';

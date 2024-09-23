@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import { validateToken } from '../helper/submit';
+import { validateToken } from '../../helper/submit';
 import { useUser } from './useUser';
 
 interface AuthenticatedRouteProps {

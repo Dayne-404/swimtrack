@@ -1,8 +1,8 @@
 import { Box } from '@mui/material';
 
 import GroupHeader from '../components/layout/GroupHeader';
-import ViewHeader from '../components/layout/ViewHeader';
-import GroupCards from '../components/layout/GroupCards';
+import ViewHeader from '../components/layout/main/ViewHeader';
+import GroupGrid from '../components/layout/grids/GroupGrid';
 import { useState } from 'react';
 
 const GroupView = () => {
@@ -16,7 +16,7 @@ const GroupView = () => {
 				sortOption={sortOption}
 				setSortOption={setSortOption}
 			/>
-			<GroupCards sortOption={sortOption} />
+			<GroupGrid sortOption={sortOption} />
 		</Box>
 	);
 };

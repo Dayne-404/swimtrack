@@ -10,14 +10,14 @@ import {
 	Checkbox,
 } from '@mui/material';
 import { colors } from '@mui/material';
-import Title from '../components/layout/Title';
+import Title from '../components/layout/main/Title';
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useState } from 'react';
 import { login } from '../helper/submit';
-import LoadingButton from '../components/inputs/LoadingButton';
+import LoadingButton from '../components/inputs/buttons/LoadingButton';
 import { useNavigate } from 'react-router-dom';
 
 const LoginView = () => {

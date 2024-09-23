@@ -1,16 +1,16 @@
 import {Paper } from '@mui/material';
 
-interface SectionHeaderProps {
+interface ViewPaperProps {
 	body?: React.ReactElement;
 	maxHeight?: number;
 	flex?: number;
 }
 
-const View = ({
+const ViewPaper = ({
 	body,
 	flex = 1,
 	maxHeight,
-}: SectionHeaderProps) => {
+}: ViewPaperProps) => {
 	const paperStyle = {
 		display: 'flex',
 		padding: 1.5,
@@ -21,4 +21,4 @@ const View = ({
 	return <Paper sx={paperStyle}>{body}</Paper>;
 };
 
-export default View;
+export default ViewPaper;

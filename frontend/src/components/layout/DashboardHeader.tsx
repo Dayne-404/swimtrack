@@ -4,7 +4,7 @@ import CreateIcon from '@mui/icons-material/Create';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import { useNavigate } from 'react-router-dom';
 
-const LibraryHeader = () => {
+const DashboardHeader = () => {
 	const navigate = useNavigate();
     
     return (
@@ -46,4 +46,4 @@ const LibraryHeader = () => {
 	);
 };
 
-export default LibraryHeader;
+export default DashboardHeader;

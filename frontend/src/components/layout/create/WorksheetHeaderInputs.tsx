@@ -1,10 +1,10 @@
 import { Stack, TextField, Grid, Button } from '@mui/material';
-import CreateSelect from './CreateSelect';
-import { newWorksheet } from '../../config/worksheetType';
-import { WORKSHEET_VALUES } from '../../config/worksheetData';
-import { SkillDescription } from '../../config/levelSkillDescriptions';
+import CreateSelect from '../../inputs/select/CreateSelect';
+import { newWorksheet } from '../../../config/worksheetType';
+import { WORKSHEET_VALUES } from '../../../config/worksheetData';
+import { SkillDescription } from '../../../config/levelSkillDescriptions';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
-import AddToGroupModal from '../filter/AddToGroupModal';
+import AddToGroupModal from '../../modals/AddToGroupModal';
 import { useState } from 'react';
 
 interface WorksheetHeaderInputsProps {

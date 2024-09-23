@@ -1,7 +1,7 @@
 import { Button } from '@mui/material';
 import { useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
-import DeleteModal from '../navigation/DeleteModal';
+import DeleteModal from '../../modals/DeleteModal';
 
 interface DeleteButtonProps {
 	loading?: boolean;

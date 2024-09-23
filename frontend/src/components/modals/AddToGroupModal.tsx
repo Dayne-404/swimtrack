@@ -1,6 +1,6 @@
 import { Divider, Stack, Chip } from '@mui/material';
-import InfoModal from '../layout/InfoModal';
-import GroupSearch from '../inputs/GroupSearch';
+import InfoModal from './InfoModal';
+import GroupSearch from '../inputs/search/GroupSearch';
 interface AddToGroupModalProps {
 	selectedGroups: { id: string; name: string }[];
 	setSelectedGroups: React.Dispatch<

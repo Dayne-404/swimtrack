@@ -10,8 +10,8 @@ import {
 	ButtonBase,
 	useTheme,
 } from '@mui/material';
-import FilterComponent from '../inputs/FilterSelect';
-import ActiveFilters from './ActiveFilters';
+import FilterComponent from '../inputs/select/FilterSelect';
+import ActiveFilters from '../layout/finder/ActiveFilters';
 import CloseIcon from '@mui/icons-material/Close';
 import { WORKSHEET_VALUES } from '../../config/worksheetData';
 

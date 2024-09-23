@@ -1,7 +1,7 @@
 import { Stack, Button, Divider } from '@mui/material';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SortIcon from '@mui/icons-material/Sort';
-import InstructorSearch from '../inputs/InstructorSearch';
+import InstructorSearch from '../../inputs/search/InstructorSearch';
 
 interface FilterHeaderProps {
 	disabled?: boolean;

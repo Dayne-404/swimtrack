@@ -3,10 +3,10 @@ import { Stack, Divider, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router-dom';
 
-import WorksheetHeaderInputs from '../components/inputs/WorksheetHeaderInputs';
-import StudentTable from '../components/inputs/StudentTable';
-import WorksheetFooterInputs from '../components/inputs/WorksheetFooterInputs';
-import ViewHeader from '../components/layout/ViewHeader';
+import WorksheetHeaderInputs from '../components/layout/create/WorksheetHeaderInputs';
+import StudentTable from '../components/layout/create/StudentTable';
+import WorksheetFooterInputs from '../components/layout/create/WorksheetFooterInputs';
+import ViewHeader from '../components/layout/main/ViewHeader';
 
 import { newWorksheet } from '../config/worksheetType';
 import { SkillDescription } from '../config/levelSkillDescriptions';

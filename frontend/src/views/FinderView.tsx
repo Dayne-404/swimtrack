@@ -1,14 +1,14 @@
 import { Divider, Stack } from '@mui/material';
-import FinderHeader from '../components/filter/FilterHeader';
-import FinderCards from '../components/layout/FinderCards';
+import FinderHeader from '../components/layout/finder/FilterHeader';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Worksheet } from '../config/worksheetType';
 import { fetchWorksheets } from '../helper/worksheetFetch';
-import FilterModal from '../components/filter/FilterModal';
-import SortModal from '../components/filter/SortModal';
+import FilterModal from '../components/modals/FilterModal';
+import SortModal from '../components/modals/SortModal';
 import { AlertContext } from '../App';
-import Loading from '../components/layout/Loading';
-import ViewHeader from '../components/layout/ViewHeader';
+import ViewHeader from '../components/layout/main/ViewHeader';
+import WorksheetGrid from '../components/layout/grids/WorksheetGrid';
+import LoadingButton from '../components/inputs/buttons/LoadingButton';
 
 const DEFAULT_LIMIT = 9;
 
@@ -212,7 +212,7 @@ const LibraryWorksheetSearch = ({ defaultInstructorId }: FinderViewProps) => {
 	const content = () => {
 		return (
 			<Stack spacing={1} width="100%">
-				{!defaultInstructorId && <ViewHeader text='Finder' /> }
+				{!defaultInstructorId && <ViewHeader text="Finder" />}
 				<Divider />
 				<FilterModal
 					selectedFilters={selectedFilters}
@@ -235,18 +235,22 @@ const LibraryWorksheetSearch = ({ defaultInstructorId }: FinderViewProps) => {
 					setSortModalOpen={setIsSortModalOpen}
 					handleMultipleInstructorSelect={handleMultipleFilterSelect}
 				/>
-				{loading && worksheets.length === 0 ? (
-					<Loading />
-				) : (
-					<FinderCards
-						totalWorksheets={totalWorksheets}
-						currentWorksheets={worksheets.length}
-						loading={loading}
-						worksheets={worksheets}
-						moreWorksheets={moreWorksheets}
-						handleViewMore={handleViewMore}
-					/>
-				)}
+				<WorksheetGrid
+					worksheets={worksheets}
+					loading={loading}
+					numWorksheets={{
+						displayed: worksheets.length,
+						total: totalWorksheets,
+					}}
+					BottomButton={
+						moreWorksheets ? (
+							<LoadingButton
+								text="View more"
+								onClick={handleViewMore}
+							/>
+						) : undefined
+					}
+				/>
 			</Stack>
 		);
 	};

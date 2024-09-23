@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import {
 	fetchGroupsByInstructor,
 	FetchGroupsResponse,
-} from '../../helper/groupFetch';
-import { Group } from '../../config/groupType';
+} from '../../../helper/groupFetch';
+import { Group } from '../../../config/groupType';
 import { useNavigate } from 'react-router-dom';
 
 interface GroupSearchProps {

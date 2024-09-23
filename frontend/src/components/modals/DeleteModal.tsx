@@ -1,5 +1,5 @@
-import LoadingButton from '../inputs/LoadingButton';
-import InfoModal from '../layout/InfoModal';
+import LoadingButton from '../inputs/buttons/LoadingButton';
+import InfoModal from './InfoModal';
 import { Stack, Button } from '@mui/material';
 
 interface DeleteModalProps {

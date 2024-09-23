@@ -1,9 +1,9 @@
 import { Button, Grid, Divider } from '@mui/material';
-import SortSelect from '../../components/inputs/SortSelect';
+import SortSelect from '../inputs/select/SortSelect';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import { useState } from 'react';
-import CreateGroupModal from './CreateGroupModal';
-import GroupSearch from '../inputs/GroupSearch';
+import CreateGroupModal from '../modals/CreateGroupModal';
+import GroupSearch from '../inputs/search/GroupSearch';
 
 interface GroupHeaderProps {
 	instructor: string;

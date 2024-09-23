@@ -7,8 +7,8 @@ import {
 	Avatar,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { InstructorPublic } from '../../config/instructorType';
-import { fetchInstructors } from '../../helper/instructorFetch';
+import { InstructorPublic } from '../../../config/instructorType';
+import { fetchInstructors } from '../../../helper/instructorFetch';
 
 interface InstructorSearchProps {
 	label?: string;

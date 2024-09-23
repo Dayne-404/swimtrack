@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { MenuItem, Select, SelectChangeEvent, useTheme } from '@mui/material';
-import SelectMenuProps from '../../config/selectProps';
+import SelectMenuProps from '../../../config/selectProps';
+
 interface FilterComponentProps {
 	size: 'medium' | 'small';
 	placeholder: string;
