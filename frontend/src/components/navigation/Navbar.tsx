@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import PoolOutlinedIcon from '@mui/icons-material/PoolOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import LogoutButton from '../inputs/buttons/LogoutButton';
 
 type NavbarProps = {
 	isMediumOrBelow: boolean;
@@ -77,6 +78,7 @@ const Navbar = ({ isMediumOrBelow, onDrawerToggle, height }: NavbarProps) => {
 				</Stack>
 
 				<Stack direction="row" spacing={isMediumOrBelow ? 0 : 2}>
+					<LogoutButton />
 					<IconButton color="inherit" aria-label="notifications">
 						<NotificationsIcon />
 					</IconButton>

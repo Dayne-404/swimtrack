@@ -74,8 +74,8 @@ const getWorksheets = async (req, res) => {
 };
 
 const getWorksheetById = async (req, res) => {
-	console.log("GETTING WORKSHEETS!");
-	
+	console.log('GETTING WORKSHEETS!');
+
 	try {
 		const { id } = req.params;
 		const worksheet = await Worksheet.findById(id).populate(
@@ -109,15 +109,34 @@ const createWorksheet = async (req, res) => {
 };
 
 const updateWorksheetById = async (req, res) => {
+	const user = req.user;
+	const { id } = req.params;
+
 	try {
-		const { id } = req.params;
-		const worksheet = await Worksheet.findByIdAndUpdate(id, req.body);
+		const worksheet = await Worksheet.findById(id);
 
 		if (!worksheet) {
 			return res.status(404).json({ message: 'Worksheet not found' });
 		}
 
-		const updatedWorksheet = await Worksheet.findById(id);
+		if (
+			user._id !== String(worksheet.instructor) &&
+			user.type !== 'admin' &&
+			user.type !== 'supervisor'
+		) {
+			return res
+				.status(403)
+				.json({
+					message: 'You are not authorized to update this worksheet',
+				});
+		}
+
+		const updatedWorksheet = await Worksheet.findByIdAndUpdate(
+			id,
+			req.body,
+			{ new: true }
+		);
+
 		res.status(200).json(updatedWorksheet);
 	} catch (error) {
 		res.status(500).json({ message: error.message });
@@ -125,18 +144,33 @@ const updateWorksheetById = async (req, res) => {
 };
 
 const deleteWorksheetById = async (req, res) => {
-	try {
-		const { id } = req.params;
+	const user = req.user;
+	const { id } = req.params;
 
-		const worksheet = await Worksheet.findByIdAndDelete(id);
+	try {
+		const worksheet = await Worksheet.findById(id);
 
 		if (!worksheet) {
 			return res.status(404).json({ message: 'Worksheet not found' });
 		}
 
-		res.status(200).json({ messaage: 'Worksheet deleted sucessfully' });
+		if (
+			user._id !== String(worksheet.instructor) &&
+			user.type !== 'admin' &&
+			user.type !== 'supervisor'
+		) {
+			return res
+				.status(403)
+				.json({
+					message: 'You are not authorized to delete this worksheet',
+				});
+		}
+
+		await worksheet.deleteOne();
+
+		res.status(200).json({ message: 'Worksheet deleted successfully' });
 	} catch (error) {
-		res.status(500).json({ messaage: error.message });
+		res.status(500).json({ message: error.message });
 	}
 };
 

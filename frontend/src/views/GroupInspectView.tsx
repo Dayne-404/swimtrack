@@ -66,7 +66,9 @@ const GroupInspectView = () => {
 
 		setLoading(true);
 		try {
-			deleteGroupById(groupId);
+			await deleteGroupById(groupId);
+			showAlertRef.current(`Sucessfully deleted ${name}`, 'success');
+			navigate('/groups');
 		} catch (error) {
 			const errorMessage =
 				error instanceof Error
@@ -75,8 +77,6 @@ const GroupInspectView = () => {
 			showAlertRef.current(`Error deleting ${name}, ${errorMessage}`);
 		} finally {
 			setLoading(false);
-			showAlertRef.current(`Sucessfully deleted ${name}`, 'success');
-			navigate('/groups');
 		}
 	};
 
