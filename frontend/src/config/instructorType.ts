@@ -1,10 +1,10 @@
 export interface InstructorPrivate {
     _id: string,
     name: string,
-    avatar: string,
-    password: string,
-    createdAt: Date,
-    updatedAt: Date,
+    avatar?: string,
+    password?: string,
+    createdAt?: Date,
+    updatedAt?: Date,
 }
 
 export interface InstructorPublic {

@@ -1,22 +1,24 @@
 import { Box } from '@mui/material';
 
 import GroupHeader from '../components/layout/GroupHeader';
-import ViewHeader from '../components/layout/ViewHeader';
-import GroupCards from '../components/layout/GroupCards';
+import ViewHeader from '../components/layout/main/ViewHeader';
+import GroupGrid from '../components/layout/grids/GroupGrid';
 import { useState } from 'react';
+import { useUser } from '../components/hooks/useUser';
 
 const GroupView = () => {
 	const [sortOption, setSortOption] = useState<number>(0);
+	const { user } = useUser();
 
 	return (
 		<Box sx={{ width: '100%', overflowY: 'auto' }}>
 			<ViewHeader text="Groups" />
 			<GroupHeader
-				instructor="66e083d5e781e4ee0b2602e7"
+				instructor={user.id}
 				sortOption={sortOption}
 				setSortOption={setSortOption}
 			/>
-			<GroupCards sortOption={sortOption} />
+			<GroupGrid sortOption={sortOption} />
 		</Box>
 	);
 };

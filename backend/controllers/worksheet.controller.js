@@ -1,13 +1,19 @@
 const Worksheet = require('../models/Worksheet.model.js');
 
 const getWorksheets = async (req, res) => {
-	const { id, instructorId } = req.params;
-	const { limit = 10, skip = 0, ...filters } = req.query;
+	const userId = req.user._id;
+	const {
+		specific = false,
+		limit = 10,
+		skip = 0,
+		sort = [],
+		...filters
+	} = req.query;
 
 	try {
 		let query = {};
 
-		if(instructorId) query.instructor = instructorId;
+		if (specific && userId) query.instructor = userId;
 		else if (filters.instructor) query.instructor = filters.instructor;
 
 		if (filters.level)
@@ -46,7 +52,6 @@ const getWorksheets = async (req, res) => {
 			};
 
 		let sortQuery = {};
-		const sort = req.query.sort || [];
 		const sortArray = Array.isArray(sort) ? sort : [sort];
 
 		sortArray.forEach((field) => {
@@ -69,6 +74,8 @@ const getWorksheets = async (req, res) => {
 };
 
 const getWorksheetById = async (req, res) => {
+	console.log('GETTING WORKSHEETS!');
+
 	try {
 		const { id } = req.params;
 		const worksheet = await Worksheet.findById(id).populate(
@@ -102,15 +109,34 @@ const createWorksheet = async (req, res) => {
 };
 
 const updateWorksheetById = async (req, res) => {
+	const user = req.user;
+	const { id } = req.params;
+
 	try {
-		const { id } = req.params;
-		const worksheet = await Worksheet.findByIdAndUpdate(id, req.body);
+		const worksheet = await Worksheet.findById(id);
 
 		if (!worksheet) {
 			return res.status(404).json({ message: 'Worksheet not found' });
 		}
 
-		const updatedWorksheet = await Worksheet.findById(id);
+		if (
+			user._id !== String(worksheet.instructor) &&
+			user.type !== 'admin' &&
+			user.type !== 'supervisor'
+		) {
+			return res
+				.status(403)
+				.json({
+					message: 'You are not authorized to update this worksheet',
+				});
+		}
+
+		const updatedWorksheet = await Worksheet.findByIdAndUpdate(
+			id,
+			req.body,
+			{ new: true }
+		);
+
 		res.status(200).json(updatedWorksheet);
 	} catch (error) {
 		res.status(500).json({ message: error.message });
@@ -118,18 +144,33 @@ const updateWorksheetById = async (req, res) => {
 };
 
 const deleteWorksheetById = async (req, res) => {
-	try {
-		const { id } = req.params;
+	const user = req.user;
+	const { id } = req.params;
 
-		const worksheet = await Worksheet.findByIdAndDelete(id);
+	try {
+		const worksheet = await Worksheet.findById(id);
 
 		if (!worksheet) {
 			return res.status(404).json({ message: 'Worksheet not found' });
 		}
 
-		res.status(200).json({ messaage: 'Worksheet deleted sucessfully' });
+		if (
+			user._id !== String(worksheet.instructor) &&
+			user.type !== 'admin' &&
+			user.type !== 'supervisor'
+		) {
+			return res
+				.status(403)
+				.json({
+					message: 'You are not authorized to delete this worksheet',
+				});
+		}
+
+		await worksheet.deleteOne();
+
+		res.status(200).json({ message: 'Worksheet deleted successfully' });
 	} catch (error) {
-		res.status(500).json({ messaage: error.message });
+		res.status(500).json({ message: error.message });
 	}
 };
 

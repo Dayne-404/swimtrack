@@ -1,3 +1,5 @@
+import { InstructorPrivate } from "./instructorType";
+
 export interface Student {
 	name: string;
 	skills: boolean[];
@@ -6,7 +8,7 @@ export interface Student {
 
 export interface Worksheet {
 	_id: string;
-	instructor: Instructor | string;
+	instructor: InstructorPrivate | string;
 	level: number;
 	session: number;
 	day: number;
@@ -19,7 +21,7 @@ export interface Worksheet {
 }
 
 export interface newWorksheet {
-	instructor: Instructor | string;
+	instructor: InstructorPrivate | string;
 	level: number | null;
 	session: number | null;
 	day: number | null;

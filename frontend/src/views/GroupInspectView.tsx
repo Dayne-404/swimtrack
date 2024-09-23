@@ -8,19 +8,19 @@ import {
 	Stack,
 	Typography,
 } from '@mui/material';
-import BackButton from '../components/inputs/BackButton';
+import BackButton from '../components/inputs/buttons/BackButton';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { fetchGroupById } from '../helper/groupFetch';
+import { fetchGroupById } from '../helper/groupGetRequests';
 import { Worksheet } from '../config/worksheetType';
 import { FetchedGroup } from '../config/groupType';
-import WorksheetGrid from '../components/layout/WorksheetGrid';
+import WorksheetGrid from '../components/layout/grids/WorksheetGrid';
 import { AlertContext } from '../App';
-import DeleteButton from '../components/inputs/DeleteButton';
-import { deleteGroupById } from '../helper/delete';
+import DeleteButton from '../components/inputs/buttons/DeleteButton';
+import { deleteGroupById } from '../helper/deleteRequests';
 import RemoveIcon from '@mui/icons-material/Remove';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckIcon from '@mui/icons-material/Check';
-import { removeWorksheetFromGroup } from '../helper/put';
+import { removeWorksheetFromGroup } from '../helper/putRequests';
 
 const GroupInspectView = () => {
 	const { groupId } = useParams();
@@ -66,7 +66,9 @@ const GroupInspectView = () => {
 
 		setLoading(true);
 		try {
-			deleteGroupById(groupId);
+			await deleteGroupById(groupId);
+			showAlertRef.current(`Sucessfully deleted ${name}`, 'success');
+			navigate('/groups');
 		} catch (error) {
 			const errorMessage =
 				error instanceof Error
@@ -75,8 +77,6 @@ const GroupInspectView = () => {
 			showAlertRef.current(`Error deleting ${name}, ${errorMessage}`);
 		} finally {
 			setLoading(false);
-			showAlertRef.current(`Sucessfully deleted ${name}`, 'success');
-			navigate('/groups');
 		}
 	};
 

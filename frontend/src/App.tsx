@@ -9,16 +9,16 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { createContext, useState } from 'react';
 
 import Navigation from './components/navigation/Navigation';
-import SnackbarAlert from './components/layout/SnackbarAlert';
+import SnackbarAlert from './components/modals/SnackbarAlert';
 
 import { ALL_ROUTES, SIDE_NAV_ROUTES } from './config/routes';
 import { DEFAULT_SNACKBAR_VALUES, AlertType } from './config/alertType';
 
 import './styles/fonts.css';
-import AuthenticatedRoute from './components/AuthenticatedRoute';
+import AuthenticatedRoute from './components/hooks/AuthenticatedRoute';
 import LoginView from './views/LoginView';
-import View from './components/layout/View';
-import { UserProvider } from './components/userProvider';
+import ViewPaper from './components/layout/main/ViewPaper';
+import { UserProvider } from './components/hooks/userProvider';
 
 const theme = createTheme({
 	palette: {
@@ -93,7 +93,7 @@ function App() {
 											routes={SIDE_NAV_ROUTES}
 										/>
 										<Box sx={MainContentSx}>
-											<View
+											<ViewPaper
 												body={
 													<AuthenticatedRoute
 														children={route.element}

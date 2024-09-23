@@ -1,8 +1,51 @@
 const Group = require('../models/Group.model.js');
 
+const getGroups = async (req, res) => {
+	const { userId } = req.user._id;
+	const {
+		limit = 20,
+		skip = 0,
+		sort = '-updatedAt',
+		search = '',
+	} = req.query;
+
+	try {
+		let searchQuery = { instructor: userId };
+
+		if (search) {
+			searchQuery = {
+				...searchQuery,
+				$or: [{ name: { $regex: search, $options: 'i' } }],
+			};
+		}
+
+		let sortQuery = {};
+		const order = sort.startsWith('-') ? -1 : 1;
+		const key = sort.replace(/^-/, '');
+		sortQuery[key] = order;
+
+		const groups = await Group.find(searchQuery)
+			.sort(sortQuery)
+			.skip(parseInt(skip))
+			.limit(parseInt(limit));
+
+		const totalCount = await Group.countDocuments({ instructor: userId });
+
+		res.status(200).json({ groups, totalCount });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: error.message });
+	}
+};
+
 const getGroupsByInstructor = async (req, res) => {
 	const { id } = req.params;
-	const { limit = 20, skip = 0, sort = '-createdAt', search = '' } = req.query;
+	const {
+		limit = 20,
+		skip = 0,
+		sort = '-createdAt',
+		search = '',
+	} = req.query;
 
 	try {
 		let searchQuery = { instructor: id };
@@ -47,9 +90,14 @@ const addWorksheetToGroup = async (worksheetId, groupId) => {
 };
 
 const createGroup = async (req, res) => {
-	try {
-		const { instructor, name, worksheetIds } = req.body;
+	const { _id, type } = req.user;
+	const { instructor, name, worksheetIds } = req.body;
 
+	if (_id !== instructor || type === 'instructor') {
+		res.status(401).json({ message: 'Unauthorized to create group' });
+	}
+
+	try {
 		const newGroup = await Group.create({
 			instructor,
 			name,
@@ -176,6 +224,7 @@ const removeWorksheetsFromGroup = async (req, res) => {
 };
 
 module.exports = {
+	getGroups,
 	deleteGroupById,
 	getGroupsByInstructor,
 	createGroup,

@@ -1,9 +1,9 @@
 import { Button, Grid, Divider } from '@mui/material';
-import SortSelect from '../../components/inputs/SortSelect';
+import SortSelect from '../inputs/select/SortSelect';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import { useState } from 'react';
-import CreateGroupModal from './CreateGroupModal';
-import GroupSearch from '../inputs/GroupSearch';
+import CreateGroupModal from '../modals/CreateGroupModal';
+import GroupSearch from '../inputs/search/GroupSearch';
 
 interface GroupHeaderProps {
 	instructor: string;
@@ -11,7 +11,11 @@ interface GroupHeaderProps {
 	setSortOption: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const GroupHeader = ({ instructor, sortOption, setSortOption }: GroupHeaderProps) => {
+const GroupHeader = ({
+	instructor,
+	sortOption,
+	setSortOption,
+}: GroupHeaderProps) => {
 	const [modalOpen, setModalOpen] = useState<boolean>(false);
 
 	return (
@@ -23,8 +27,11 @@ const GroupHeader = ({ instructor, sortOption, setSortOption }: GroupHeaderProps
 			/>
 			<Grid container spacing={1}>
 				<Grid item xs={6}>
-					
-					<GroupSearch label='Search for group' instructorId={instructor} size='small'/>
+					<GroupSearch
+						label="Search for group"
+						instructorId={instructor}
+						size="small"
+					/>
 				</Grid>
 				<Grid item xs={6}>
 					<SortSelect

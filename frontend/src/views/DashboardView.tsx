@@ -1,14 +1,14 @@
 import { Divider, Stack, Typography, Box } from '@mui/material';
-import { fetchWorksheetsByInstructor } from '../helper/worksheetFetch';
+import { fetchWorksheets } from '../helper/worksheetGetRequests';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Worksheet } from '../config/worksheetType';
-import ViewHeader from '../components/layout/ViewHeader';
+import ViewHeader from '../components/layout/main/ViewHeader';
 import { AlertContext } from '../App';
 
-import LibraryCards from '../components/layout/LibraryCards';
-import LibraryGroups from '../components/layout/LibraryGroups';
-import LibraryHeader from '../components/layout/LibraryHeader';
-import { useUser } from '../components/useUser';
+import GroupGrid from '../components/layout/grids/GroupGrid';
+import DashboardHeader from '../components/layout/DashboardHeader';
+import { useUser } from '../components/hooks/useUser';
+import WorksheetGrid from '../components/layout/grids/WorksheetGrid';
 
 const DashboardView = () => {
 	const { user } = useUser();
@@ -21,14 +21,12 @@ const DashboardView = () => {
 	useEffect(() => {
 		const getWorksheets = async () => {
 			setLoading(true);
-			const token = localStorage.getItem('token');
 
 			try {
-				const data = await fetchWorksheetsByInstructor({
-					instructor: user.id,
+				const data = await fetchWorksheets({
 					limit: 6,
-					sorting: '-updatedAt',
-					token: token ? token : '',
+					sorting: { updatedAt: 1 },
+					specific: true,
 				});
 				setWorksheets(data.worksheets);
 				setTotalCount(data.totalCount);
@@ -52,11 +50,19 @@ const DashboardView = () => {
 		<Stack width="100%" spacing={2}>
 			<ViewHeader text="Dashboard" />
 			<Divider />
-			<LibraryHeader />
+			<DashboardHeader />
 			<Divider />
-			<Stack spacing={1}>
-				<LibraryGroups headerText="Recent Groups & Worksheets" />
-				<LibraryCards worksheets={worksheets.slice(0, 6)} />
+			<Stack spacing={1} alignItems="center">
+				<Typography variant="h6" gutterBottom>
+					Recent Groups & Worksheets
+				</Typography>
+				<GroupGrid limit={4} displayNumGroups={false} />
+				<WorksheetGrid
+					worksheets={worksheets.slice(0, 6)}
+					includeInstructor={false}
+					gridSpace={4}
+					loading={loading}
+				/>
 			</Stack>
 			<Divider />
 			<Box
@@ -68,7 +74,9 @@ const DashboardView = () => {
 				<Typography variant="h6" gutterBottom>
 					Statistics
 				</Typography>
-				<Typography> {user.name} you have created {totalCount} total worksheets</Typography>
+				<Typography>
+					{user.name} you have created {totalCount} total worksheets
+				</Typography>
 				<Typography> and {totalCount} groups</Typography>
 			</Box>
 		</Stack>

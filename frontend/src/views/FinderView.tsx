@@ -1,49 +1,30 @@
 import { Divider, Stack } from '@mui/material';
-import FinderHeader from '../components/filter/FilterHeader';
-import FinderCards from '../components/layout/FinderCards';
+import FinderHeader from '../components/layout/finder/FilterHeader';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Worksheet } from '../config/worksheetType';
-import { fetchWorksheets } from '../helper/worksheetFetch';
-import FilterModal from '../components/filter/FilterModal';
-import SortModal from '../components/filter/SortModal';
+import { fetchWorksheets } from '../helper/worksheetGetRequests';
+import FilterModal from '../components/modals/FilterModal';
+import SortModal from '../components/modals/SortModal';
 import { AlertContext } from '../App';
-import Loading from '../components/layout/Loading';
-import ViewHeader from '../components/layout/ViewHeader';
+import ViewHeader from '../components/layout/main/ViewHeader';
+import WorksheetGrid from '../components/layout/grids/WorksheetGrid';
+import LoadingButton from '../components/inputs/buttons/LoadingButton';
 
-const DEFAULT_LIMIT = 9;
+const DEFAULT_LIMIT = 12;
 
 interface FiltersByType {
 	[type: string]: (number | string)[];
 }
 
-interface FinderViewProps {
-	defaultInstructorId?: string;
-}
-
-const LibraryWorksheetSearch = ({ defaultInstructorId }: FinderViewProps) => {
-	const formatSortOptions = (sortOptions: {
-		[type: string]: number;
-	}): string => {
-		return Object.entries(sortOptions)
-			.map(([key, value]) => {
-				return value === 1 ? `&sort=-${key}` : `&sort=${key}`;
-			})
-			.join('');
-	};
-
-	const [selectedFilters, setSelectedFilters] = useState<FiltersByType>(
-		defaultInstructorId ? { instructor: [defaultInstructorId] } : {}
-	);
+const LibraryWorksheetSearch = ({
+	specificToInstructor = false,
+}: {
+	specificToInstructor?: boolean;
+}) => {
+	const [filterOptions, setFilterOptions] = useState<FiltersByType>({});
 	const [sortOptions, setSortOptions] = useState<{ [type: string]: number }>({
 		createdAt: 1,
 	});
-	const [formattedFilters, setFormattedFilters] = useState<string>(
-		defaultInstructorId ? `&instructor=${defaultInstructorId}` : ''
-	);
-	const [formattedSort, setFormattedSort] = useState<string>(
-		formatSortOptions(sortOptions)
-	);
-
 	const [moreWorksheets, setMoreWorksheets] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -54,6 +35,12 @@ const LibraryWorksheetSearch = ({ defaultInstructorId }: FinderViewProps) => {
 	const [totalWorksheets, setTotalWorksheets] = useState<number>(0);
 	const showAlert = useContext(AlertContext);
 	const showAlertRef = useRef(showAlert);
+
+	const [selectedFilters, setSelectedFilters] =
+		useState<FiltersByType>(filterOptions);
+	const [selectedSortOptions, setSelectedSortOptions] = useState<{
+		[type: string]: number;
+	}>(sortOptions);
 
 	const handleSortSelect = (type: string, sort: number) => {
 		setSortOptions((prevOptions) => {
@@ -70,23 +57,24 @@ const LibraryWorksheetSearch = ({ defaultInstructorId }: FinderViewProps) => {
 	};
 
 	const handleFilterSelect = (type: string, filter: number | string) => {
-		setSelectedFilters((prevFilters) => ({
+		setFilterOptions((prevFilters) => ({
 			...prevFilters,
 			[type]: [...(prevFilters[type] || []), filter],
 		}));
 	};
 
 	const handleMultipleFilterSelect = (type: string, filter: string[]) => {
+		setWorksheets([]);
+		setSkip(0);
+
 		setSelectedFilters((prevFilters) => ({
 			...prevFilters,
 			[type]: filter,
 		}));
-
-		console.log('Handle: ', selectedFilters);
 	};
 
 	const handleFilterRemove = (type: string, filter: number | string) => {
-		setSelectedFilters((prevFilters) => {
+		setFilterOptions((prevFilters) => {
 			const updatedFilters =
 				prevFilters[type]?.filter((f) => f !== filter) || [];
 
@@ -102,20 +90,23 @@ const LibraryWorksheetSearch = ({ defaultInstructorId }: FinderViewProps) => {
 		});
 	};
 
-	const clearFilters = () => setSelectedFilters({});
+	const clearFilters = () => setFilterOptions({});
 
 	const handleModalClose = () => {
+		if (selectedFilters !== filterOptions) {
+			setWorksheets([]);
+			setSkip(0);
+			setSelectedFilters(filterOptions);
+		}
+
 		setIsModalOpen(false);
-		console.log(selectedFilters);
 	};
 
 	const handleSortModalClose = () => {
-		const sortString = formatSortOptions(sortOptions);
-
-		if (sortString !== formattedSort) {
+		if (selectedSortOptions !== sortOptions) {
 			setWorksheets([]);
 			setSkip(0);
-			setFormattedSort(sortString);
+			setSelectedSortOptions(sortOptions);
 		}
 
 		setIsSortModalOpen(false);
@@ -128,9 +119,9 @@ const LibraryWorksheetSearch = ({ defaultInstructorId }: FinderViewProps) => {
 				const data = await fetchWorksheets({
 					limit,
 					skip,
-
-					filters: formattedFilters, //Change this move inside function?
-					sorting: formattedSort, //Change this move inside function?
+					filters: selectedFilters,
+					sorting: selectedSortOptions,
+					specific: specificToInstructor,
 				});
 				const totalCount = data.totalCount;
 				setTotalWorksheets(totalCount);
@@ -170,40 +161,13 @@ const LibraryWorksheetSearch = ({ defaultInstructorId }: FinderViewProps) => {
 		};
 
 		loadWorksheets();
-	}, [limit, skip, formattedFilters, formattedSort]);
-
-	useEffect(() => {
-		const formatFilters = () => {
-			const queryString = Object.keys(selectedFilters)
-				.map((key) => {
-					const values =
-						selectedFilters[key as keyof typeof selectedFilters];
-
-					return values
-						.map(
-							(value) =>
-								`${encodeURIComponent(
-									key
-								)}=${encodeURIComponent(value)}`
-						)
-						.join('&');
-				})
-				.join('&');
-
-			if (queryString || (!queryString && formattedFilters)) {
-				setWorksheets([]);
-				setSkip(0);
-
-				if (!queryString && formattedFilters) {
-					setFormattedFilters('');
-				} else {
-					setFormattedFilters(`&${queryString}`);
-				}
-			}
-		};
-
-		formatFilters();
-	}, [selectedFilters, formattedFilters]);
+	}, [
+		limit,
+		skip,
+		selectedFilters,
+		selectedSortOptions,
+		specificToInstructor,
+	]);
 
 	const handleViewMore = () => {
 		setSkip((prevSkip) => prevSkip + limit);
@@ -212,10 +176,10 @@ const LibraryWorksheetSearch = ({ defaultInstructorId }: FinderViewProps) => {
 	const content = () => {
 		return (
 			<Stack spacing={1} width="100%">
-				{!defaultInstructorId && <ViewHeader text='Finder' /> }
+				{!specificToInstructor && <ViewHeader text="Finder" />}
 				<Divider />
 				<FilterModal
-					selectedFilters={selectedFilters}
+					selectedFilters={filterOptions}
 					isModalOpen={isModalOpen}
 					handleModalClose={handleModalClose}
 					handleFilterSelect={handleFilterSelect}
@@ -229,24 +193,28 @@ const LibraryWorksheetSearch = ({ defaultInstructorId }: FinderViewProps) => {
 					handleModalClose={handleSortModalClose}
 				/>
 				<FinderHeader
-					includeSearch={defaultInstructorId === undefined}
+					includeSearch={!specificToInstructor}
 					disabled={loading}
 					setModalOpen={setIsModalOpen}
 					setSortModalOpen={setIsSortModalOpen}
 					handleMultipleInstructorSelect={handleMultipleFilterSelect}
 				/>
-				{loading && worksheets.length === 0 ? (
-					<Loading />
-				) : (
-					<FinderCards
-						totalWorksheets={totalWorksheets}
-						currentWorksheets={worksheets.length}
-						loading={loading}
-						worksheets={worksheets}
-						moreWorksheets={moreWorksheets}
-						handleViewMore={handleViewMore}
-					/>
-				)}
+				<WorksheetGrid
+					worksheets={worksheets}
+					loading={loading}
+					numWorksheets={{
+						displayed: worksheets.length,
+						total: totalWorksheets,
+					}}
+					BottomButton={
+						moreWorksheets ? (
+							<LoadingButton
+								text="View more"
+								onClick={handleViewMore}
+							/>
+						) : undefined
+					}
+				/>
 			</Stack>
 		);
 	};
