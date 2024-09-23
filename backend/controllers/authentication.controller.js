@@ -16,7 +16,7 @@ const login = async (req, res) => {
 			return res.status(400).json({ message: 'Invalid credentials ' });
 		}
 
-		const token = jwt.sign({ id: instructor._id, type: instructor.type }, process.env.JWT_SECRET, {
+		const token = jwt.sign({ id: instructor._id, type: instructor.type, name: instructor.name }, process.env.JWT_SECRET, {
 			expiresIn: '1h',
 		});
 		res.status(200).json({ token: token });
@@ -26,6 +26,26 @@ const login = async (req, res) => {
 	}
 };
 
+const validateToken = async (req, res) => {
+	const authHeader = req.headers['authorization'];
+	const token = authHeader && authHeader.split(' ')[1];
+
+	if(!token) return res.status(401).json({ message: 'No token provided' })
+
+	console.log('Checking token: ', token);
+
+	try {
+		jwt.verify(token, process.env.JWT_SECRET);
+		console.log('Token is valid: ', token);
+		return res.status(200).json({ valid: true });
+	} catch (error) {
+		console.error(error);
+		console.log('Token is invalid: ', token);
+		res.status(401).json({ message: 'Token is invalid or expired' });
+	}
+}
+
 module.exports = {
-    login
+    login,
+	validateToken,
 }

@@ -32,13 +32,13 @@ const LibraryWorksheetSearch = ({ defaultInstructorId }: FinderViewProps) => {
 	};
 
 	const [selectedFilters, setSelectedFilters] = useState<FiltersByType>(
-		defaultInstructorId ? { instructor: ['66e083d5e781e4ee0b2602e7'] } : {}
+		defaultInstructorId ? { instructor: [defaultInstructorId] } : {}
 	);
 	const [sortOptions, setSortOptions] = useState<{ [type: string]: number }>({
 		createdAt: 1,
 	});
 	const [formattedFilters, setFormattedFilters] = useState<string>(
-		defaultInstructorId ? '&instructor=66e083d5e781e4ee0b2602e7' : ''
+		defaultInstructorId ? `&instructor=${defaultInstructorId}` : ''
 	);
 	const [formattedSort, setFormattedSort] = useState<string>(
 		formatSortOptions(sortOptions)

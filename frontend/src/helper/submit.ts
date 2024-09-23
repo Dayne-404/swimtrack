@@ -1,12 +1,15 @@
 import { newWorksheet } from '../config/worksheetType';
+import { getToken } from './getToken';
 
 export const submitNewWorksheet = async (header: newWorksheet) => {
+	const token = getToken();
 	const worksheetJSON = getWorksheetJSON(header);
 
 	const res = await fetch('http://localhost:3000/api/worksheets', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${token}`
 		},
 		body: worksheetJSON,
 	});
@@ -20,7 +23,7 @@ export const submitNewWorksheet = async (header: newWorksheet) => {
 };
 
 export const login = async (userCredentials: {email: string, password: string}) => {
-	const res = await fetch('http://localhost:3000/api/login', {
+	const res = await fetch('http://localhost:3000/api/authenticate/login', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -36,10 +39,27 @@ export const login = async (userCredentials: {email: string, password: string}) 
 	return res.json();
 };
 
+export const validateToken = async (token: string): Promise<boolean> => {
+	const res = await fetch('http://localhost:3000/api/authenticate/checkToken', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${token}`
+		},
+	});
+
+	if(res.status === 200) {
+		return true;
+	}
+
+	return false;
+}
+
 export const submitUpdatedWorksheet = async (
 	worksheetId: string,
 	header: newWorksheet
 ) => {
+	const token = getToken();
 	const worksheetJSON = getWorksheetJSON(header);
 
 	const res = await fetch(
@@ -48,6 +68,7 @@ export const submitUpdatedWorksheet = async (
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${token}`
 			},
 			body: worksheetJSON,
 		}
@@ -65,12 +86,15 @@ export const submitWorksheetToGroups = async (
 	worksheetId: string,
 	groupIds: string[]
 ) => {
+	const token = getToken();
+
 	const res = await fetch(
 		`http://localhost:3000/api/groups/addWorksheetToGroups`,
 		{
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${token}`
 			},
 			body: JSON.stringify({
 				worksheetId: worksheetId,
@@ -92,10 +116,13 @@ export const createGroup = async (
 	name: string,
 	worksheetIds?: string[]
 ) => {
+	const token = getToken();
+
 	const res = await fetch(`http://localhost:3000/api/groups`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${token}`
 		},
 		body: JSON.stringify({
 			instructor: instructor,

@@ -1,3 +1,5 @@
+import { getToken } from './getToken';
+
 interface fetchWorksheetsProps {
 	instructor?: string;
 	limit?: number;
@@ -12,6 +14,8 @@ export const fetchWorksheets = async ({
 	filters = '',
 	sorting = '',
 }: fetchWorksheetsProps) => {
+	const token = getToken();
+
 	let uri = 'http://localhost:3000/api/worksheets?';
 
 	if (limit) {
@@ -28,7 +32,13 @@ export const fetchWorksheets = async ({
 	}
 
 	console.log('URI: ', uri);
-	const res = await fetch(uri);
+	const res = await fetch(uri, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${token}`,
+		},
+	});
 	if (!res.ok) {
 		const errorData = await res.json();
 		const errorMessage = errorData.message || 'Network response was not ok';
@@ -43,6 +53,8 @@ export const fetchWorksheetsByInstructor = async ({
 	skip,
 	sorting,
 }: fetchWorksheetsProps) => {
+	const token = getToken();
+
 	let uri = `http://localhost:3000/api/worksheets/instructor/${instructor}?`;
 
 	if (limit) {
@@ -55,7 +67,13 @@ export const fetchWorksheetsByInstructor = async ({
 		uri += `&sort=${sorting}`;
 	}
 
-	const res = await fetch(uri);
+	const res = await fetch(uri, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${token}`,
+		},
+	});
 	if (!res.ok) {
 		const errorData = await res.json();
 		const errorMessage = errorData.message || 'Network response was not ok';

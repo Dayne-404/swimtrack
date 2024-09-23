@@ -8,8 +8,10 @@ import { AlertContext } from '../App';
 import LibraryCards from '../components/layout/LibraryCards';
 import LibraryGroups from '../components/layout/LibraryGroups';
 import LibraryHeader from '../components/layout/LibraryHeader';
+import { useUser } from '../components/useUser';
 
 const DashboardView = () => {
+	const { user } = useUser();
 	const [worksheets, setWorksheets] = useState<Worksheet[]>([]);
 	const [totalCount, setTotalCount] = useState<number>(0);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -19,11 +21,14 @@ const DashboardView = () => {
 	useEffect(() => {
 		const getWorksheets = async () => {
 			setLoading(true);
+			const token = localStorage.getItem('token');
+
 			try {
 				const data = await fetchWorksheetsByInstructor({
-					instructor: '66e083d5e781e4ee0b2602e7',
+					instructor: user.id,
 					limit: 6,
 					sorting: '-updatedAt',
+					token: token ? token : '',
 				});
 				setWorksheets(data.worksheets);
 				setTotalCount(data.totalCount);
@@ -41,7 +46,7 @@ const DashboardView = () => {
 		};
 
 		getWorksheets();
-	}, []);
+	}, [user.id]);
 
 	return (
 		<Stack width="100%" spacing={2}>
@@ -63,7 +68,7 @@ const DashboardView = () => {
 				<Typography variant="h6" gutterBottom>
 					Statistics
 				</Typography>
-				<Typography> Dayne you have created {totalCount} total worksheets</Typography>
+				<Typography> {user.name} you have created {totalCount} total worksheets</Typography>
 				<Typography> and {totalCount} groups</Typography>
 			</Box>
 		</Stack>

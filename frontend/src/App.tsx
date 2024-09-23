@@ -18,6 +18,7 @@ import './styles/fonts.css';
 import AuthenticatedRoute from './components/AuthenticatedRoute';
 import LoginView from './views/LoginView';
 import View from './components/layout/View';
+import { UserProvider } from './components/userProvider';
 
 const theme = createTheme({
 	palette: {
@@ -67,6 +68,7 @@ function App() {
 
 	return (
 		<ThemeProvider theme={theme}>
+			<UserProvider>
 			<AlertContext.Provider value={showAlert}>
 				<Router>
 					<SnackbarAlert
@@ -106,6 +108,7 @@ function App() {
 					</Routes>
 				</Router>
 			</AlertContext.Provider>
+			</UserProvider>
 		</ThemeProvider>
 	);
 }

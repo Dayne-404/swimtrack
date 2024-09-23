@@ -1,4 +1,5 @@
-import { InstructorPublic } from "../config/instructorType"
+import { InstructorPublic } from '../config/instructorType';
+import { getToken } from './getToken';
 
 interface fetchInstructorsProps {
 	limit?: number;
@@ -15,15 +16,32 @@ export const fetchInstructors = async ({
 	filters = '',
 	sorting = '',
 }: fetchInstructorsProps): Promise<InstructorPublic[]> => {
+	const token = getToken();
 	let uri = `http://localhost:3000/api/instructors?`;
 
-	if (limit) { uri += `&limit=${limit}`; }
-	if (skip) { uri += `&skip=${skip}`; }
-	if (search) { uri += `&search=${search}`; }
-	if (filters) { uri += filters; }
-	if (sorting) { uri += sorting; }
+	if (limit) {
+		uri += `&limit=${limit}`;
+	}
+	if (skip) {
+		uri += `&skip=${skip}`;
+	}
+	if (search) {
+		uri += `&search=${search}`;
+	}
+	if (filters) {
+		uri += filters;
+	}
+	if (sorting) {
+		uri += sorting;
+	}
 
-	const res = await fetch(uri);
+	const res = await fetch(uri, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${token}`,
+		},
+	});
 	if (!res.ok) {
 		const errorData = await res.json();
 		const errorMessage = errorData.message || 'Network response was not ok';

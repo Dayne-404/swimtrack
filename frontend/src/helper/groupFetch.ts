@@ -1,4 +1,5 @@
-import { FetchedGroup, Group } from "../config/groupType";
+import { FetchedGroup, Group } from '../config/groupType';
+import { getToken } from './getToken';
 
 interface fetchGroupsByInstructorProps {
 	instructorId: string;
@@ -10,12 +11,12 @@ interface fetchGroupsByInstructorProps {
 }
 
 interface fetchGroupByIdProps {
-	groupId: string
+	groupId: string;
 }
 
 export interface FetchGroupsResponse {
-    groups: Group[];
-    totalCount: number;
+	groups: Group[];
+	totalCount: number;
 }
 
 export const fetchGroupsByInstructor = async ({
@@ -26,15 +27,32 @@ export const fetchGroupsByInstructor = async ({
 	filters = '',
 	sorting = '',
 }: fetchGroupsByInstructorProps): Promise<FetchGroupsResponse> => {
+	const token = getToken();
 	let uri = `http://localhost:3000/api/groups/instructor/${instructorId}?`;
 
-	if (limit) { uri += `&limit=${limit}`; }
-	if (skip) { uri += `&skip=${skip}`; }
-	if (search) { uri += `&search=${search}`; }
-	if (filters) { uri += filters; }
-	if (sorting) { uri += sorting; }
+	if (limit) {
+		uri += `&limit=${limit}`;
+	}
+	if (skip) {
+		uri += `&skip=${skip}`;
+	}
+	if (search) {
+		uri += `&search=${search}`;
+	}
+	if (filters) {
+		uri += filters;
+	}
+	if (sorting) {
+		uri += sorting;
+	}
 
-	const res = await fetch(uri);
+	const res = await fetch(uri, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${token}`,
+		},
+	});
 	if (!res.ok) {
 		const errorData = await res.json();
 		const errorMessage = errorData.message || 'Network response was not ok';
@@ -46,9 +64,16 @@ export const fetchGroupsByInstructor = async ({
 export const fetchGroupById = async ({
 	groupId,
 }: fetchGroupByIdProps): Promise<FetchedGroup> => {
-	const uri = `http://localhost:3000/api/groups/${groupId}/worksheets`; 
+	const token = getToken();
+	const uri = `http://localhost:3000/api/groups/${groupId}/worksheets`;
 
-	const res = await fetch(uri);
+	const res = await fetch(uri, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${token}`,
+		},
+	});
 
 	if (!res.ok) {
 		const errorData = await res.json();

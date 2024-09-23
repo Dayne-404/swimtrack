@@ -4,7 +4,7 @@ const cors = require('cors');
 const worksheetRoute = require('./routes/worksheet.route.js');
 const groupRoute = require('./routes/group.route.js')
 const instructorRoute = require('./routes/instructor.route.js')
-const loginRoute = require('./routes/login.route.js')
+const authenticationRoute = require('./routes/authentication.route.js')
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
@@ -15,7 +15,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.use('/api/login', loginRoute);
+app.use('/api/authenticate', authenticationRoute);
 app.use('/api/instructors', authenticateToken, instructorRoute);
 app.use('/api/worksheets', authenticateToken, worksheetRoute);
 app.use('/api/groups', authenticateToken, groupRoute);
