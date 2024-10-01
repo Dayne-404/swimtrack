@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const uri =
-	'mongodb+srv://daynedell:JM3fX8dwa3CQ7DBH@cluster0.slzbw.mongodb.net/Worksheets?retryWrites=true&w=majority&appName=Cluster0';
+	'mongodb+srv://daynedell:JM3fX8dwa3CQ7DBH@cluster0.slzbw.mongodb.net/Pastadle?retryWrites=true&w=majority&appName=Cluster0';
 const app = express();
 
 app.use(express.json());
