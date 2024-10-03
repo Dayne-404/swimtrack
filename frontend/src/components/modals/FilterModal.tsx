@@ -38,28 +38,42 @@ const FilterModal: React.FC<FilterModalProps> = ({
 	const theme = useTheme();
 
 	const [time, setTime] = useState<string>('');
+	const [year, setYear] = useState<string>('');
+	const [yearError, setYearError] = useState<boolean>(false);
 	const [timeError, setTimeError] = useState<boolean>(false);
 
-	const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+	const handleKeyUp = (filter: string, event: React.KeyboardEvent<HTMLDivElement>) => {
 		if (event.key === 'Enter') {
-			if (time && /^([01]\d|2[0-3]):([0-5]\d)$/.test(time)) {
-				setTimeError(false);
-				setTime('');
+			let isValid = true;
 
+			if (filter === 'time') {
+				if (time && /^([01]\d|2[0-3]):([0-5]\d)$/.test(time)) {
+					setTimeError(false);
+					setTime('');
+				} else {
+					setTimeError(true);
+					isValid = false; 
+				}
+			} else if (filter === 'year') {
+				if (year && /^\d{4}$/.test(year)) {
+					setYearError(false);
+					setYear('');
+				} else {
+					setYearError(true);
+					isValid = false;
+				}
+			}
+
+			if (isValid) {
 				if (
-					!selectedFilters['time'] ||
-					(selectedFilters['time'] &&
-						!selectedFilters['time'].includes(time))
-				)
-					handleFilterSelect('time', time);
-			} else {
-				setTimeError(true);
+					!selectedFilters[filter] ||
+					(selectedFilters[filter] &&
+						!selectedFilters[filter].includes(filter === 'time' ? time : year))
+				) {
+					handleFilterSelect(filter, filter === 'time' ? time : year);
+				}
 			}
 		}
-	};
-
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setTime(event.target.value);
 	};
 
 	return (
@@ -78,12 +92,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
 					overflow: 'auto',
 				}}
 			>
-				<Stack
-					direction="row"
-					justifyContent="space-between"
-					alignItems="center"
-					mb={1}
-				>
+				<Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
 					<Typography variant="h5">Filters</Typography>
 					<IconButton onClick={handleModalClose}>
 						<CloseIcon />
@@ -96,9 +105,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
 						placeholder="Level"
 						availableFilters={WORKSHEET_VALUES.levels.names}
 						selectedFilters={selectedFilters['level'] || []}
-						onFiltersChange={(filter) =>
-							handleFilterSelect('level', filter)
-						}
+						onFiltersChange={(filter) => handleFilterSelect('level', filter)}
 					/>
 					<Stack direction="row" spacing={1}>
 						<FilterComponent
@@ -106,41 +113,58 @@ const FilterModal: React.FC<FilterModalProps> = ({
 							placeholder="Session"
 							availableFilters={WORKSHEET_VALUES.sessions}
 							selectedFilters={selectedFilters['session'] || []}
-							onFiltersChange={(filter) =>
-								handleFilterSelect('session', filter)
-							}
+							onFiltersChange={(filter) => handleFilterSelect('session', filter)}
 						/>
 						<FilterComponent
 							size="medium"
 							placeholder="Location"
 							availableFilters={WORKSHEET_VALUES.locations}
 							selectedFilters={selectedFilters['location'] || []}
-							onFiltersChange={(filter) =>
-								handleFilterSelect('location', filter)
-							}
+							onFiltersChange={(filter) => handleFilterSelect('location', filter)}
 						/>
 					</Stack>
 					<Stack direction="row" spacing={1}>
+						<TextField
+							size="medium"
+							placeholder="Year"
+							error={yearError}
+							helperText={yearError ? 'Year must be in XXXX format' : ''}
+							fullWidth
+							value={year}
+							onKeyUp={(e) => handleKeyUp('year', e)}
+							onChange={(e) => setYear(e.target.value)}
+							FormHelperTextProps={{
+								sx: {
+									position: 'absolute',
+									bottom: '-20px',
+									left: 10,
+									margin: 0,
+									fontSize: '0.75rem',
+								},
+							}}
+							sx={{
+								'& .MuiInputBase-input::placeholder': {
+									color: theme.palette.text.secondary,
+									opacity: 1,
+								},
+							}}
+						/>
 						<FilterComponent
 							size="medium"
 							placeholder="Day"
 							availableFilters={WORKSHEET_VALUES.days}
 							selectedFilters={selectedFilters['day'] || []}
-							onFiltersChange={(filter) =>
-								handleFilterSelect('day', filter)
-							}
+							onFiltersChange={(filter) => handleFilterSelect('day', filter)}
 						/>
 						<TextField
 							size="medium"
 							placeholder="Time"
 							error={timeError}
-							helperText={
-								timeError ? 'Time must be in HH:MM format' : ''
-							}
+							helperText={timeError ? 'Time must be in HH:MM format' : ''}
 							fullWidth
 							value={time}
-							onKeyUp={handleKeyDown}
-							onChange={handleChange}
+							onKeyUp={(e) => handleKeyUp('time', e)}
+							onChange={(e) => setTime(e.target.value)}
 							FormHelperTextProps={{
 								sx: {
 									position: 'absolute',
@@ -170,19 +194,12 @@ const FilterModal: React.FC<FilterModalProps> = ({
 						Active Filters
 					</Typography>
 					<ButtonBase onClick={clearFilters} disableRipple>
-						<Typography
-							variant="body2"
-							fontWeight="400"
-							color="primary"
-						>
+						<Typography variant="body2" fontWeight="400" color="primary">
 							Clear Filters
 						</Typography>
 					</ButtonBase>
 				</Stack>
-				<ActiveFilters
-					filters={selectedFilters}
-					onRemoveFilter={handleFilterRemove}
-				/>
+				<ActiveFilters filters={selectedFilters} onRemoveFilter={handleFilterRemove} />
 			</Paper>
 		</Modal>
 	);

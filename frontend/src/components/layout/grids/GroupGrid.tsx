@@ -1,11 +1,8 @@
-import { Grid, Typography, Box } from '@mui/material';
+import { Grid, Typography, Box, Pagination, Stack } from '@mui/material';
 import GroupCard from '../../cards/GroupCard';
 import { useEffect, useState } from 'react';
 import { Group } from '../../../config/groupType';
-import {
-	fetchGroupsByInstructor,
-	FetchGroupsResponse,
-} from '../../../helper/groupGetRequests';
+import { fetchGroupsByInstructor, FetchGroupsResponse } from '../../../helper/groupGetRequests';
 import Loading from '../main/Loading';
 import { useUser } from '../../hooks/useUser';
 
@@ -15,15 +12,18 @@ interface GroupGridProps {
 	limit?: number;
 	displayNumGroups?: boolean;
 	sortOption?: number;
+	singlePage?: boolean;
 }
 
 const GroupGrid = ({
 	limit = DEFAULT_LIMIT,
 	displayNumGroups = true,
+	singlePage = false,
 	sortOption,
 }: GroupGridProps) => {
 	const [groups, setGroups] = useState<Group[]>([]);
 	const [totalGroups, setTotalGroups] = useState<number>(0);
+	const [skip, setSkip] = useState<number>(0);
 	const [loading, setLoading] = useState<boolean>(false);
 	const { user } = useUser();
 
@@ -31,13 +31,12 @@ const GroupGrid = ({
 		const getWorksheets = async () => {
 			setLoading(true);
 			try {
-				const data: FetchGroupsResponse = await fetchGroupsByInstructor(
-					{
-						instructorId: user.id,
-						sorting: { updatedAt: 1 },
-						limit: limit,
-					}
-				);
+				const data: FetchGroupsResponse = await fetchGroupsByInstructor({
+					instructorId: user.id,
+					sorting: { updatedAt: 1 },
+					limit: limit,
+					skip: skip,
+				});
 
 				setGroups(data.groups);
 				setTotalGroups(data.totalCount);
@@ -54,7 +53,7 @@ const GroupGrid = ({
 		};
 
 		getWorksheets();
-	}, [sortOption, limit, user.id]);
+	}, [sortOption, limit, user.id, skip]);
 
 	if (loading) return <Loading />;
 
@@ -68,29 +67,24 @@ const GroupGrid = ({
 					</Typography>
 				</Box>
 			)}
-			<Grid container spacing={1}>
-				{displayNumGroups && (
-					<Grid item xs={12} pb={0.5} textAlign="center">
-						{groups.length > 0 && (
-							<Typography
-								variant="subtitle1"
-								color="text.secondary"
-							>
-								Showing {groups.length} groups out of |{' '}
-								{totalGroups}
-							</Typography>
-						)}
-					</Grid>
-				)}
 
+			<Grid container spacing={1}>
 				{groups.map((group) => (
-					<GroupCard
-						key={group._id}
-						id={group._id}
-						groupName={group.name}
-					/>
+					<GroupCard key={group._id} id={group._id} groupName={group.name} />
 				))}
 			</Grid>
+			<Stack>
+				{totalGroups > DEFAULT_LIMIT && !singlePage && (
+					<Pagination
+						count={Math.ceil(totalGroups / limit)}
+						page={Math.floor(skip / limit) + 1}
+						onChange={(_e, value) => setSkip((value - 1) * limit)}
+						color="primary"
+						variant="outlined"
+						sx={{ alignSelf: 'center', mt: 2 }}
+					/>
+				)}
+			</Stack>
 		</>
 	);
 };

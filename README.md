@@ -46,11 +46,12 @@ Any advise for common problems or issues.
 
 - [x] Fix filtering on frontend
 - [x] Fix sorting on backend
-- [ ] Better pagination for finder
-- [ ] Update grid to gridv2
+- [x] Better pagination for finder
+- [ ] Move worksheet fetch to the grid
 - [ ] Update to include all swimmer descriptions
 - [ ] Programs View
 - [ ] Help View
+- [ ] Update grid to gridv2
 
 ## Authors
 
