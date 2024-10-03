@@ -56,7 +56,7 @@ const DashboardView = () => {
 				<Typography variant="h6" gutterBottom>
 					Recent Groups & Worksheets
 				</Typography>
-				<GroupGrid limit={4} displayNumGroups={false} />
+				<GroupGrid limit={4} displayNumGroups={false} singlePage/>
 				<WorksheetGrid
 					worksheets={worksheets.slice(0, 6)}
 					includeInstructor={false}
