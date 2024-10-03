@@ -67,6 +67,11 @@ const LibraryWorksheetSearch = ({
 		setWorksheets([]);
 		setSkip(0);
 
+		setFilterOptions((prevFilters) => ({
+			...prevFilters,
+			[type]: filter,
+		}));
+
 		setSelectedFilters((prevFilters) => ({
 			...prevFilters,
 			[type]: filter,

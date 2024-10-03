@@ -1,7 +1,7 @@
-const Instructor = require('../models/Instructor.model');
-const bcrypt = require('bcrypt');
+import Instructor from '../models/Instructor.model.js';
+import bcrypt from 'bcrypt';
 
-const createInstructor = async (req, res) => {
+export const createInstructor = async (req, res) => {
 	const userType = req.user.type;
 	const { name, email, password, type, active } = req.body;
 
@@ -34,7 +34,7 @@ const createInstructor = async (req, res) => {
 	}
 };
 
-const getProtectedInstructor = async (req, res) => {
+export const getProtectedInstructor = async (req, res) => {
 	const { limit = 9, search = '' } = req.query;
 
 	let searchQuery = {};
@@ -57,7 +57,7 @@ const getProtectedInstructor = async (req, res) => {
 	}
 };
 
-const getInstructorProfile = async (req, res) => {
+export const getInstructorProfile = async (req, res) => {
 	const user = req.user; 
 	const { id } = req.params;
 
@@ -76,10 +76,4 @@ const getInstructorProfile = async (req, res) => {
 		console.error(error);
 		res.status(500).json({ message: error.message });
 	}
-};
-
-module.exports = {
-	getProtectedInstructor,
-	getInstructorProfile,
-	createInstructor,
 };

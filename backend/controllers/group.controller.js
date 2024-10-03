@@ -1,6 +1,6 @@
-const Group = require('../models/Group.model.js');
+import Group from '../models/Group.model.js';
 
-const getGroups = async (req, res) => {
+export const getGroups = async (req, res) => {
 	const { userId } = req.user._id;
 	const {
 		limit = 20,
@@ -38,7 +38,7 @@ const getGroups = async (req, res) => {
 	}
 };
 
-const getGroupsByInstructor = async (req, res) => {
+export const getGroupsByInstructor = async (req, res) => {
 	const { id } = req.params;
 	const {
 		limit = 20,
@@ -76,7 +76,7 @@ const getGroupsByInstructor = async (req, res) => {
 	}
 };
 
-const addWorksheetToGroup = async (worksheetId, groupId) => {
+export const addWorksheetToGroup = async (worksheetId, groupId) => {
 	try {
 		await Group.findByIdAndUpdate(
 			groupId,
@@ -89,7 +89,7 @@ const addWorksheetToGroup = async (worksheetId, groupId) => {
 	}
 };
 
-const createGroup = async (req, res) => {
+export const createGroup = async (req, res) => {
 	const { _id, type } = req.user;
 	const { instructor, name, worksheetIds } = req.body;
 
@@ -111,7 +111,7 @@ const createGroup = async (req, res) => {
 	}
 };
 
-const getWorksheetsByGroupId = async (req, res) => {
+export const getWorksheetsByGroupId = async (req, res) => {
 	try {
 		const { id } = req.params;
 		const group = await Group.findById(id).populate({
@@ -129,7 +129,7 @@ const getWorksheetsByGroupId = async (req, res) => {
 	}
 };
 
-const getGroupById = async (req, res) => {
+export const getGroupById = async (req, res) => {
 	try {
 		const { id } = req.params;
 		const group = await Group.findById(id);
@@ -141,7 +141,7 @@ const getGroupById = async (req, res) => {
 	}
 };
 
-const addWorksheetToGroups = async (req, res) => {
+export const addWorksheetToGroups = async (req, res) => {
 	try {
 		const { worksheetId, groupIds } = req.body;
 
@@ -181,7 +181,7 @@ const addWorksheetToGroups = async (req, res) => {
 	}
 };
 
-const deleteGroupById = async (req, res) => {
+export const deleteGroupById = async (req, res) => {
 	try {
 		const { id } = req.params;
 
@@ -197,7 +197,7 @@ const deleteGroupById = async (req, res) => {
 	}
 };
 
-const removeWorksheetsFromGroup = async (req, res) => {
+export const removeWorksheetsFromGroup = async (req, res) => {
 	const { id } = req.params;
 	const { worksheetIds } = req.body;
 
@@ -221,16 +221,4 @@ const removeWorksheetsFromGroup = async (req, res) => {
 		console.err(error);
 		res.status(500).json({ messaage: error.messaage });
 	}
-};
-
-module.exports = {
-	getGroups,
-	deleteGroupById,
-	getGroupsByInstructor,
-	createGroup,
-	addWorksheetToGroup,
-	getGroupById,
-	getWorksheetsByGroupId,
-	addWorksheetToGroups,
-	removeWorksheetsFromGroup,
 };

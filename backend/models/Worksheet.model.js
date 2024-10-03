@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const Student = require('./Student.model'); // Correct path to Student model
+import mongoose from 'mongoose';
+import Student from './Student.model.js';
 const currentYear = new Date().getFullYear();
 
 const WorksheetSchema = mongoose.Schema(
@@ -68,4 +68,5 @@ WorksheetSchema.index({
 });
 
 const Worksheet = mongoose.model('Worksheet', WorksheetSchema);
-module.exports = Worksheet;
+
+export default Worksheet;

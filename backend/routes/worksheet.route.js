@@ -1,12 +1,11 @@
-const express = require('express');
-const {
+import express from 'express';
+import {
 	getWorksheets,
 	getWorksheetById,
 	updateWorksheetById,
-    createWorksheet,
+	createWorksheet,
 	deleteWorksheetById,
-	getWorksheetByInstructor,
-} = require('../controllers/worksheet.controller.js');
+} from '../controllers/worksheet.controller.js';
 const router = express.Router();
 
 //Get
@@ -25,4 +24,4 @@ router.put('/:id', updateWorksheetById);
 //Delete
 router.delete('/:id', deleteWorksheetById);
 
-module.exports = router;
+export default router;

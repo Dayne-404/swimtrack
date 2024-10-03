@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const instructorSchema = new mongoose.Schema({
     name: {
@@ -30,5 +30,6 @@ const instructorSchema = new mongoose.Schema({
 
 }, {timestamps: true} );
 
-const Group = mongoose.model('Instructor', instructorSchema);
-module.exports = Group;
+const Instructor = mongoose.model('Instructor', instructorSchema);
+
+export default Instructor;

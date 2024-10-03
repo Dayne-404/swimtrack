@@ -9,6 +9,7 @@ A fullstack web application designed to store and manage user-created worksheets
 ## Getting Started
 
 ### Software Requirements
+
 - **Node.js**: v16.0.0 or higher
   - [Download Node.js](https://nodejs.org/)
 - **npm** (Node Package Manager): Comes with Node.js
@@ -19,12 +20,14 @@ A fullstack web application designed to store and manage user-created worksheets
   - [Download Git](https://git-scm.com/)
 
 ### Libraries and Dependencies
+
 - React, Vite, TypeScript, Material UI (MUI) for the frontend
 - Node.js, Express, Mongoose, dotenv, and cors for the backend
 
 ### Executing program
 
 To set up the project locally, follow these steps
+
 1. Navigate to the project directory in your terminal.
 2. Install the frontend dependencies by going into the `frontend` directory and running the command `npm install`.
 3. Install the backend dependencies by opening a new terminal window, navigating to the `backend` directory, and executing `npm install`.
@@ -38,9 +41,16 @@ Your app should now be running locally!
 ## Help
 
 Any advise for common problems or issues.
-```
-command to run if program contains helper info
-```
+
+## Roadmap
+
+- [x] Fix filtering on frontend
+- [x] Fix sorting on backend
+- [ ] Better pagination for finder
+- [ ] Update grid to gridv2
+- [ ] Update to include all swimmer descriptions
+- [ ] Programs View
+- [ ] Help View
 
 ## Authors
 

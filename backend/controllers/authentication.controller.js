@@ -1,9 +1,10 @@
-const Instructor = require('../models/Instructor.model');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+import Instructor from '../models/Instructor.model.js';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
-const login = async (req, res) => {
+export const login = async (req, res) => {
 	const { email, password } = req.body;
+	console.log('Email', email, 'Password', password);
 
 	try {
 		let instructor = await Instructor.findOne({ email });
@@ -26,13 +27,11 @@ const login = async (req, res) => {
 	}
 };
 
-const validateToken = async (req, res) => {
+export const validateToken = async (req, res) => {
 	const authHeader = req.headers['authorization'];
 	const token = authHeader && authHeader.split(' ')[1];
 
 	if(!token) return res.status(401).json({ message: 'No token provided' })
-
-	console.log('Checking token: ', token);
 
 	try {
 		jwt.verify(token, process.env.JWT_SECRET);
@@ -43,9 +42,4 @@ const validateToken = async (req, res) => {
 		console.log('Token is invalid: ', token);
 		res.status(401).json({ message: 'Token is invalid or expired' });
 	}
-}
-
-module.exports = {
-    login,
-	validateToken,
 }

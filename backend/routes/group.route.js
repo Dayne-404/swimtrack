@@ -1,16 +1,15 @@
-const express = require('express');
-const {
-    getGroups,
-    removeWorksheetsFromGroup,
-    deleteGroupById,
-    getGroupsByInstructor,
-    createGroup,
-    getWorksheetsByGroupId,
-    getGroupById,
-    addWorksheetToGroups
-} = require('../controllers/group.controller');
-const router = express.Router();
+import express from 'express';
+import {
+	removeWorksheetsFromGroup,
+	deleteGroupById,
+	getGroupsByInstructor,
+	createGroup,
+	getWorksheetsByGroupId,
+	getGroupById,
+	addWorksheetToGroups,
+} from '../controllers/group.controller.js';
 
+const router = express.Router();
 
 //Get Groups
 router.get('/instructor/:id', getGroupsByInstructor);
@@ -27,4 +26,4 @@ router.post('/', createGroup);
 //Delete group
 router.delete('/:id', deleteGroupById);
 
-module.exports = router;
+export default router;

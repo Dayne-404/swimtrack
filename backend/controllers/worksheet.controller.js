@@ -1,94 +1,39 @@
-const Worksheet = require('../models/Worksheet.model.js');
+import buildFiltersQuery from '../helper/buildFiltersQuery.js';
+import buildSortQuery from '../helper/buildSortQuery.js';
+import Worksheet from '../models/Worksheet.model.js';
 
-const getWorksheets = async (req, res) => {
-	const userId = req.user._id;
-	const {
-		specific = false,
-		limit = 10,
-		skip = 0,
-		sort = [],
-		...filters
-	} = req.query;
+export const getWorksheets = async (req, res) => {
+	const { specific = false, limit = 10, skip = 0, sort = [], ...filters } = req.query;
 
 	try {
-		let query = {};
+		const filterQuery = buildFiltersQuery(filters, req.user._id, specific);
+		const sortQuery = buildSortQuery(sort);
 
-		if (specific && userId) query.instructor = userId;
-		else if (filters.instructor) query.instructor = filters.instructor;
-
-		if (filters.level)
-			query.level = {
-				$in: Array.isArray(filters.level)
-					? filters.level
-					: [filters.level],
-			};
-		if (filters.year)
-			query.year = {
-				$in: Array.isArray(filters.year)
-					? filters.year
-					: [filters.year],
-			};
-		if (filters.session)
-			query.session = {
-				$in: Array.isArray(filters.session)
-					? filters.session
-					: [filters.session],
-			};
-		if (filters.day)
-			query.day = {
-				$in: Array.isArray(filters.day) ? filters.day : [filters.day],
-			};
-		if (filters.time)
-			query.time = {
-				$in: Array.isArray(filters.time)
-					? filters.time
-					: [filters.time],
-			};
-		if (filters.location)
-			query.location = {
-				$in: Array.isArray(filters.location)
-					? filters.location
-					: [filters.location],
-			};
-
-		let sortQuery = {};
-		const sortArray = Array.isArray(sort) ? sort : [sort];
-
-		sortArray.forEach((field) => {
-			const order = field.startsWith('-') ? -1 : 1;
-			const key = field.replace(/^-/, '');
-			sortQuery[key] = order;
-		});
-
-		const worksheets = await Worksheet.find(query)
+		const worksheets = await Worksheet.find(filterQuery)
 			.sort(sortQuery)
 			.skip(parseInt(skip))
 			.limit(parseInt(limit))
 			.populate('instructor', '_id name');
 
-		const totalCount = await Worksheet.countDocuments(query);
+		const totalCount = await Worksheet.countDocuments(filterQuery);
+
 		res.status(200).json({ worksheets, totalCount });
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}
 };
 
-const getWorksheetById = async (req, res) => {
-	console.log('GETTING WORKSHEETS!');
-
+export const getWorksheetById = async (req, res) => {
 	try {
 		const { id } = req.params;
-		const worksheet = await Worksheet.findById(id).populate(
-			'instructor',
-			'_id name'
-		);
+		const worksheet = await Worksheet.findById(id).populate('instructor', '_id name');
 		res.status(200).json(worksheet);
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}
 };
 
-const getWorksheetByInstructor = async (req, res) => {
+export const getWorksheetByInstructor = async (req, res) => {
 	try {
 		const { instructorId } = req.params;
 		const worksheets = await Worksheet.find({ instructor: instructorId });
@@ -98,7 +43,7 @@ const getWorksheetByInstructor = async (req, res) => {
 	}
 };
 
-const createWorksheet = async (req, res) => {
+export const createWorksheet = async (req, res) => {
 	try {
 		const worksheet = await Worksheet.create(req.body);
 		res.status(200).json(worksheet);
@@ -108,7 +53,7 @@ const createWorksheet = async (req, res) => {
 	}
 };
 
-const updateWorksheetById = async (req, res) => {
+export const updateWorksheetById = async (req, res) => {
 	const user = req.user;
 	const { id } = req.params;
 
@@ -124,18 +69,12 @@ const updateWorksheetById = async (req, res) => {
 			user.type !== 'admin' &&
 			user.type !== 'supervisor'
 		) {
-			return res
-				.status(403)
-				.json({
-					message: 'You are not authorized to update this worksheet',
-				});
+			return res.status(403).json({
+				message: 'You are not authorized to update this worksheet',
+			});
 		}
 
-		const updatedWorksheet = await Worksheet.findByIdAndUpdate(
-			id,
-			req.body,
-			{ new: true }
-		);
+		const updatedWorksheet = await Worksheet.findByIdAndUpdate(id, req.body, { new: true });
 
 		res.status(200).json(updatedWorksheet);
 	} catch (error) {
@@ -143,7 +82,7 @@ const updateWorksheetById = async (req, res) => {
 	}
 };
 
-const deleteWorksheetById = async (req, res) => {
+export const deleteWorksheetById = async (req, res) => {
 	const user = req.user;
 	const { id } = req.params;
 
@@ -159,11 +98,9 @@ const deleteWorksheetById = async (req, res) => {
 			user.type !== 'admin' &&
 			user.type !== 'supervisor'
 		) {
-			return res
-				.status(403)
-				.json({
-					message: 'You are not authorized to delete this worksheet',
-				});
+			return res.status(403).json({
+				message: 'You are not authorized to delete this worksheet',
+			});
 		}
 
 		await worksheet.deleteOne();
@@ -172,13 +109,4 @@ const deleteWorksheetById = async (req, res) => {
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}
-};
-
-module.exports = {
-	getWorksheets,
-	getWorksheetById,
-	getWorksheetByInstructor,
-	createWorksheet,
-	updateWorksheetById,
-	deleteWorksheetById,
 };

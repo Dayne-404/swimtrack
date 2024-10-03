@@ -1,15 +1,15 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const worksheetRoute = require('./routes/worksheet.route.js');
-const groupRoute = require('./routes/group.route.js')
-const instructorRoute = require('./routes/instructor.route.js')
-const authenticationRoute = require('./routes/authentication.route.js')
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import worksheetRoute from './routes/worksheet.route.js';
+import groupRoute from './routes/group.route.js';
+import instructorRoute from './routes/instructor.route.js';
+import authenticationRoute from './routes/authentication.route.js'
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 
-const uri =
-	'mongodb+srv://daynedell:JM3fX8dwa3CQ7DBH@cluster0.slzbw.mongodb.net/Pastadle?retryWrites=true&w=majority&appName=Cluster0';
+dotenv.config();
+
 const app = express();
 
 app.use(express.json());
@@ -34,7 +34,7 @@ function authenticateToken(req, res, next) {
 }
 
 mongoose
-	.connect(uri)
+	.connect(process.env.MONGO_URI)
 	.then(() => {
 		console.log('Connected to the database!');
 		app.listen(3000, () => {

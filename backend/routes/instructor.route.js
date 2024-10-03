@@ -1,10 +1,14 @@
-const express = require('express');
-const { createInstructor, getProtectedInstructor, getInstructorProfile } = require('../controllers/instructor.controller.js');
+import express from 'express';
+import {
+	createInstructor,
+	getProtectedInstructor,
+	getInstructorProfile,
+} from '../controllers/instructor.controller.js';
 
 const router = express.Router();
 
 router.post('/', createInstructor);
 router.get('/', getProtectedInstructor);
-router.get('/profile/:id', getInstructorProfile)
+router.get('/profile/:id', getInstructorProfile);
 
-module.exports = router;
+export default router;
