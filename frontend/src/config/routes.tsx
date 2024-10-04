@@ -14,6 +14,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ProfileView from '../views/ProfileView';
+import ProgramView from '../views/ProgramView';
 
 export const SIDE_NAV_ROUTES = {
 	Dashboard: { icon: <SpeedIcon />, to: '/', element: <Dashboard /> },
@@ -28,7 +29,7 @@ export const SIDE_NAV_ROUTES = {
 	Programs: {
 		icon: <ScubaDivingIcon />,
 		to: '/programs',
-		element: <Dashboard />,
+		element: <ProgramView />,
 	},
 };
 
