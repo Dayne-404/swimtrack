@@ -29,6 +29,7 @@ export const WORKSHEET_LEVEL_NAMES: string[] = [
 	'Adult 1',
 	'Adult 2',
 	'Adult 3',
+	'Youth Fitness',
 ];
 
 export const WORKSHEET_LEVELS: WorksheetLevel = {
