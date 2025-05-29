@@ -1,73 +1,58 @@
-# Swimtrack
+# 🏊‍♂️ Swimtrack
 
-This app serves as a digital tool for quick and efficient worksheet management, providing an organized and searchable system to replace traditional paper-based methods in the workplace.
+**Swimtrack** is a fullstack web application designed to streamline how swim instructors manage and access Lifesaving Society worksheets. It replaces traditional paper-based storage with a fast, searchable digital alternative — making worksheet organization effortless and efficient.
 
-## Description
+This was my **first major project**, inspired by a real-world problem I faced at work. As instructors, we were still using **physical binders** to store everything — making it nearly impossible to find worksheets when we needed them. **Swimtrack** was built to solve that.
 
-A fullstack web application designed to store and manage user-created worksheets from the Lifesaving Society. The app allows users to create, store, and search for worksheets with a robust search feature, enabling quick access to documents created by others. This system provides a more efficient alternative to traditional physical paper storage, streamlining document management across the workplace. Built with React, Vite, TypeScript, MUI, Node.js, and MongoDB, the application is optimized for fast performance and ease of use.
+---
 
-## Getting Started
+## 🧠 Lessons & Rewrite Decision
 
-### Software Requirements
+After working on **Swimtrack** for several months, I began to feel frustrated with the codebase. As I learned more about best practices and scalable architecture, it became clear that the project had grown in complexity without the structure to support it. The early decisions I made — from folder structure to state management — started to hold me back.
 
-- **Node.js**: v16.0.0 or higher
-  - [Download Node.js](https://nodejs.org/)
-- **npm** (Node Package Manager): Comes with Node.js
-  - Alternatively, you can use **yarn** if preferred.
-- **MongoDB**: v4.4 or higher (installed locally or accessible via a cloud provider like MongoDB Atlas)
-  - [Download MongoDB](https://www.mongodb.com/try/download/community)
-- **Git**: Version control tool to clone the repository
-  - [Download Git](https://git-scm.com/)
+Eventually, I decided to **pause development** and plan a full **rewrite from scratch**. The goal of the rewrite is to apply everything I’ve learned since starting Swimtrack: cleaner code, better separation of concerns, and a more maintainable foundation for future features.
 
-### Libraries and Dependencies
+While the current version remains functional, the rewrite represents the next step in my growth as a developer — and a commitment to building things the right way.
 
-- React, Vite, TypeScript, Material UI (MUI) for the frontend
-- Node.js, Express, Mongoose, dotenv, and cors for the backend
+---
 
-### Executing program
+## 🚀 Features
 
-To set up the project locally, follow these steps
+- 📂 Create and store worksheets digitally  
+- 🔍 Fast and flexible search system  
+- 🗂️ Organized and filterable document listing  
+- 🧾 Pagination and sorting for large worksheet sets  
+- ⚡ Optimized for speed using Vite and React
 
-1. Navigate to the project directory in your terminal.
-2. Install the frontend dependencies by going into the `frontend` directory and running the command `npm install`.
-3. Install the backend dependencies by opening a new terminal window, navigating to the `backend` directory, and executing `npm install`.
-4. Set up your environment variables by creating a `.env` file in the `backend` directory. In this file, add the required environment variables, such as your MongoDB connection string and port. For example:
-5. To run the frontend development server, navigate to the `frontend` directory and execute `npm run dev`.
-6. To start the backend server, go to the `backend` directory and run `npm start`.
-7. Finally, open your browser and go to `http://localhost:3000` to access the application. 
+---
 
-Your app should now be running locally!
+## 🛠️ Built With
 
-## Help
+**Frontend:**
 
-Any advise for common problems or issues.
+- React  
+- Vite  
+- TypeScript  
+- Material UI (MUI)
 
-## Roadmap
+**Backend:**
 
-- [x] Fix filtering on frontend
-- [x] Fix sorting on backend
-- [x] Better pagination for finder
-- [ ] Move worksheet fetch to the grid
-- [ ] Update to include all swimmer descriptions
-- [ ] Programs View
-- [ ] Help View
-- [ ] Update grid to gridv2
+- Node.js  
+- Express  
+- MongoDB  
+- Mongoose  
+- dotenv  
+- cors
 
-## Authors
+---
 
-Contributors names and contact info
+## 🧪 Roadmap
 
-ex. Dominique Pizzie  
-ex. [@DomPizzie](https://twitter.com/dompizzie)
-
-## Version History
-
-* 0.2
-    * Various bug fixes and optimizations
-    * See [commit change]() or See [release history]()
-* 0.1
-    * Initial Release
-
-## License
-
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
+- [x] Fix filtering on frontend  
+- [x] Fix sorting on backend  
+- [x] Better pagination for finder  
+- [ ] Move worksheet fetch logic to grid component  
+- [ ] Add all swimmer level descriptions  
+- [ ] Create a dedicated "Programs" view  
+- [ ] Add "Help" view for onboarding  
+- [ ] Upgrade the worksheet grid to v2
