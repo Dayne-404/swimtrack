@@ -34,7 +34,7 @@ function authenticateToken(req, res, next) {
 }
 
 mongoose
-	.connect(process.env.MONGO_URI)
+	.connect(process.env.MONGODB_URI)
 	.then(() => {
 		console.log('Connected to the database!');
 		app.listen(3000, () => {
