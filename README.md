@@ -14,7 +14,7 @@ Eventually, I decided to **pause development** and plan a full **rewrite from sc
 
 While the current version remains functional, the rewrite represents the next step in my growth as a developer — and a commitment to building things the right way.
 
-[Follow the rewrite here]([https://example.com](https://github.com/Dayne-404/swimtrack_v2/tree/main))
+[Follow the rewrite here](https://github.com/Dayne-404/swimtrack_v2/tree/main)
 
 ## 🚀 Features
 
