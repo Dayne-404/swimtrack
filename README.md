@@ -1,10 +1,10 @@
-# 🏊‍♂️ Swimtrack
+# Swimtrack
+
+![Gif of gameplay](./preview.gif)
 
 **Swimtrack** is a fullstack web application designed to streamline how swim instructors manage and access Lifesaving Society worksheets. It replaces traditional paper-based storage with a fast, searchable digital alternative — making worksheet organization effortless and efficient.
 
 This was my **first major project**, inspired by a real-world problem I faced at work. As instructors, we were still using **physical binders** to store everything — making it nearly impossible to find worksheets when we needed them. **Swimtrack** was built to solve that.
-
----
 
 ## 🧠 Lessons & Rewrite Decision
 
@@ -14,8 +14,6 @@ Eventually, I decided to **pause development** and plan a full **rewrite from sc
 
 While the current version remains functional, the rewrite represents the next step in my growth as a developer — and a commitment to building things the right way.
 
----
-
 ## 🚀 Features
 
 - 📂 Create and store worksheets digitally  
@@ -23,8 +21,6 @@ While the current version remains functional, the rewrite represents the next st
 - 🗂️ Organized and filterable document listing  
 - 🧾 Pagination and sorting for large worksheet sets  
 - ⚡ Optimized for speed using Vite and React
-
----
 
 ## 🛠️ Built With
 
@@ -43,8 +39,6 @@ While the current version remains functional, the rewrite represents the next st
 - Mongoose  
 - dotenv  
 - cors
-
----
 
 ## 🧪 Roadmap
 
